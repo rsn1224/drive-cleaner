@@ -2,6 +2,7 @@
 // Duplicates View Component
 // ==========================================
 
+import type { ReactElement } from "react";
 import { Eye, Trash2 } from "lucide-react";
 
 import { formatSize } from "../lib/utils";
@@ -23,7 +24,7 @@ export function DuplicatesView({
   totalSaveable,
   onPreview,
   onDelete,
-}: DuplicatesViewProps) {
+}: DuplicatesViewProps): ReactElement {
   return (
     <div className="space-y-2">
       {/* Scan progress (shown while scanning) */}

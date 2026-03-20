@@ -2,7 +2,7 @@
 // Main App Component - Drive Cleaner
 // ==========================================
 
-import type { ReactElement } from "react";
+import type { DragEvent, ReactElement } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ErrorBoundary } from "./components/ErrorBoundary";
@@ -117,9 +117,40 @@ function App(): ReactElement {
     scan,
   ]);
 
+  // Drag & drop
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: DragEvent): void => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (): void => setIsDragging(false);
+  const handleDrop = (e: DragEvent): void => {
+    e.preventDefault();
+    setIsDragging(false);
+    const items = e.dataTransfer.files;
+    if (items.length > 0) {
+      const path = (items[0] as File & { path?: string }).path;
+      if (path) fileBrowser.loadDirectory(path);
+    }
+  };
+
   return (
     <ErrorBoundary>
-      <div className="h-screen bg-black flex flex-col relative overflow-hidden">
+      <div
+        className="h-screen bg-black flex flex-col relative overflow-hidden"
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {/* Drag overlay */}
+        {isDragging && (
+          <div className="fixed inset-0 z-40 bg-primary/5 border-2 border-dashed border-primary flex items-center justify-center flex-col gap-4 text-primary pointer-events-none">
+            <span className="material-symbols-outlined text-5xl">folder_open</span>
+            <span className="hud-label">DROP_FOLDER_TO_SCAN</span>
+          </div>
+        )}
+
         {/* Scanline overlay */}
         <div className="scanline-overlay" />
 

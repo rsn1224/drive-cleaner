@@ -3,6 +3,7 @@
 // ==========================================
 
 import { listen } from "@tauri-apps/api/event";
+import { message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useMemo, useState } from "react";
 
 import { extractErrorMessage, invoke } from "../lib/tauri";
@@ -39,7 +40,6 @@ export function useLargeFiles(currentPath: string) {
       setLargeFiles(results);
     } catch (e) {
       if (e !== "Scan was cancelled") {
-        const { message } = await import("@tauri-apps/plugin-dialog");
         const msg = extractErrorMessage(e);
         await message(`スキャンエラー: ${msg}`, {
           title: "エラー",

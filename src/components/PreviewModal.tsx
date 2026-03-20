@@ -2,6 +2,7 @@
 // Preview Modal Component
 // ==========================================
 
+import type { ReactElement } from "react";
 import { X } from "lucide-react";
 
 import { formatSize } from "../lib/utils";
@@ -17,7 +18,7 @@ export function PreviewModal({
   preview,
   previewPath,
   onClose,
-}: PreviewModalProps) {
+}: PreviewModalProps): ReactElement {
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div className="bg-black border border-primary/20 hud-bracket max-w-4xl max-h-[80vh] w-full flex flex-col">

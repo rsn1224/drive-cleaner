@@ -157,6 +157,18 @@ pub async fn clean_temp_files(paths: Vec<String>) -> Result<CleanResult, String>
     let mut errors: Vec<String> = Vec::new();
 
     for path in &paths {
+        // 安全な拡張子の再検証（クライアント入力を信頼しない）
+        let ext = std::path::Path::new(path)
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("")
+            .to_lowercase();
+        if !is_safe_to_delete(&ext) {
+            warn!("Skipping unsafe extension: {path}");
+            errors.push(format!("{path}: unsafe extension .{ext}"));
+            continue;
+        }
+
         match tokio::fs::metadata(path).await {
             Ok(meta) => {
                 let size = meta.len();

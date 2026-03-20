@@ -2,6 +2,7 @@
 // Large Files View Component
 // ==========================================
 
+import type { ReactElement } from "react";
 import { Eye, FileIcon, Trash2 } from "lucide-react";
 
 import { formatSize } from "../lib/utils";
@@ -23,7 +24,7 @@ export function LargeFilesView({
   totalSize,
   onPreview,
   onDelete,
-}: LargeFilesViewProps) {
+}: LargeFilesViewProps): ReactElement {
   if (scanning) {
     return (
       <div className="flex-1 flex items-center justify-center">

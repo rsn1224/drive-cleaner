@@ -57,9 +57,10 @@ export function useDiskUsage(currentPath: string) {
     setScanning(false);
   }, [currentPath, fetchFolder]);
 
-  // ドリルダウン
+  // ドリルダウン（scanning 中は無視して競合防止）
   const drillDown = useCallback(async (path: string, name: string): Promise<void> => {
-    // キャッシュチェック
+    if (scanning) return;
+
     const cached = folderCache.get(path);
     if (cached) {
       setCurrentFolderPath(path);
@@ -74,7 +75,7 @@ export function useDiskUsage(currentPath: string) {
       setBreadcrumbs((prev) => [...prev, { name, path }]);
     }
     setScanning(false);
-  }, [folderCache, fetchFolder]);
+  }, [scanning, folderCache, fetchFolder]);
 
   // パンくずナビゲーション
   const navigateUp = useCallback((path: string): void => {

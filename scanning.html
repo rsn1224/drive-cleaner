@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRIVE_CLEANER - PRO_SPEC_HUD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#00F0FF", // Electric Cyan
+              "success": "#00FF41", // Tactical Green
+              "warning": "#FFB800", // Amber
+              "error": "#FF3131",   // Professional Red
+              "background": "#000000",
+              "surface": "#050505",
+              "outline": "#1A2233",
+              "on-background": "#FFFFFF",
+              "on-surface-variant": "#4A5568"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Space Grotesk"],
+              "label": ["Space Grotesk"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.02) 50%);
+            background-size: 100% 4px;
+        }
+        .corner-bracket {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-color: #00F0FF;
+            border-width: 0;
+            opacity: 0.8;
+        }
+        .corner-tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+        .corner-tr { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
+        .corner-bl { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
+        .corner-br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+        
+        @keyframes radar-rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .radar-sweep {
+            animation: radar-rotate 4s linear infinite;
+        }
+        
+        body {
+            min-height: max(884px, 100dvh);
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary/30 selection:text-white overflow-hidden">
+<!-- TopAppBar Navigation Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-black border-b border-white/10">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary">terminal</span>
+<h1 class="text-xl font-bold tracking-widest text-primary font-['Space_Grotesk'] uppercase antialiased">
+            DRIVE_CLEANER <span class="text-[10px] ml-2 text-white/40 tracking-normal font-normal">v4.0_PRO_SPEC</span>
+</h1>
+</div>
+<div class="hidden md:flex gap-8">
+<span class="text-white/60 font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-[0.2rem] cursor-pointer hover:text-primary transition-colors">DASHBOARD</span>
+<span class="text-primary font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-[0.2rem] cursor-pointer border-b border-primary">SCAN_DISK</span>
+<span class="text-white/60 font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-[0.2rem] cursor-pointer hover:text-primary transition-colors">CLEANUP</span>
+<span class="text-white/60 font-['Space_Grotesk'] text-[11px] font-bold uppercase tracking-[0.2rem] cursor-pointer hover:text-primary transition-colors">SYSTEM_LOGS</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-white/60 cursor-pointer hover:text-primary active:scale-95 duration-100">settings</span>
+</div>
+</header>
+<main class="relative pt-16 flex flex-col h-[calc(100vh-80px)] scanline bg-black">
+<!-- System Metadata Header Bar -->
+<div class="w-full bg-[#080808] border-y border-white/5 px-6 py-2 flex justify-between items-center font-mono text-[10px] tracking-tighter uppercase">
+<div class="flex gap-6 text-white/40">
+<span>BUILD_ID: <span class="text-white font-bold">DC-992-X</span></span>
+<span>KERNEL: <span class="text-white font-bold">V6.4.2-STABLE</span></span>
+<span>NODE: <span class="text-success font-bold">ACTIVE_PRIMARY</span></span>
+</div>
+<div class="flex gap-6 text-white/40">
+<span>ENCRYPTION: <span class="text-primary font-bold">AES_256_ACTIVE</span></span>
+<span>OS_TYPE: <span class="text-white font-bold">HYBRID_UNIX_LITE</span></span>
+</div>
+</div>
+<!-- Main Content Area: HUD Canvas -->
+<div class="flex-1 grid grid-cols-12 gap-4 p-6 overflow-hidden">
+<!-- Left Panel: Live Stats -->
+<div class="col-span-3 flex flex-col gap-4">
+<div class="bg-black p-5 relative border border-white/10">
+<div class="corner-bracket corner-tl"></div>
+<div class="corner-bracket corner-tr"></div>
+<h3 class="font-mono text-[11px] font-bold text-primary tracking-[0.2em] mb-4">LIVE_TELEMETRY</h3>
+<div class="space-y-6">
+<div class="space-y-1">
+<p class="text-[10px] text-white/40 font-mono">FILES_PROCESSED</p>
+<p class="text-3xl font-mono font-bold text-white">142,892</p>
+<div class="w-full h-[1px] bg-white/5"></div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] text-white/40 font-mono">DUPLICATES_IDENTIFIED</p>
+<p class="text-3xl font-mono font-bold text-warning">1,409</p>
+<div class="w-full h-[1px] bg-white/5"></div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] text-white/40 font-mono">ELAPSED_RUNTIME</p>
+<p class="text-3xl font-mono font-bold text-primary">00:04:22</p>
+<div class="w-full h-[1px] bg-white/5"></div>
+</div>
+<div class="space-y-1">
+<p class="text-[10px] text-white/40 font-mono">DATA_THROUGHPUT</p>
+<p class="text-3xl font-mono font-bold text-success">412 MB/S</p>
+</div>
+</div>
+<div class="corner-bracket corner-bl"></div>
+<div class="corner-bracket corner-br"></div>
+</div>
+<div class="bg-black p-5 relative border border-white/10 flex-1">
+<div class="corner-bracket corner-tl"></div>
+<h3 class="font-mono text-[11px] font-bold text-white/40 tracking-[0.2em] mb-4 uppercase">Node_Status</h3>
+<div class="space-y-4">
+<div class="space-y-2">
+<div class="flex justify-between items-center font-mono text-[10px]">
+<span class="text-white/60">CPU_LOAD</span>
+<span class="text-primary">82%</span>
+</div>
+<div class="h-1 bg-white/5 w-full">
+<div class="h-full bg-primary w-[82%] shadow-[0_0_8px_#00F0FF]"></div>
+</div>
+</div>
+<div class="space-y-2 mt-6">
+<div class="flex justify-between items-center font-mono text-[10px]">
+<span class="text-white/60">MEM_USAGE</span>
+<span class="text-success">4.2 GB</span>
+</div>
+<div class="h-1 bg-white/5 w-full">
+<div class="h-full bg-success w-[45%] shadow-[0_0_8px_#00FF41]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Center Panel: The Radar -->
+<div class="col-span-6 flex flex-col items-center justify-center relative">
+<!-- Decorative Circle Elements -->
+<div class="absolute w-[450px] h-[450px] border border-white/5 rounded-full"></div>
+<div class="absolute w-[350px] h-[350px] border border-white/10 rounded-full"></div>
+<div class="absolute w-[250px] h-[250px] border border-white/10 rounded-full"></div>
+<!-- Radar Sweep -->
+<div class="absolute w-[450px] h-[450px] radar-sweep pointer-events-none">
+<div class="w-1/2 h-full bg-gradient-to-r from-transparent to-primary/10" style="clip-path: polygon(100% 0, 100% 100%, 0 50%);"></div>
+</div>
+<!-- Central Radar HUD -->
+<div class="relative w-[400px] h-[400px] flex items-center justify-center">
+<div class="absolute inset-0 border-2 border-white/10 rounded-full"></div>
+<!-- Crosshairs -->
+<div class="absolute w-full h-[1px] bg-white/10"></div>
+<div class="absolute h-full w-[1px] bg-white/10"></div>
+<!-- Scanning Data Bits -->
+<div class="z-10 flex flex-col items-center gap-2">
+<div class="font-mono text-6xl font-black text-primary drop-shadow-[0_0_20px_rgba(0,240,255,0.4)]">74%</div>
+<div class="font-mono text-[12px] tracking-[0.5em] text-white/60 font-bold uppercase">Scanning_Vectors</div>
+<div class="mt-6 flex gap-1.5">
+<div class="w-2 h-5 bg-primary"></div>
+<div class="w-2 h-5 bg-primary"></div>
+<div class="w-2 h-5 bg-primary"></div>
+<div class="w-2 h-5 bg-white/20"></div>
+<div class="w-2 h-5 bg-white/10"></div>
+</div>
+</div>
+<!-- Target Blips -->
+<div class="absolute top-20 right-24 w-2 h-2 bg-error shadow-[0_0_15px_#FF3131]"></div>
+<div class="absolute bottom-32 left-16 w-2 h-2 bg-warning shadow-[0_0_15px_#FFB800]"></div>
+<div class="absolute top-40 left-10 w-2 h-2 bg-success shadow-[0_0_15px_#00FF41]"></div>
+</div>
+<!-- Progress Bar Bottom -->
+<div class="w-full max-w-lg mt-12 space-y-2">
+<div class="flex justify-between items-end">
+<span class="font-mono text-[10px] text-white/40 uppercase">Sector_0x7FF-902-1A</span>
+<span class="font-mono text-[12px] text-primary font-bold">ETA: 01:14_MIN</span>
+</div>
+<div class="w-full h-4 bg-white/5 border border-white/10 p-[2px]">
+<div class="h-full bg-primary flex gap-[2px] transition-all duration-500 w-[74%]">
+<!-- High Frequency Segmented Detail -->
+<div class="w-full h-full border-r border-black/20"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Panel: Findings & Assets -->
+<div class="col-span-3 flex flex-col gap-4">
+<div class="bg-black p-5 relative border border-white/10 flex-1 overflow-hidden">
+<div class="corner-bracket corner-tr"></div>
+<h3 class="font-mono text-[11px] font-bold text-success tracking-[0.2em] mb-4">ASSET_CLASSIFICATION</h3>
+<div class="space-y-5">
+<div class="space-y-1.5">
+<div class="flex justify-between text-[10px] font-mono text-white/40 uppercase">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-primary">folder_zip</span> ARCHIVES</span>
+<span class="text-white">42.1 GB</span>
+</div>
+<div class="w-full h-1 bg-white/5"><div class="bg-primary w-[65%] h-full"></div></div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-[10px] font-mono text-white/40 uppercase">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-success">movie</span> MEDIA_CACHE</span>
+<span class="text-white">12.8 GB</span>
+</div>
+<div class="w-full h-1 bg-white/5"><div class="bg-success w-[20%] h-full"></div></div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-[10px] font-mono text-white/40 uppercase">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-warning">settings_suggest</span> SYSTEM_TEMP</span>
+<span class="text-white">8.4 GB</span>
+</div>
+<div class="w-full h-1 bg-white/5"><div class="bg-warning w-[15%] h-full"></div></div>
+</div>
+<div class="space-y-1.5">
+<div class="flex justify-between text-[10px] font-mono text-white/40 uppercase">
+<span class="flex items-center gap-2"><span class="material-symbols-outlined text-[14px] text-error">bug_report</span> LOG_RESIDUE</span>
+<span class="text-white">2.1 GB</span>
+</div>
+<div class="w-full h-1 bg-white/5"><div class="bg-error w-[5%] h-full"></div></div>
+</div>
+</div>
+<div class="corner-bracket corner-br"></div>
+</div>
+<div class="bg-black p-5 relative border border-error/30 h-40">
+<div class="corner-bracket corner-tl !border-error"></div>
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-error text-sm">warning</span>
+<h3 class="font-mono text-[11px] font-bold text-error tracking-[0.2em] uppercase">Security_Advisory</h3>
+</div>
+<p class="font-mono text-[10px] text-error leading-relaxed font-bold">
+                    [UNAUTHORIZED_DISK_ACCESS_DETECTED]<br/>
+                    IP: 192.168.1.104 :: PORT: 8080<br/>
+                    ACTION: PROTOCOL_READ_ONLY_ENFORCED.
+                </p>
+<button class="mt-4 w-full bg-error/10 text-error font-mono text-[10px] py-2 border border-error/20 hover:bg-error/20 transition-colors uppercase font-bold tracking-widest">Acknowledge</button>
+</div>
+</div>
+</div>
+<!-- Real-time Technical Log Stream -->
+<div class="h-32 bg-black border-t border-white/10 px-6 py-3 font-mono text-[9px] overflow-hidden mb-20">
+<div class="flex justify-between items-center mb-2 border-b border-white/5 pb-1">
+<span class="text-primary font-bold">SYSTEM_LOG_STREAM // RAW_DATA</span>
+<span class="text-white/40">SCNR_ID: 98112-Q</span>
+</div>
+<div class="space-y-1 text-white/80">
+<div class="flex gap-4">
+<span class="text-white/30 w-24">[14:22:01.09]</span>
+<span class="text-primary">SCAN_CORE</span>
+<span>IO: SECTOR_READ 0x004A2FF1... [SUCCESS]</span>
+</div>
+<div class="flex gap-4">
+<span class="text-white/30 w-24">[14:22:01.12]</span>
+<span class="text-warning">FS_MONITOR</span>
+<span>WARN: PATH_LENGTH_EXCEEDED "/usr/local/share/assets/..."</span>
+</div>
+<div class="flex gap-4">
+<span class="text-white/30 w-24">[14:22:01.15]</span>
+<span class="text-success">DEDUPE_ENG</span>
+<span>MATCH: CLUSTER_88F [SIZE: 144MB] :: MARKED_FOR_DELETION</span>
+</div>
+<div class="flex gap-4">
+<span class="text-white/30 w-24">[14:22:01.18]</span>
+<span class="text-white/60">KERNEL_RT</span>
+<span>THREAD_POOL: ACTIVE_WORKERS (12/16)</span>
+</div>
+<div class="flex gap-4">
+<span class="text-white/30 w-24">[14:22:01.21]</span>
+<span class="text-error">ACCESS_CTRL</span>
+<span>DENIED: PROTECTED_MEM_RANGE 0x0000000 -&gt; 0x0000FFF</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 pb-safe bg-black border-t border-white/10">
+<div class="flex flex-col items-center justify-center text-white/40 font-['Space_Grotesk'] uppercase tracking-[0.1rem] text-[9px] hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span>DASHBOARD</span>
+</div>
+<div class="flex flex-col items-center justify-center text-primary font-['Space_Grotesk'] uppercase tracking-[0.1rem] text-[9px] relative after:content-[''] after:absolute after:-top-2 after:w-8 after:h-0.5 after:bg-primary cursor-pointer">
+<span class="material-symbols-outlined mb-1">radar</span>
+<span class="font-bold">SCANNER</span>
+</div>
+<div class="flex flex-col items-center justify-center text-white/40 font-['Space_Grotesk'] uppercase tracking-[0.1rem] text-[9px] hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined mb-1">delete_sweep</span>
+<span>CLEANUP</span>
+</div>
+<div class="flex flex-col items-center justify-center text-white/40 font-['Space_Grotesk'] uppercase tracking-[0.1rem] text-[9px] hover:text-primary transition-all cursor-pointer">
+<span class="material-symbols-outlined mb-1">terminal</span>
+<span>LOGS</span>
+</div>
+</nav>
+</body></html>
