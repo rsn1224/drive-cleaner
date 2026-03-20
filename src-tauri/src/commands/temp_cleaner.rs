@@ -185,3 +185,42 @@ pub async fn clean_temp_files(paths: Vec<String>) -> Result<CleanResult, String>
         errors,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn safe_extensions_accepted() {
+        assert!(is_safe_to_delete("tmp"));
+        assert!(is_safe_to_delete("log"));
+        assert!(is_safe_to_delete("bak"));
+        assert!(is_safe_to_delete("dmp"));
+        assert!(is_safe_to_delete("etl"));
+        assert!(is_safe_to_delete("old"));
+        assert!(is_safe_to_delete("chk"));
+        assert!(is_safe_to_delete("temp"));
+    }
+
+    #[test]
+    fn unsafe_extensions_rejected() {
+        assert!(!is_safe_to_delete("exe"));
+        assert!(!is_safe_to_delete("dll"));
+        assert!(!is_safe_to_delete("sys"));
+        assert!(!is_safe_to_delete("doc"));
+        assert!(!is_safe_to_delete("jpg"));
+        assert!(!is_safe_to_delete("rs"));
+        assert!(!is_safe_to_delete(""));
+    }
+
+    #[test]
+    fn temp_paths_not_empty() {
+        let paths = get_temp_paths();
+        assert!(!paths.is_empty(), "should find at least one temp path");
+        // Windows should always have %TEMP%
+        assert!(
+            paths.iter().any(|(name, _)| name == "Windows Temp"),
+            "should include Windows Temp"
+        );
+    }
+}

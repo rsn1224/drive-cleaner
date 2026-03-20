@@ -212,3 +212,68 @@ pub async fn find_duplicates(
 
     Ok(())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::Write;
+
+    #[test]
+    fn partial_hash_deterministic() {
+        let dir = std::env::temp_dir().join("dc_test_partial");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("test.bin");
+        let mut f = std::fs::File::create(&path).unwrap();
+        f.write_all(b"hello world test data for hashing").unwrap();
+        drop(f);
+
+        let h1 = calc_partial_hash(path.to_str().unwrap()).unwrap();
+        let h2 = calc_partial_hash(path.to_str().unwrap()).unwrap();
+        assert_eq!(h1, h2, "same file should produce same hash");
+
+        std::fs::remove_file(&path).ok();
+        std::fs::remove_dir(&dir).ok();
+    }
+
+    #[test]
+    fn full_hash_deterministic() {
+        let dir = std::env::temp_dir().join("dc_test_full");
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("test.bin");
+        let mut f = std::fs::File::create(&path).unwrap();
+        f.write_all(b"full hash test data content").unwrap();
+        drop(f);
+
+        let h1 = calc_full_hash(path.to_str().unwrap()).unwrap();
+        let h2 = calc_full_hash(path.to_str().unwrap()).unwrap();
+        assert_eq!(h1, h2, "same file should produce same hash");
+
+        std::fs::remove_file(&path).ok();
+        std::fs::remove_dir(&dir).ok();
+    }
+
+    #[test]
+    fn different_content_different_hash() {
+        let dir = std::env::temp_dir().join("dc_test_diff");
+        std::fs::create_dir_all(&dir).unwrap();
+
+        let p1 = dir.join("a.bin");
+        let p2 = dir.join("b.bin");
+        std::fs::write(&p1, b"content A").unwrap();
+        std::fs::write(&p2, b"content B").unwrap();
+
+        let h1 = calc_full_hash(p1.to_str().unwrap()).unwrap();
+        let h2 = calc_full_hash(p2.to_str().unwrap()).unwrap();
+        assert_ne!(h1, h2, "different content should produce different hash");
+
+        std::fs::remove_file(&p1).ok();
+        std::fs::remove_file(&p2).ok();
+        std::fs::remove_dir(&dir).ok();
+    }
+
+    #[test]
+    fn hash_nonexistent_file_errors() {
+        assert!(calc_partial_hash("/nonexistent/path/file.bin").is_err());
+        assert!(calc_full_hash("/nonexistent/path/file.bin").is_err());
+    }
+}

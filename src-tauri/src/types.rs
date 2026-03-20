@@ -107,3 +107,47 @@ pub struct FilePreview {
     pub content: String,
     pub size: u64,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn file_node_serializes() {
+        let node = FileNode {
+            name: "test.txt".to_string(),
+            path: "/tmp/test.txt".to_string(),
+            is_dir: false,
+            size: 1024,
+        };
+        let json = serde_json::to_string(&node).unwrap();
+        assert!(json.contains("\"name\":\"test.txt\""));
+        assert!(json.contains("\"is_dir\":false"));
+        assert!(json.contains("\"size\":1024"));
+    }
+
+    #[test]
+    fn duplicate_group_roundtrips() {
+        let group = DuplicateGroup {
+            hash: "abc123".to_string(),
+            size: 2048,
+            paths: vec!["/a.txt".to_string(), "/b.txt".to_string()],
+        };
+        let json = serde_json::to_string(&group).unwrap();
+        let parsed: DuplicateGroup = serde_json::from_str(&json).unwrap();
+        assert_eq!(parsed.hash, "abc123");
+        assert_eq!(parsed.paths.len(), 2);
+    }
+
+    #[test]
+    fn clean_result_serializes() {
+        let result = CleanResult {
+            deleted_count: 5,
+            freed_size: 10240,
+            errors: vec!["failed: x".to_string()],
+        };
+        let json = serde_json::to_string(&result).unwrap();
+        assert!(json.contains("\"deleted_count\":5"));
+        assert!(json.contains("\"freed_size\":10240"));
+    }
+}

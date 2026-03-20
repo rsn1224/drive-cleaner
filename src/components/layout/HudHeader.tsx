@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import { useCallback, type ReactElement } from "react";
 import type { AppMode } from "../../types";
 
 const MODE_LABELS: Record<AppMode, string> = {
@@ -20,8 +20,28 @@ interface HudHeaderProps {
 export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
   const showBack = mode !== "browse";
 
+  const handleMinimize = useCallback(async (): Promise<void> => {
+    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    await getCurrentWindow().minimize();
+  }, []);
+
+  const handleMaximize = useCallback(async (): Promise<void> => {
+    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    const win = getCurrentWindow();
+    if (await win.isMaximized()) {
+      await win.unmaximize();
+    } else {
+      await win.maximize();
+    }
+  }, []);
+
+  const handleClose = useCallback(async (): Promise<void> => {
+    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    await getCurrentWindow().close();
+  }, []);
+
   return (
-    <header 
+    <header
       className="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-14 bg-black/95 border-b border-primary/20 backdrop-blur-md"
       data-tauri-drag-region
     >
@@ -31,6 +51,7 @@ export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
             type="button"
             onClick={onBack}
             className="text-primary hover:text-white transition-colors mr-2"
+            data-testid="back-button"
           >
             <span className="material-symbols-outlined text-lg">arrow_back</span>
           </button>
@@ -44,11 +65,25 @@ export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
         <span className="hud-label text-primary border-b border-primary pb-0.5">
           {MODE_LABELS[mode]}
         </span>
-        <div className="flex gap-1">
-          {/* Window controls - Tauri handles actual minimize/maximize/close */}
-          <button type="button" className="w-3 h-3 rounded-full bg-primary/30 hover:bg-primary transition-colors" />
-          <button type="button" className="w-3 h-3 rounded-full bg-tertiary/30 hover:bg-tertiary transition-colors" />
-          <button type="button" className="w-3 h-3 rounded-full bg-error/30 hover:bg-error transition-colors" />
+        <div className="flex gap-1.5">
+          <button
+            type="button"
+            onClick={handleMinimize}
+            className="w-3 h-3 rounded-full bg-primary/30 hover:bg-primary transition-colors"
+            title="最小化"
+          />
+          <button
+            type="button"
+            onClick={handleMaximize}
+            className="w-3 h-3 rounded-full bg-tertiary/30 hover:bg-tertiary transition-colors"
+            title="最大化"
+          />
+          <button
+            type="button"
+            onClick={handleClose}
+            className="w-3 h-3 rounded-full bg-error/30 hover:bg-error transition-colors"
+            title="閉じる"
+          />
         </div>
       </div>
     </header>

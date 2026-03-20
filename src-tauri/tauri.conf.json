@@ -12,11 +12,12 @@
     "windows": [
       {
         "title": "Drive Cleaner",
-        "width": 900,
-        "height": 650,
+        "width": 800,
+        "height": 600,
         "resizable": true,
-        "minWidth": 700,
-        "minHeight": 500
+        "minWidth": 600,
+        "minHeight": 400,
+        "decorations": false
       }
     ],
     "security": {

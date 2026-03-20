@@ -125,3 +125,57 @@ pub async fn analyze_file_types(
         total_size,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn categorize_images() {
+        assert_eq!(categorize_extension("jpg"), "画像");
+        assert_eq!(categorize_extension("png"), "画像");
+        assert_eq!(categorize_extension("webp"), "画像");
+        assert_eq!(categorize_extension("tiff"), "画像");
+    }
+
+    #[test]
+    fn categorize_video() {
+        assert_eq!(categorize_extension("mp4"), "動画");
+        assert_eq!(categorize_extension("mkv"), "動画");
+    }
+
+    #[test]
+    fn categorize_music() {
+        assert_eq!(categorize_extension("mp3"), "音楽");
+        assert_eq!(categorize_extension("flac"), "音楽");
+    }
+
+    #[test]
+    fn categorize_documents() {
+        assert_eq!(categorize_extension("pdf"), "文書");
+        assert_eq!(categorize_extension("docx"), "文書");
+        assert_eq!(categorize_extension("csv"), "文書");
+    }
+
+    #[test]
+    fn categorize_archives() {
+        assert_eq!(categorize_extension("zip"), "アーカイブ");
+        assert_eq!(categorize_extension("7z"), "アーカイブ");
+        assert_eq!(categorize_extension("tar"), "アーカイブ");
+    }
+
+    #[test]
+    fn categorize_code() {
+        assert_eq!(categorize_extension("rs"), "コード");
+        assert_eq!(categorize_extension("tsx"), "コード");
+        assert_eq!(categorize_extension("py"), "コード");
+        assert_eq!(categorize_extension("json"), "コード");
+    }
+
+    #[test]
+    fn categorize_unknown_is_other() {
+        assert_eq!(categorize_extension("xyz"), "その他");
+        assert_eq!(categorize_extension(""), "その他");
+        assert_eq!(categorize_extension("dat"), "その他");
+    }
+}
