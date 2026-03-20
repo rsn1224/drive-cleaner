@@ -3,9 +3,11 @@ dist/
 src-tauri/target/
 src-tauri/gen/
 
-# Stitch temp files
-*.json
+# Stitch temp files (root level only)
+/*.json
 !package.json
 !package-lock.json
 !tsconfig.json
-!/src-tauri/**/*.json
+/*.html
+/*.png
+/design/screenshot-*.png
