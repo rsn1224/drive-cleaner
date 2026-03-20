@@ -158,7 +158,7 @@ function App(): ReactElement {
                   fileTypes={fileTypes}
                   diskUsage={diskUsage}
                   tempCleaner={tempCleaner}
-                  quickActions={quickActions}
+
                   onDelete={handleDeleteItem}
                 />
               </div>
@@ -178,7 +178,6 @@ function App(): ReactElement {
               fileTypes={fileTypes}
               diskUsage={diskUsage}
               tempCleaner={tempCleaner}
-              quickActions={quickActions}
               onDelete={handleDeleteItem}
             />
           )}

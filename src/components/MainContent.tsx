@@ -11,10 +11,8 @@ import { EmptyFoldersView } from "./EmptyFoldersView";
 import { FileTypesView } from "./FileTypesView";
 import { LargeFilesView } from "./LargeFilesView";
 import { OldFilesView } from "./OldFilesView";
-import { QuickActions } from "./QuickActions";
 import { TempCleanerView } from "./TempCleanerView";
 import type { AppMode } from "../types";
-import type { QuickAction } from "../lib/quickActions";
 
 // Hook return types
 import type { useFileBrowser } from "../hooks/useFileBrowser";
@@ -36,7 +34,6 @@ interface MainContentProps {
   fileTypes: ReturnType<typeof useFileTypes>;
   diskUsage: ReturnType<typeof useDiskUsage>;
   tempCleaner: ReturnType<typeof useTempCleaner>;
-  quickActions: QuickAction[];
   onDelete: (path: string, hash?: string) => void;
 }
 
@@ -50,23 +47,19 @@ export function MainContent({
   fileTypes,
   diskUsage,
   tempCleaner,
-  quickActions,
   onDelete,
 }: MainContentProps): ReactElement | null {
   if (mode === "browse") {
     return (
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <QuickActions actions={quickActions} disabled={fileBrowser.loading} />
-        <BrowseView
-          sortedNodes={fileBrowser.sortedNodes}
-          loading={fileBrowser.loading}
-          listHeight={fileBrowser.listHeight}
-          listContainerRef={fileBrowser.listContainerRef}
-          onNavigate={fileBrowser.loadDirectory}
-          onPreview={fileBrowser.handlePreview}
-          onDelete={onDelete}
-        />
-      </div>
+      <BrowseView
+        sortedNodes={fileBrowser.sortedNodes}
+        loading={fileBrowser.loading}
+        listHeight={fileBrowser.listHeight}
+        listContainerRef={fileBrowser.listContainerRef}
+        onNavigate={fileBrowser.loadDirectory}
+        onPreview={fileBrowser.handlePreview}
+        onDelete={onDelete}
+      />
     );
   }
 
