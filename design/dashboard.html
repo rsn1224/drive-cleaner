@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRIVE_CLEANER // COMMAND_CENTER</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00F0FF", // Electric Cyan
+                        "secondary": "#00FF66", // Tactical Green (Success)
+                        "tertiary": "#FFB800", // Amber (Warning)
+                        "error": "#FF4D4D",
+                        "surface": "#000000",
+                        "surface-container": "#0A0A0A",
+                        "surface-container-high": "#121212",
+                        "on-surface": "#E0E0E0",
+                        "outline": "#333333"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Space Grotesk"],
+                        "label": ["Space Grotesk"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 100% 4px;
+            font-family: 'Space Grotesk', sans-serif;
+            color: #E0E0E0;
+        }
+        .bracket-tl::before { content: ''; position: absolute; top: 0; left: 0; width: 12px; height: 12px; border-top: 1px solid currentColor; border-left: 1px solid currentColor; }
+        .bracket-tr::before { content: ''; position: absolute; top: 0; right: 0; width: 12px; height: 12px; border-top: 1px solid currentColor; border-right: 1px solid currentColor; }
+        .bracket-bl::before { content: ''; position: absolute; bottom: 0; left: 0; width: 12px; height: 12px; border-bottom: 1px solid currentColor; border-left: 1px solid currentColor; }
+        .bracket-br::before { content: ''; position: absolute; bottom: 0; right: 0; width: 12px; height: 12px; border-bottom: 1px solid currentColor; border-right: 1px solid currentColor; }
+        
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(0, 240, 255, 0.02), rgba(0, 240, 255, 0.01), rgba(0, 240, 255, 0.02));
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .glow-cyan { filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.4)); }
+        .glow-green { filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.4)); }
+        .glow-amber { filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.4)); }
+
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-black text-[#E0E0E0] min-h-screen pb-24 selection:bg-primary/30">
+<div class="scanline-overlay"></div>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-black/95 border-b border-primary/20 backdrop-blur-md">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary glow-cyan">terminal</span>
+<h1 class="text-lg font-bold tracking-[0.3em] text-primary glow-cyan uppercase antialiased">
+                DRIVE_CLEANER
+            </h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-8 text-[9px] font-mono tracking-[0.25em]">
+<span class="text-primary font-bold border-b border-primary/50 cursor-pointer">DASHBOARD</span>
+<span class="text-on-surface/50 hover:text-primary transition-colors cursor-pointer">SCAN_DISK</span>
+<span class="text-on-surface/50 hover:text-primary transition-colors cursor-pointer">CLEANUP</span>
+<span class="text-on-surface/50 hover:text-primary transition-colors cursor-pointer">SYSTEM_LOGS</span>
+</div>
+<span class="material-symbols-outlined text-primary/70 hover:text-primary cursor-pointer transition-colors text-xl">settings</span>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-24">
+<!-- Hero HUD Section -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+<div class="md:col-span-2 bg-surface-container relative p-8 border border-white/5 bracket-tl text-primary overflow-hidden">
+<div class="absolute top-0 right-0 p-4 font-mono text-[9px] opacity-40 uppercase tracking-widest">SYSTEM_ID: DC-8800-PX</div>
+<div class="flex flex-col gap-1 mb-6">
+<span class="text-[9px] font-mono tracking-[0.2em] opacity-60 text-white uppercase">TOTAL_STORAGE_INDEX</span>
+<h2 class="text-6xl font-bold font-mono tracking-tighter text-primary glow-cyan">
+                        842.12 <span class="text-xl font-light opacity-80">GB</span>
+</h2>
+</div>
+<div class="w-full bg-black h-3 flex gap-0.5 p-0.5 border border-primary/20">
+<div class="h-full w-[10%] bg-primary"></div>
+<div class="h-full w-[10%] bg-primary"></div>
+<div class="h-full w-[10%] bg-primary"></div>
+<div class="h-full w-[10%] bg-primary"></div>
+<div class="h-full w-[10%] bg-primary"></div>
+<div class="h-full w-[10%] bg-secondary glow-green"></div>
+<div class="h-full w-[10%] bg-white/5"></div>
+<div class="h-full w-[10%] bg-white/5"></div>
+<div class="h-full w-[10%] bg-white/5"></div>
+<div class="h-full w-[10%] bg-white/5"></div>
+</div>
+<div class="flex justify-between mt-4 font-mono text-[9px] tracking-widest uppercase">
+<span class="text-secondary">In Use: 421.06 GB</span>
+<span class="opacity-40">Available: 421.06 GB</span>
+</div>
+</div>
+<div class="bg-surface-container relative p-6 border border-white/5 bracket-tr flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-4">
+<span class="text-[9px] font-mono font-bold text-tertiary tracking-widest">THREAT_LEVEL</span>
+<span class="text-[9px] font-mono px-2 py-0.5 bg-tertiary/10 text-tertiary border border-tertiary/30 uppercase">MODERATE</span>
+</div>
+<div class="flex items-end gap-2 mb-6 text-primary">
+<span class="text-4xl font-bold font-mono glow-cyan">14.2</span>
+<span class="text-[10px] mb-1 opacity-60 uppercase font-mono tracking-widest text-on-surface">GB_REDUNDANT</span>
+</div>
+</div>
+<button class="w-full bg-primary text-black py-3 font-mono font-bold tracking-[0.2em] hover:brightness-110 active:scale-[0.98] transition-all glow-cyan uppercase">
+                    INITIATE_PURGE
+                </button>
+</div>
+</section>
+<!-- Main Feature Grid -->
+<h3 class="text-[9px] font-mono tracking-[0.5em] text-white/40 mb-8 flex items-center gap-4">
+<span class="w-16 h-[1px] bg-primary/20"></span>
+            SYSTEM_OPTIMIZATION_MODULES
+            <span class="flex-grow h-[1px] bg-primary/20"></span>
+</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:glow-cyan transition-all">cinematic_blur</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">DEEP_SCRUB_ANALYSIS</h4>
+<span class="text-[8px] font-mono text-secondary animate-pulse tracking-tighter">CORE_01: ACTIVE</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Heuristic pattern matching for identifying redundant binary fragments and stale cache manifests.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-primary/20 h-[40%]"></div>
+<div class="w-[3px] bg-primary/20 h-[60%]"></div>
+<div class="w-[3px] bg-primary/40 h-[30%]"></div>
+<div class="w-[3px] bg-primary h-[80%] glow-cyan"></div>
+<div class="w-[3px] bg-primary/20 h-[50%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-secondary">database</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">SQLITE_VACUUM</h4>
+<span class="text-[8px] font-mono text-white/40 tracking-tighter">LOAD: 12%</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Compact and defragment internal database structures for enhanced performance and reduced footprint.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-secondary/20 h-[20%]"></div>
+<div class="w-[3px] bg-secondary/20 h-[30%]"></div>
+<div class="w-[3px] bg-secondary/40 h-[25%]"></div>
+<div class="w-[3px] bg-secondary h-[40%] glow-green"></div>
+<div class="w-[3px] bg-secondary/20 h-[10%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-tertiary">temp_preferences_custom</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">TEMP_FILE_WIPE</h4>
+<span class="text-[8px] font-mono text-tertiary tracking-tighter">PENDING: 4.2GB</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Automated disposal of OS temporary files, system logs, and crash dump archives.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-tertiary/20 h-[70%]"></div>
+<div class="w-[3px] bg-tertiary/20 h-[90%]"></div>
+<div class="w-[3px] bg-tertiary/40 h-[80%]"></div>
+<div class="w-[3px] bg-tertiary h-[95%] glow-amber"></div>
+<div class="w-[3px] bg-tertiary/20 h-[85%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-primary">memory</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">CACHE_RECLAIM_PRO</h4>
+<span class="text-[8px] font-mono text-secondary tracking-tighter">CORE_02: ACTIVE</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Intelligently purge application caches while preserving critical sessions and auth tokens.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-primary/20 h-[30%]"></div>
+<div class="w-[3px] bg-primary/20 h-[40%]"></div>
+<div class="w-[3px] bg-primary/40 h-[50%]"></div>
+<div class="w-[3px] bg-primary h-[60%] glow-cyan"></div>
+<div class="w-[3px] bg-primary/20 h-[45%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-error">dangerous</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">DUPLICATE_REMOVER</h4>
+<span class="text-[8px] font-mono text-error tracking-tighter">CONFLICTS: 128</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Bit-for-bit file comparison to eliminate redundant copies of large assets and system documents.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-error/20 h-[50%]"></div>
+<div class="w-[3px] bg-error/20 h-[70%]"></div>
+<div class="w-[3px] bg-error/40 h-[90%]"></div>
+<div class="w-[3px] bg-error h-[80%] filter drop-shadow(0 0 5px rgba(255,77,77,0.4))"></div>
+<div class="w-[3px] bg-error/20 h-[60%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-secondary">history</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">LOG_ARCHIVE_MANAGER</h4>
+<span class="text-[8px] font-mono text-white/40 tracking-tighter">LOAD: 04%</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Compression of historical system logs and event traces into high-ratio archive formats.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-secondary/20 h-[10%]"></div>
+<div class="w-[3px] bg-secondary/20 h-[15%]"></div>
+<div class="w-[3px] bg-secondary/40 h-[12%]"></div>
+<div class="w-[3px] bg-secondary h-[20%] glow-green"></div>
+<div class="w-[3px] bg-secondary/20 h-[08%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 7 -->
+<div class="group bg-surface-container border border-white/5 hover:border-primary/40 p-5 relative transition-all duration-300 md:col-span-2">
+<div class="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary/40 group-hover:border-primary transition-colors"></div>
+<div class="flex gap-5">
+<div class="w-12 h-12 flex items-center justify-center bg-black border border-white/10 group-hover:border-primary/30">
+<span class="material-symbols-outlined text-primary">security</span>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-mono font-bold text-[11px] tracking-[0.15em] text-primary mb-1 uppercase">PRIVACY_SHREDDER</h4>
+<span class="text-[8px] font-mono text-secondary tracking-tighter">CORE_03: READY</span>
+</div>
+<p class="text-[11px] text-white/50 font-light leading-relaxed mb-4">Multi-pass cryptographic deletion of sensitive traces, browser history, and session cookies to ensure zero-recovery potential.</p>
+<div class="flex items-center justify-between">
+<div class="flex gap-0.5 h-2 items-end">
+<div class="w-[3px] bg-primary/20 h-[20%]"></div>
+<div class="w-[3px] bg-primary/20 h-[40%]"></div>
+<div class="w-[3px] bg-primary/40 h-[60%]"></div>
+<div class="w-[3px] bg-primary h-[40%] glow-cyan"></div>
+<div class="w-[3px] bg-primary/20 h-[20%]"></div>
+<div class="w-[3px] bg-primary/20 h-[40%]"></div>
+<div class="w-[3px] bg-primary/40 h-[80%]"></div>
+</div>
+<span class="material-symbols-outlined text-white/20 text-sm group-hover:text-primary transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 pb-safe bg-black border-t border-primary/20 backdrop-blur-xl md:hidden font-['Space_Grotesk']">
+<a class="flex flex-col items-center justify-center text-primary relative after:content-[''] after:absolute after:-top-[1px] after:w-10 after:h-0.5 after:bg-primary after:glow-cyan px-4 h-full text-[9px] tracking-[0.1em] uppercase transition-all" href="#">
+<span class="material-symbols-outlined mb-1 glow-cyan">dashboard</span>
+            DASHBOARD
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface/40 hover:text-primary transition-all px-4 h-full text-[9px] tracking-[0.1em] uppercase" href="#">
+<span class="material-symbols-outlined mb-1">radar</span>
+            SCAN
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface/40 hover:text-primary transition-all px-4 h-full text-[9px] tracking-[0.1em] uppercase" href="#">
+<span class="material-symbols-outlined mb-1">delete_sweep</span>
+            CLEANUP
+        </a>
+<a class="flex flex-col items-center justify-center text-on-surface/40 hover:text-primary transition-all px-4 h-full text-[9px] tracking-[0.1em] uppercase" href="#">
+<span class="material-symbols-outlined mb-1">terminal</span>
+            LOGS
+        </a>
+</nav>
+</body></html>

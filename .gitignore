@@ -2,3 +2,10 @@ node_modules/
 dist/
 src-tauri/target/
 src-tauri/gen/
+
+# Stitch temp files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!/src-tauri/**/*.json

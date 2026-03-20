@@ -2,16 +2,17 @@
 // Main App Component - Drive Cleaner
 // ==========================================
 
-import type { DragEvent, ReactElement } from "react";
+import type { ReactElement } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FolderOpen } from "lucide-react";
 
 import { ErrorBoundary } from "./components/ErrorBoundary";
-import { Header } from "./components/Header";
 import { MainContent } from "./components/MainContent";
 import { PreviewModal } from "./components/PreviewModal";
+import { QuickActions } from "./components/QuickActions";
 import { StatusBar } from "./components/StatusBar";
 import { Toolbar } from "./components/Toolbar";
+import { BottomNav } from "./components/layout/BottomNav";
+import { HudHeader } from "./components/layout/HudHeader";
 import { useDiskUsage } from "./hooks/useDiskUsage";
 import { useEmptyFolders } from "./hooks/useEmptyFolders";
 import { useFileBrowser } from "./hooks/useFileBrowser";
@@ -49,7 +50,7 @@ function App(): ReactElement {
     [scanActions],
   );
 
-  const [isDragging, setIsDragging] = useState(false);
+  const [activeTab, setActiveTab] = useState<"dashboard" | "files" | "settings" | "logs">("dashboard");
 
   const folderCount = useMemo(
     () => fileBrowser.nodes.filter((n) => n.is_dir).length,
@@ -116,104 +117,108 @@ function App(): ReactElement {
     scan,
   ]);
 
-  const handleDragOver = (e: DragEvent): void => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (): void => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: DragEvent): void => {
-    e.preventDefault();
-    setIsDragging(false);
-    const items = e.dataTransfer.files;
-    if (items.length > 0) {
-      const path = (items[0] as File & { path?: string }).path;
-      if (path) {
-        fileBrowser.loadDirectory(path);
-      }
-    }
-  };
-
   return (
     <ErrorBoundary>
-      <div
-        className="h-screen bg-[#0a0a0a] flex flex-col font-sans p-4 gap-3 relative"
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-      >
-        {isDragging && (
-          <div className="absolute inset-0 z-50 bg-indigo-500/10 border-2 border-dashed border-indigo-500 flex items-center justify-center flex-col gap-4 text-indigo-400 pointer-events-none">
-            <FolderOpen size={48} />
-            <span className="text-sm font-medium">フォルダをドロップして開く</span>
-          </div>
-        )}
+      <div className="h-screen bg-black flex flex-col relative overflow-hidden">
+        {/* Scanline overlay */}
+        <div className="scanline-overlay" />
 
-        <Header
+        {/* HUD Header */}
+        <HudHeader
           mode={scan.mode}
-          scanning={scan.scanning}
-          duplicatesCount={scan.duplicates.length}
-          loading={fileBrowser.loading}
-          onSelectFolder={fileBrowser.handleSelectFolder}
-          onCancelScan={scan.handleCancelScan}
-          onExportJson={scan.handleExportJson}
-          onExportCsv={scan.handleExportCsv}
-          onBulkDelete={scan.handleBulkDelete}
-          onCloseMode={() => scan.setMode("browse")}
-          scanActions={scanActions}
+          onBack={() => scan.setMode("browse")}
         />
 
-        <Toolbar
-          breadcrumbs={fileBrowser.breadcrumbs}
-          mode={scan.mode}
-          sortKey={fileBrowser.sortKey}
-          sortDir={fileBrowser.sortDir}
-          onNavigate={fileBrowser.loadDirectory}
-          onGoUp={fileBrowser.handleGoUp}
-          onToggleSort={fileBrowser.toggleSort}
-        />
-
-        <MainContent
-          mode={scan.mode}
-          fileBrowser={fileBrowser}
-          scan={scan}
-          largeFiles={largeFiles}
-          emptyFolders={emptyFolders}
-          oldFiles={oldFiles}
-          fileTypes={fileTypes}
-          diskUsage={diskUsage}
-          tempCleaner={tempCleaner}
-          quickActions={quickActions}
-          onDelete={handleDeleteItem}
-        />
-
-        <StatusBar
-          mode={scan.mode}
-          folderCount={folderCount}
-          fileCount={fileCount}
-          totalSize={totalSize}
-          duplicatesGroupCount={scan.duplicates.length}
-          duplicatesFileCount={scan.duplicates.reduce(
-            (acc, g) => acc + g.paths.length,
-            0,
+        {/* Main content - pt-14 for header, pb-16 for bottom nav */}
+        <main className={`flex-1 overflow-auto ${scan.mode === "browse" ? "pt-14 pb-16" : "pt-14"}`}>
+          {scan.mode === "browse" ? (
+            // Tab content
+            activeTab === "dashboard" ? (
+              <div className="p-4">
+                <QuickActions actions={quickActions} disabled={fileBrowser.loading} />
+              </div>
+            ) : activeTab === "files" ? (
+              <div className="flex flex-col h-full">
+                <Toolbar
+                  breadcrumbs={fileBrowser.breadcrumbs}
+                  mode={scan.mode}
+                  sortKey={fileBrowser.sortKey}
+                  sortDir={fileBrowser.sortDir}
+                  onNavigate={fileBrowser.loadDirectory}
+                  onGoUp={fileBrowser.handleGoUp}
+                  onToggleSort={fileBrowser.toggleSort}
+                />
+                <MainContent
+                  mode={scan.mode}
+                  fileBrowser={fileBrowser}
+                  scan={scan}
+                  largeFiles={largeFiles}
+                  emptyFolders={emptyFolders}
+                  oldFiles={oldFiles}
+                  fileTypes={fileTypes}
+                  diskUsage={diskUsage}
+                  tempCleaner={tempCleaner}
+                  quickActions={quickActions}
+                  onDelete={handleDeleteItem}
+                />
+              </div>
+            ) : (
+              <div className="p-4 text-center text-white/40 hud-label pt-20">
+                {activeTab === "settings" ? "CONFIG_MODULE // COMING_SOON" : "LOG_VIEWER // COMING_SOON"}
+              </div>
+            )
+          ) : (
+            <MainContent
+              mode={scan.mode}
+              fileBrowser={fileBrowser}
+              scan={scan}
+              largeFiles={largeFiles}
+              emptyFolders={emptyFolders}
+              oldFiles={oldFiles}
+              fileTypes={fileTypes}
+              diskUsage={diskUsage}
+              tempCleaner={tempCleaner}
+              quickActions={quickActions}
+              onDelete={handleDeleteItem}
+            />
           )}
-          totalSaveable={scan.totalSaveable}
-          largeFilesCount={largeFiles.largeFiles.length}
-          largeFilesTotalSize={largeFiles.totalSize}
-          emptyFoldersCount={emptyFolders.emptyFolders.length}
-          oldFilesCount={oldFiles.oldFiles.length}
-          oldFilesTotalSize={oldFiles.totalSize}
-          fileTypesTotal={fileTypes.analysis?.total_files ?? 0}
-          fileTypesCategoryCount={fileTypes.analysis?.categories.length ?? 0}
-          diskUsageFileCount={diskUsage.currentFolder?.file_count ?? 0}
-          diskUsageTotalSize={diskUsage.currentFolder?.size ?? 0}
-          tempFilesCount={tempCleaner.scanResult?.total_files ?? 0}
-          tempFilesTotalSize={tempCleaner.scanResult?.total_size ?? 0}
+        </main>
+
+        {/* Status bar - fixed positioning */}
+        <div className={scan.mode === "browse" ? "fixed bottom-16 w-full z-40" : "fixed bottom-0 w-full z-40"}>
+          <StatusBar
+            mode={scan.mode}
+            folderCount={folderCount}
+            fileCount={fileCount}
+            totalSize={totalSize}
+            duplicatesGroupCount={scan.duplicates.length}
+            duplicatesFileCount={scan.duplicates.reduce(
+              (acc, g) => acc + g.paths.length,
+              0,
+            )}
+            totalSaveable={scan.totalSaveable}
+            largeFilesCount={largeFiles.largeFiles.length}
+            largeFilesTotalSize={largeFiles.totalSize}
+            emptyFoldersCount={emptyFolders.emptyFolders.length}
+            oldFilesCount={oldFiles.oldFiles.length}
+            oldFilesTotalSize={oldFiles.totalSize}
+            fileTypesTotal={fileTypes.analysis?.total_files ?? 0}
+            fileTypesCategoryCount={fileTypes.analysis?.categories.length ?? 0}
+            diskUsageFileCount={diskUsage.currentFolder?.file_count ?? 0}
+            diskUsageTotalSize={diskUsage.currentFolder?.size ?? 0}
+            tempFilesCount={tempCleaner.scanResult?.total_files ?? 0}
+            tempFilesTotalSize={tempCleaner.scanResult?.total_size ?? 0}
+          />
+        </div>
+
+        {/* Bottom Nav */}
+        <BottomNav
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          hidden={scan.mode !== "browse"}
         />
 
+        {/* Preview modal */}
         {fileBrowser.preview && (
           <PreviewModal
             preview={fileBrowser.preview}

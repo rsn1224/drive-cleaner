@@ -1169,4 +1169,16 @@ dirs = "5.0"      # Phase 6: 環境変数パス
 
 ---
 
-## ステータス: pending
+## ステータス: in-progress
+
+---
+
+## デザインリニューアル
+
+### Phase D-1: HUD デザイン基盤
+**概要**: CSS変数、フォント、Shell/TitleBar/BottomNav、スキャンライン装飾の導入
+**ステータス**: `in-progress`
+
+### Phase D-2: View コンポーネントのHUD化
+**概要**: 各機能画面をStitchデザインに合わせてスタイル更新
+**ステータス**: `pending`

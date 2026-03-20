@@ -13,7 +13,7 @@ interface QuickActionsProps {
 
 export function QuickActions({ actions, disabled }: QuickActionsProps): ReactElement {
   return (
-    <div className="flex gap-3 overflow-x-auto pb-2 flex-shrink-0">
+    <div className="grid grid-cols-2 gap-px bg-primary/5">
       {actions.map((action) => {
         const Icon = action.icon;
         
@@ -22,30 +22,24 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
             key={action.id}
             onClick={disabled ? undefined : action.onClick}
             className={`
-              min-w-[140px] bg-[#111827] border border-[#1f2937] rounded-lg p-3 cursor-pointer
-              hover:bg-[#1f2937] transition-all
+              bg-black border border-white/5 p-4 cursor-pointer
+              hover:border-primary/40 transition-all relative
+              hud-bracket
               ${disabled ? "opacity-50 pointer-events-none" : ""}
             `}
-            style={{
-              borderTopColor: action.color,
-              borderTopWidth: "3px",
-            }}
+            style={{ borderTopColor: action.color, borderTopWidth: "2px" }}
           >
-            <div className="flex flex-col items-center text-center gap-2">
-              {/* Icon with color */}
-              <Icon 
-                size={24} 
-                style={{ color: action.color }}
-              />
-              
-              {/* Label */}
-              <div className="text-[#d1d5db] text-sm font-medium">
-                {action.label}
+            <div className="flex items-center gap-4">
+              <div className="p-2 bg-white/5">
+                <Icon size={20} style={{ color: action.color }} className="glow-cyan" />
               </div>
-              
-              {/* Description */}
-              <div className="text-[11px] text-[#6b7280] leading-tight">
-                {action.description}
+              <div>
+                <div className="font-mono font-bold text-sm tracking-widest text-white/90 uppercase">
+                  {action.label}
+                </div>
+                <div className="text-[10px] text-white/40 uppercase font-bold tracking-wider">
+                  {action.description}
+                </div>
               </div>
             </div>
           </div>
@@ -54,3 +48,5 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
     </div>
   );
 }
+
+export default QuickActions;

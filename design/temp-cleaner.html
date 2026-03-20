@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DRIVE_CLEANER - TEMP_CLEANER_PRO</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#00f0ff", // Electric Cyan
+                        "secondary": "#00ff9d", // Tactical Green (Success)
+                        "tertiary": "#ffb800", // Tactical Amber (Warning)
+                        "surface": "#000000",
+                        "surface-container": "#0a0a0a",
+                        "surface-container-high": "#121212",
+                        "outline": "#1a2e2f",
+                        "brand-cyan": "#00f0ff",
+                        "hud-blue": "#00f0ff",
+                        "hud-bg": "#000000"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Space Grotesk"],
+                        "label": ["Space Grotesk"]
+                    },
+                    borderRadius: { "DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: max(884px, 100dvh);
+        }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 240, 255, 0.02) 50%);
+            background-size: 100% 4px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-cyan { text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+        .glow-amber { text-shadow: 0 0 10px rgba(255, 184, 0, 0.5); }
+        .glow-green { text-shadow: 0 0 10px rgba(0, 255, 157, 0.5); }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen scanline bg-black">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-black border-b border-brand-cyan/20">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-brand-cyan">terminal</span>
+<h1 class="font-['Space_Grotesk'] font-bold tracking-widest uppercase antialiased text-brand-cyan text-xl glow-cyan px-4 border-x border-brand-cyan/20">DRIVE_CLEANER</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-brand-cyan cursor-crosshair active:scale-95 duration-100 hover:bg-brand-cyan/10 transition-colors p-2">settings</span>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-4 pt-20 pb-40 space-y-6 max-w-5xl mx-auto w-full">
+<!-- Header Info -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-4 border-l-4 border-tertiary px-4 py-2 bg-tertiary/5">
+<div>
+<p class="text-[10px] font-mono text-tertiary tracking-widest font-bold">SYSTEM_READY // TARGETING_TEMP_FILES</p>
+<h2 class="text-3xl font-bold font-mono tracking-tighter uppercase text-white">TEMP_CLEANER_PRO</h2>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-mono text-neutral-500 font-bold uppercase">TOTAL_PURGE_CAPACITY</p>
+<p class="text-2xl font-bold font-mono text-tertiary glow-amber">14.82 GB</p>
+</div>
+</div>
+<!-- High-Density Bento Grid of Categories -->
+<div class="grid grid-cols-1 gap-4">
+<!-- Category Card: BROWSER_CACHE (Expanded State) -->
+<section class="bg-black relative border-l-2 border-brand-cyan overflow-hidden border border-brand-cyan/10">
+<div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-brand-cyan/40"></div>
+<!-- Card Header -->
+<div class="p-4 flex justify-between items-center bg-[#0a0a0a] border-b border-brand-cyan/10">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-brand-cyan/10">
+<span class="material-symbols-outlined text-brand-cyan" style="font-variation-settings: 'FILL' 1;">public</span>
+</div>
+<div>
+<h3 class="font-mono font-bold text-sm tracking-widest text-brand-cyan">BROWSER_CACHE</h3>
+<p class="text-[10px] text-neutral-500 uppercase font-bold">CHROME / FIREFOX / SAFARI / EDGE</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono text-brand-cyan font-bold glow-cyan">4.21 GB</span>
+<span class="material-symbols-outlined text-neutral-500 ml-2 text-sm">expand_less</span>
+</div>
+</div>
+<!-- Terminal List (Expanded) -->
+<div class="bg-black font-mono text-[11px] h-64 overflow-y-auto">
+<!-- Terminal Row -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-brand-cyan/5 group border-b border-white/5">
+<span class="material-symbols-outlined text-neutral-600 group-hover:text-brand-cyan text-sm">draft</span>
+<span class="flex-1 truncate text-neutral-400 group-hover:text-white">/Users/admin/Library/Caches/Google/Chrome/Default/Cache/f_000a1</span>
+<span class="text-neutral-500 font-bold">1.2 MB</span>
+<button class="px-3 py-1 bg-transparent text-brand-cyan text-[9px] font-bold border border-brand-cyan/40 hover:bg-brand-cyan hover:text-black transition-colors">CLEAN</button>
+</div>
+<!-- Terminal Row -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-brand-cyan/5 group border-b border-white/5">
+<span class="material-symbols-outlined text-neutral-600 group-hover:text-brand-cyan text-sm">draft</span>
+<span class="flex-1 truncate text-neutral-400 group-hover:text-white">/Users/admin/Library/Caches/Mozilla/Firefox/Profiles/mw.../cache2/entries/82A</span>
+<span class="text-neutral-500 font-bold">842 KB</span>
+<button class="px-3 py-1 bg-transparent text-brand-cyan text-[9px] font-bold border border-brand-cyan/40 hover:bg-brand-cyan hover:text-black transition-colors">CLEAN</button>
+</div>
+<!-- Terminal Row -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-brand-cyan/5 group border-b border-white/5">
+<span class="material-symbols-outlined text-neutral-600 group-hover:text-brand-cyan text-sm">draft</span>
+<span class="flex-1 truncate text-neutral-400 group-hover:text-white">/Users/admin/Library/Caches/Google/Chrome/Default/Media_Cache/v_0219</span>
+<span class="text-neutral-500 font-bold">45.1 MB</span>
+<button class="px-3 py-1 bg-transparent text-brand-cyan text-[9px] font-bold border border-brand-cyan/40 hover:bg-brand-cyan hover:text-black transition-colors">CLEAN</button>
+</div>
+<!-- Terminal Row -->
+<div class="flex items-center gap-4 px-4 py-3 hover:bg-brand-cyan/5 group border-b border-white/5">
+<span class="material-symbols-outlined text-neutral-600 group-hover:text-brand-cyan text-sm">draft</span>
+<span class="flex-1 truncate text-neutral-400 group-hover:text-white">/Users/admin/Library/Application_Support/Steam/htmlcache/Cache/data_1</span>
+<span class="text-neutral-500 font-bold">128.0 MB</span>
+<button class="px-3 py-1 bg-transparent text-brand-cyan text-[9px] font-bold border border-brand-cyan/40 hover:bg-brand-cyan hover:text-black transition-colors">CLEAN</button>
+</div>
+</div>
+</section>
+<!-- Category Card: SYSTEM_TEMP (Collapsed) -->
+<section class="bg-black border-l-2 border-white/10 border border-white/5 hover:border-brand-cyan transition-colors cursor-pointer group">
+<div class="p-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white/5 group-hover:bg-brand-cyan/10 transition-colors">
+<span class="material-symbols-outlined text-neutral-500 group-hover:text-brand-cyan">settings_suggest</span>
+</div>
+<div>
+<h3 class="font-mono font-bold text-sm tracking-widest text-neutral-400 group-hover:text-white">SYSTEM_TEMP</h3>
+<p class="text-[10px] text-neutral-600 uppercase font-bold">OS_LEVEL_TEMPORARY_STORAGE</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono text-neutral-500 font-bold group-hover:text-brand-cyan">8.15 GB</span>
+<span class="material-symbols-outlined text-neutral-600 ml-2 text-sm">expand_more</span>
+</div>
+</div>
+</section>
+<!-- Category Card: APPLICATION_LOGS (Collapsed) -->
+<section class="bg-black border-l-2 border-white/10 border border-white/5 hover:border-brand-cyan transition-colors cursor-pointer group">
+<div class="p-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="p-2 bg-white/5 group-hover:bg-brand-cyan/10 transition-colors">
+<span class="material-symbols-outlined text-neutral-500 group-hover:text-brand-cyan">receipt_long</span>
+</div>
+<div>
+<h3 class="font-mono font-bold text-sm tracking-widest text-neutral-400 group-hover:text-white">APPLICATION_LOGS</h3>
+<p class="text-[10px] text-neutral-600 uppercase font-bold">CRASH_REPORTS / DEBUG_FILES</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono text-neutral-500 font-bold group-hover:text-brand-cyan">2.46 GB</span>
+<span class="material-symbols-outlined text-neutral-600 ml-2 text-sm">expand_more</span>
+</div>
+</div>
+</section>
+</div>
+<!-- Visual Gauge -->
+<div class="p-4 bg-black border border-brand-cyan/10 relative">
+<div class="flex justify-between text-[10px] font-mono mb-2">
+<span class="text-brand-cyan font-bold tracking-widest">CLEANUP_IMPACT_GAUGE</span>
+<span class="text-neutral-500 font-bold">STABILITY_RISK: <span class="text-secondary glow-green">LOW</span></span>
+</div>
+<div class="h-6 w-full bg-black border border-white/10 flex gap-1 p-1">
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan shadow-[0_0_10px_rgba(0,240,255,0.4)]"></div>
+<div class="h-full w-[5%] bg-brand-cyan/20"></div>
+<div class="h-full w-[5%] bg-brand-cyan/20"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+<div class="h-full w-[5%] bg-white/5"></div>
+</div>
+</div>
+</main>
+<!-- Summary Footer -->
+<footer class="fixed bottom-20 left-0 w-full bg-black border-t border-brand-cyan/20 p-4 z-40">
+<div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="flex gap-8">
+<div>
+<p class="text-[10px] font-mono text-neutral-500 uppercase font-bold">RECOVERY_PROJECTION</p>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-bold font-mono text-tertiary tracking-tighter glow-amber">14.82 GB</span>
+<span class="text-[10px] text-neutral-400 uppercase font-bold">SPACE_GAIN</span>
+</div>
+</div>
+<div class="border-l border-white/10 pl-8">
+<p class="text-[10px] font-mono text-neutral-500 uppercase font-bold">TASK_METRICS</p>
+<div class="flex items-baseline gap-4">
+<div class="text-sm font-mono"><span class="text-brand-cyan font-bold">12,402</span> <span class="text-neutral-500 font-bold">FILES</span></div>
+<div class="text-sm font-mono"><span class="text-brand-cyan font-bold">~42</span> <span class="text-neutral-500 font-bold">SEC</span></div>
+</div>
+</div>
+</div>
+<button class="w-full md:w-auto px-12 py-3 bg-brand-cyan text-black font-black font-mono tracking-[0.2em] hover:bg-white hover:shadow-[0_0_30px_rgba(0,240,255,0.6)] transition-all active:scale-95">
+                EXECUTE_PURGE
+            </button>
+</div>
+</footer>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center h-20 pb-safe bg-black border-t border-brand-cyan/10">
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-brand-cyan transition-all active:translate-y-0.5 duration-150 px-4 h-full" href="#">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.05rem] text-[10px] font-bold">DASHBOARD</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-brand-cyan transition-all active:translate-y-0.5 duration-150 px-4 h-full" href="#">
+<span class="material-symbols-outlined mb-1">radar</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.05rem] text-[10px] font-bold">SCAN</span>
+</a>
+<a class="flex flex-col items-center justify-center text-brand-cyan relative after:content-[''] after:absolute after:-top-0.5 after:w-10 after:h-[2px] after:bg-brand-cyan after:shadow-[0_0_15px_#00f0ff] px-4 h-full" href="#">
+<span class="material-symbols-outlined mb-1">delete_sweep</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.05rem] text-[10px] font-bold glow-cyan">CLEANUP</span>
+</a>
+<a class="flex flex-col items-center justify-center text-neutral-600 hover:text-brand-cyan transition-all active:translate-y-0.5 duration-150 px-4 h-full" href="#">
+<span class="material-symbols-outlined mb-1">terminal</span>
+<span class="font-['Space_Grotesk'] uppercase tracking-[0.05rem] text-[10px] font-bold">LOGS</span>
+</a>
+</nav>
+</body></html>
