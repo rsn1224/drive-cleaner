@@ -2,12 +2,11 @@
 // Old Files View Component
 // ==========================================
 
-import type { ReactElement } from "react";
 import { Clock, Eye, Trash2 } from "lucide-react";
+import type { ReactElement } from "react";
 
-import { formatSize } from "../lib/utils";
+import { formatDate, formatSize } from "../lib/utils";
 import type { OldFile, ScanProgress } from "../types";
-import { formatDate } from "../lib/utils";
 
 interface OldFilesViewProps {
   oldFiles: OldFile[];
@@ -30,11 +29,11 @@ export function OldFilesView({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#374151] border-t-[#ef4444] mx-auto mb-4"></div>
-          <div className="text-white text-lg mb-2">
+          <div className="animate-spin h-12 w-12 border-2 border-white/10 border-t-error mx-auto mb-4"></div>
+          <div className="text-error text-lg mb-2 font-mono tracking-widest uppercase">
             {scanProgress?.phase || "スキャン中..."}
           </div>
-          <div className="text-[#6b7280] text-sm">
+          <div className="text-white/40 text-sm">
             {scanProgress?.scanned_files || 0} ファイル処理済み
           </div>
         </div>
@@ -45,7 +44,7 @@ export function OldFilesView({
   if (oldFiles.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-center text-[#6b7280]">
+        <div className="text-center text-white/40">
           <Clock size={48} className="mx-auto mb-4 opacity-50" />
           <div className="text-lg">1年以上未更新のファイルは見つかりませんでした</div>
         </div>
@@ -56,11 +55,11 @@ export function OldFilesView({
   return (
     <div className="flex-1 flex flex-col">
       {/* Summary banner */}
-      <div className="bg-[#ef4444]/10 border border-[#ef4444]/30 rounded-lg p-4 mb-4 flex justify-between items-center">
-        <div className="text-[#ef4444] font-medium">
+      <div className="bg-error/5 border border-error/20 hud-bracket p-4 mb-4 flex justify-between items-center">
+        <div className="text-error font-medium">
           {oldFiles.length} 個の古いファイル（1年以上未更新）
         </div>
-        <div className="text-[#ef4444]">
+        <div className="text-error">
           合計: {formatSize(totalSize)}
         </div>
       </div>
@@ -70,25 +69,25 @@ export function OldFilesView({
         {oldFiles.map((file) => (
           <div
             key={file.path}
-            className="bg-[#030712] border border-[#1f2937] rounded-lg p-3 flex items-center justify-between group hover:bg-[#1f2937]/50 transition-colors"
+            className="bg-black border border-white/5 border-l-2 border-l-error p-3 flex items-center justify-between group hover:border-primary/40 transition-colors"
           >
             <div className="flex items-center gap-3 flex-1 min-w-0">
-              <Clock size={20} className="text-[#ef4444] flex-shrink-0" />
+              <Clock size={20} className="text-error flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="text-[#d1d5db] font-medium truncate">
+                <div className="text-white/90 font-medium truncate">
                   {file.name}
                 </div>
-                <div className="text-[11px] text-[#6b7280] font-mono truncate">
+                <div className="text-[11px] text-white/40 font-mono truncate">
                   {file.path}
                 </div>
                 <div className="flex items-center gap-4 mt-1">
-                  <span className="text-[#ef4444] font-mono text-sm">
+                  <span className="text-error font-mono text-sm">
                     {file.days_old}日前
                   </span>
-                  <span className="text-[#6b7280] text-[11px]">
+                  <span className="text-white/30 text-[11px]">
                     {formatDate(file.modified_at)}
                   </span>
-                  <span className="text-[#9ca3af] font-mono text-sm">
+                  <span className="text-white/50 font-mono text-sm">
                     {formatSize(file.size)}
                   </span>
                 </div>
@@ -98,14 +97,14 @@ export function OldFilesView({
               <button
                 type="button"
                 onClick={() => onPreview(file.path)}
-                className="text-[#6b7280] hover:text-blue-400 transition-colors"
+                className="text-white/30 hover:text-primary transition-colors"
               >
                 <Eye size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => onDelete(file.path)}
-                className="text-[#6b7280] hover:text-red-400 transition-colors"
+                className="text-white/30 hover:text-error transition-colors"
               >
                 <Trash2 size={16} />
               </button>

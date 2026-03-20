@@ -44,12 +44,12 @@ export function TempCleanerView({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#374151] border-t-[#f97316] mx-auto mb-4"></div>
-          <div className="text-white text-lg mb-2">
+          <div className="animate-spin h-12 w-12 border-2 border-white/10 border-tertiary mx-auto mb-4"></div>
+          <div className="text-tertiary text-lg mb-2 font-mono tracking-widest uppercase">
             {scanProgress?.phase || "スキャン中..."}
           </div>
           {scanProgress && scanProgress.scanned_files > 0 && (
-            <div className="text-[#6b7280] text-sm">
+            <div className="text-white/40 text-sm">
               {scanProgress.scanned_files} ファイル処理済み
             </div>
           )}
@@ -61,7 +61,7 @@ export function TempCleanerView({
   if (!scanResult || scanResult.categories.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="text-center text-[#6b7280]">
+        <div className="text-center text-white/40">
           <Trash2 size={48} className="mx-auto mb-4 opacity-50" />
           <div className="text-lg">一時ファイルは見つかりませんでした</div>
         </div>
@@ -72,22 +72,22 @@ export function TempCleanerView({
   return (
     <div className="flex-1 flex flex-col">
       {/* Summary banner */}
-      <div className="bg-[#f97316]/10 border border-[#f97316]/30 rounded-lg p-4 mb-4 flex justify-between items-center">
-        <div className="text-[#f97316] font-medium">
+      <div className="bg-tertiary/5 border border-tertiary/20 hud-bracket p-4 mb-4 flex justify-between items-center">
+        <div className="text-tertiary font-medium">
           {scanResult.total_files} 一時ファイル
         </div>
-        <div className="text-[#f97316]">
+        <div className="text-tertiary">
           合計: {formatSize(scanResult.total_size)}
         </div>
         <button
           type="button"
           onClick={onCleanAll}
           disabled={cleaning}
-          className="bg-[#f87171] hover:bg-red-500 disabled:bg-red-900 disabled:text-red-400 text-white px-4 py-2 rounded-md text-sm flex items-center gap-2 transition-colors"
+          className="bg-error/80 hover:bg-error disabled:bg-error/50 disabled:text-white/30 text-black font-mono font-bold tracking-wider px-4 py-2 text-sm flex items-center gap-2 transition-colors"
         >
           {cleaning ? (
             <>
-              <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+              <div className="animate-spin h-4 w-4 border-2 border-black border-t-transparent" />
               クリーン中...
             </>
           ) : (
@@ -107,7 +107,7 @@ export function TempCleanerView({
           return (
             <div
               key={category.name}
-              className="bg-[#030712] border border-[#1f2937] rounded-lg p-4"
+              className="bg-black border border-white/5 border-l-2 border-l-tertiary p-4"
             >
               {/* Category header */}
               <div className="flex items-center justify-between mb-3">
@@ -115,26 +115,26 @@ export function TempCleanerView({
                   <button
                     type="button"
                     onClick={() => toggleCategory(category.name)}
-                    className="text-[#6b7280] hover:text-[#d1d5db] transition-colors"
+                    className="text-white/30 hover:text-white/60 transition-colors"
                   >
                     {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </button>
-                  <Trash2 size={20} className="text-[#f97316]" />
+                  <Trash2 size={20} className="text-tertiary" />
                   <div>
-                    <div className="text-[#d1d5db] font-medium">
+                    <div className="text-white/90 font-medium">
                       {category.name}
                     </div>
-                    <div className="text-[11px] text-[#6b7280] font-mono">
+                    <div className="text-[11px] text-white/40 font-mono">
                       {category.path}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <div className="text-[#6b7280] text-sm">
+                    <div className="text-white/50 text-sm">
                       {category.file_count} ファイル
                     </div>
-                    <div className="text-[#f97316] font-mono text-sm">
+                    <div className="text-tertiary font-mono text-sm">
                       {formatSize(category.total_size)}
                     </div>
                   </div>
@@ -142,7 +142,7 @@ export function TempCleanerView({
                     type="button"
                     onClick={() => onCleanCategory(category.name)}
                     disabled={cleaning}
-                    className="border border-[#4b5563] hover:border-[#f97316] disabled:border-gray-600 text-[#6b7280] hover:text-[#f97316] disabled:text-gray-500 px-3 py-1 rounded text-sm transition-colors"
+                    className="border border-white/10 hover:border-tertiary disabled:border-white/5 text-white/30 hover:text-tertiary disabled:text-white/10 px-3 py-1 text-sm transition-colors"
                   >
                     {cleaning ? "処理中..." : "クリーン"}
                   </button>
@@ -151,18 +151,18 @@ export function TempCleanerView({
 
               {/* Expanded items */}
               {isExpanded && (
-                <div className="border-t border-[#1f2937] pt-3">
-                  <div className="text-[11px] text-[#6b7280] mb-2">
+                <div className="border-t border-white/5 pt-3">
+                  <div className="text-[10px] text-white/40 mb-2 hud-label">
                     ファイル一覧 ({category.items.length})
                   </div>
                   <div className="space-y-1 max-h-32 overflow-auto">
                     {category.items.map((item) => (
                       <div
                         key={item.path}
-                        className="flex justify-between items-center text-[11px] text-[#6b7280] hover:bg-[#1f2937] px-2 py-1 rounded"
+                        className="flex justify-between items-center text-[10px] text-white/30 hover:bg-white/5 px-2 py-1"
                       >
                         <span className="truncate flex-1 mr-2">{item.name}</span>
-                        <span className="font-mono text-[#9ca3af]">
+                        <span className="font-mono text-white/50">
                           {formatSize(item.size)}
                         </span>
                       </div>

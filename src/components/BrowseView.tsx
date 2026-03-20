@@ -32,22 +32,22 @@ export function BrowseView({
       return (
         <div
           style={style}
-          className="group flex items-center justify-between px-3 rounded-md hover:bg-[#1f2937] cursor-pointer transition-colors"
+          className="group flex items-center justify-between px-3 hover:bg-primary/5 cursor-pointer transition-colors"
           onClick={() => node.is_dir && onNavigate(node.path)}
         >
           <div className="flex items-center gap-3 overflow-hidden">
             {node.is_dir ? (
-              <Folder className="text-blue-500 shrink-0" size={20} />
+              <Folder className="text-primary shrink-0" size={20} />
             ) : (
-              <FileIcon className="text-gray-400 shrink-0" size={20} />
+              <FileIcon className="text-white/30 shrink-0" size={20} />
             )}
-            <span className="text-[#d1d5db] truncate select-none text-sm">
+            <span className="text-white/90 truncate select-none text-sm">
               {node.name}
             </span>
           </div>
           <div className="flex items-center gap-4">
             {!node.is_dir && (
-              <span className="text-xs text-[#9ca3af] font-mono">
+              <span className="text-xs text-white/50 font-mono">
                 {formatSize(node.size)}
               </span>
             )}
@@ -60,7 +60,7 @@ export function BrowseView({
                     e.stopPropagation();
                     onPreview(node.path);
                   }}
-                  className="p-1.5 text-[#6b7280] hover:text-[#818cf8] rounded-md transition-colors"
+                  className="p-1.5 text-white/30 hover:text-primary transition-colors"
                 >
                   <Eye size={16} />
                 </button>
@@ -72,7 +72,7 @@ export function BrowseView({
                   e.stopPropagation();
                   onDelete(node.path);
                 }}
-                className="p-1.5 text-[#6b7280] hover:text-[#f87171] rounded-md transition-colors"
+                className="p-1.5 text-white/30 hover:text-error transition-colors"
               >
                 <Trash2 size={16} />
               </button>
@@ -87,7 +87,7 @@ export function BrowseView({
   if (loading) {
     return (
       <div ref={listContainerRef} className="flex-1 relative overflow-auto p-2">
-        <div className="absolute inset-0 flex items-center justify-center text-[#6b7280]">
+        <div className="absolute inset-0 flex items-center justify-center text-white/40">
           読み込み中...
         </div>
       </div>
@@ -97,9 +97,9 @@ export function BrowseView({
   if (sortedNodes.length === 0) {
     return (
       <div ref={listContainerRef} className="flex-1 relative overflow-auto p-2">
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-[#6b7280] gap-3">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-white/40 gap-3">
           <FolderOpen size={48} className="opacity-50" />
-          <span className="text-sm text-[#6b7280]">フォルダは空です</span>
+          <span className="text-sm text-white/40 hud-label">フォルダは空です</span>
         </div>
       </div>
     );

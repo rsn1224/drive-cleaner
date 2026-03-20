@@ -47,23 +47,23 @@ export function StatusBar({
   tempFilesTotalSize,
 }: StatusBarProps) {
   return (
-    <div className="bg-[#030712] border-t border-[#1f2937] px-3 py-1 flex justify-between items-center text-[11px] text-[#6b7280]">
+    <div className="bg-black/95 border-t border-primary/10 backdrop-blur-md px-3 py-1 flex justify-between items-center hud-label text-white/40">
       {mode === "browse" ? (
         <>
           <span>{folderCount} フォルダ, {fileCount} ファイル</span>
-          <span>合計: {formatSize(totalSize)}</span>
+          <span className="text-primary font-mono">合計: {formatSize(totalSize)}</span>
         </>
       ) : mode === "duplicates" ? (
         <>
           <span>
             {duplicatesGroupCount} グループ, {duplicatesFileCount} ファイル
           </span>
-          <span>節約可能: {formatSize(totalSaveable)}</span>
+          <span className="text-primary font-mono">節約可能: {formatSize(totalSaveable)}</span>
         </>
       ) : mode === "large_files" ? (
         <>
           <span>{largeFilesCount} ファイル</span>
-          <span>合計: {formatSize(largeFilesTotalSize)}</span>
+          <span className="text-primary font-mono">合計: {formatSize(largeFilesTotalSize)}</span>
         </>
       ) : mode === "empty_folders" ? (
         <>
@@ -73,7 +73,7 @@ export function StatusBar({
       ) : mode === "old_files" ? (
         <>
           <span>{oldFilesCount} ファイル</span>
-          <span>合計: {formatSize(oldFilesTotalSize)}</span>
+          <span className="text-primary font-mono">合計: {formatSize(oldFilesTotalSize)}</span>
         </>
       ) : mode === "file_types" ? (
         <>
@@ -83,12 +83,12 @@ export function StatusBar({
       ) : mode === "disk_usage" ? (
         <>
           <span>{diskUsageFileCount} ファイル</span>
-          <span>合計: {formatSize(diskUsageTotalSize)}</span>
+          <span className="text-primary font-mono">合計: {formatSize(diskUsageTotalSize)}</span>
         </>
       ) : mode === "temp_cleaner" ? (
         <>
           <span>{tempFilesCount} 一時ファイル</span>
-          <span>合計: {formatSize(tempFilesTotalSize)}</span>
+          <span className="text-primary font-mono">合計: {formatSize(tempFilesTotalSize)}</span>
         </>
       ) : null}
     </div>

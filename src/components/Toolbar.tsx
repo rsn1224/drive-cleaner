@@ -26,13 +26,13 @@ export function Toolbar({
   onToggleSort,
 }: ToolbarProps) {
   return (
-    <div className="flex items-center justify-between bg-[#030712] px-3 py-2 border-b border-[#1f2937]">
+    <div className="flex items-center justify-between bg-black px-3 py-2 border-b border-primary/10">
       <div className="flex items-center gap-2 overflow-hidden min-w-0">
         <button
           type="button"
           title="上のフォルダへ"
           onClick={onGoUp}
-          className="p-1.5 text-[#6b7280] hover:text-white bg-[#374151]/50 rounded-md transition-colors shrink-0"
+          className="p-1.5 text-white/30 hover:text-primary bg-white/5 border border-white/10 hover:border-primary/40 transition-colors shrink-0"
         >
           <ArrowUp size={16} />
         </button>
@@ -42,16 +42,16 @@ export function Toolbar({
               {idx > 0 && (
                 <ChevronRight
                   size={12}
-                  className="text-[#4b5563] mx-0.5"
+                  className="text-white/20 mx-0.5"
                 />
               )}
               <button
                 type="button"
                 onClick={() => onNavigate(crumb.path)}
-                className={`px-2 py-0.5 rounded text-xs transition-colors ${
+                className={`px-2 py-0.5 text-xs transition-colors ${
                   idx === breadcrumbs.length - 1
-                    ? "bg-[#374151] text-white"
-                    : "text-[#6b7280] hover:bg-[#374151] hover:text-[#d1d5db]"
+                    ? "bg-primary/10 text-primary border border-primary/40"
+                    : "text-white/40 hover:bg-white/5 hover:text-white/60"
                 }`}
               >
                 {crumb.label}
@@ -65,10 +65,10 @@ export function Toolbar({
           <button
             type="button"
             onClick={() => onToggleSort("name")}
-            className={`px-2 py-1 rounded text-[11px] transition-colors ${
+            className={`px-2 py-1 text-[11px] transition-colors ${
               sortKey === "name"
-                ? "bg-[#374151] text-white"
-                : "text-[#6b7280] hover:bg-[#1f2937]"
+                ? "bg-primary/10 text-primary border border-primary/40"
+                : "text-white/40 hover:bg-white/5"
             }`}
           >
             名前{" "}
@@ -77,10 +77,10 @@ export function Toolbar({
           <button
             type="button"
             onClick={() => onToggleSort("size")}
-            className={`px-2 py-1 rounded text-[11px] transition-colors ${
+            className={`px-2 py-1 text-[11px] transition-colors ${
               sortKey === "size"
-                ? "bg-[#374151] text-white"
-                : "text-[#6b7280] hover:bg-[#1f2937]"
+                ? "bg-primary/10 text-primary border border-primary/40"
+                : "text-white/40 hover:bg-white/5"
             }`}
           >
             サイズ{" "}
