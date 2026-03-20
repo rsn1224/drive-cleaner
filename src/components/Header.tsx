@@ -16,6 +16,7 @@ import {
     X
 } from "lucide-react";
 
+import type { ScanActions } from "../hooks/useScanActions";
 import type { AppMode } from "../types";
 
 interface HeaderProps {
@@ -24,18 +25,12 @@ interface HeaderProps {
   duplicatesCount: number;
   loading: boolean;
   onSelectFolder: () => void;
-  onScanDuplicates: () => void;
   onCancelScan: () => void;
   onExportJson: () => void;
   onExportCsv: () => void;
   onBulkDelete: () => void;
   onCloseMode: () => void;
-  onScanLargeFiles: () => void;
-  onScanEmptyFolders: () => void;
-  onScanOldFiles: () => void;
-  onScanFileTypes: () => void;
-  onScanDiskUsage: () => void;
-  onScanTempFiles: () => void;
+  scanActions: ScanActions;
 }
 
 export function Header({
@@ -44,18 +39,12 @@ export function Header({
   duplicatesCount,
   loading,
   onSelectFolder,
-  onScanDuplicates,
   onCancelScan,
   onExportJson,
   onExportCsv,
   onBulkDelete,
   onCloseMode,
-  onScanLargeFiles,
-  onScanEmptyFolders,
-  onScanOldFiles,
-  onScanFileTypes,
-  onScanDiskUsage,
-  onScanTempFiles,
+  scanActions,
 }: HeaderProps) {
   return (
     <div className="flex justify-between items-center bg-[#111827] p-3 rounded-lg border border-[#1f2937]">
@@ -129,15 +118,15 @@ export function Header({
             </button>
             <button
               type="button"
-              onClick={onScanLargeFiles}
+              onClick={scanActions.scanLargeFiles}
               disabled={loading}
               className="bg-[#22c55e] hover:bg-green-500 disabled:bg-green-900 disabled:text-green-400 border border-[#22c55e] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
             >
-              <HardDrive size={16} /> 大容量スキャン
+              <HardDrive size={16} /> 大容量
             </button>
             <button
               type="button"
-              onClick={onScanEmptyFolders}
+              onClick={scanActions.scanEmptyFolders}
               disabled={loading}
               className="bg-[#f59e0b] hover:bg-amber-500 disabled:bg-amber-900 disabled:text-amber-400 border border-[#f59e0b] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
             >
@@ -145,31 +134,7 @@ export function Header({
             </button>
             <button
               type="button"
-              onClick={onScanTempFiles}
-              disabled={loading}
-              className="bg-[#f97316] hover:bg-orange-500 disabled:bg-orange-900 disabled:text-orange-400 border border-[#f97316] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
-            >
-              <Trash size={16} /> 一時クリーン
-            </button>
-            <button
-              type="button"
-              onClick={onScanDiskUsage}
-              disabled={loading}
-              className="bg-[#06b6d4] hover:bg-cyan-500 disabled:bg-cyan-900 disabled:text-cyan-400 border border-[#06b6d4] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
-            >
-              <PieChart size={16} /> ディスク使用量
-            </button>
-            <button
-              type="button"
-              onClick={onScanFileTypes}
-              disabled={loading}
-              className="bg-[#8b5cf6] hover:bg-violet-500 disabled:bg-violet-900 disabled:text-violet-400 border border-[#8b5cf6] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
-            >
-              <BarChart3 size={16} /> 種別分析
-            </button>
-            <button
-              type="button"
-              onClick={onScanOldFiles}
+              onClick={scanActions.scanOldFiles}
               disabled={loading}
               className="bg-[#ef4444] hover:bg-red-500 disabled:bg-red-900 disabled:text-red-400 border border-[#ef4444] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
             >
@@ -177,7 +142,31 @@ export function Header({
             </button>
             <button
               type="button"
-              onClick={onScanDuplicates}
+              onClick={scanActions.scanFileTypes}
+              disabled={loading}
+              className="bg-[#8b5cf6] hover:bg-purple-500 disabled:bg-purple-900 disabled:text-purple-400 border border-[#8b5cf6] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
+            >
+              <BarChart3 size={16} /> 種別
+            </button>
+            <button
+              type="button"
+              onClick={scanActions.scanTempFiles}
+              disabled={loading}
+              className="bg-[#f97316] hover:bg-orange-500 disabled:bg-orange-900 disabled:text-orange-400 border border-[#f97316] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
+            >
+              <Trash size={16} /> 一時クリーン
+            </button>
+            <button
+              type="button"
+              onClick={scanActions.scanDiskUsage}
+              disabled={loading}
+              className="bg-[#06b6d4] hover:bg-cyan-500 disabled:bg-cyan-900 disabled:text-cyan-400 border border-[#06b6d4] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
+            >
+              <PieChart size={16} /> ディスク使用量
+            </button>
+            <button
+              type="button"
+              onClick={scanActions.scanDuplicates}
               disabled={loading}
               className="bg-[#6366f1] hover:bg-indigo-500 disabled:bg-indigo-900 disabled:text-indigo-400 border border-[#6366f1] text-white px-3 py-2 rounded-md text-[13px] flex items-center gap-1.5 transition-colors"
             >

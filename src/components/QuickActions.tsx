@@ -3,16 +3,8 @@
 // ==========================================
 
 import type { ReactElement } from "react";
-import type { LucideIcon } from "lucide-react";
 
-interface QuickAction {
-  id: string;
-  icon: LucideIcon;
-  label: string;
-  description: string;
-  color: string;
-  onClick: () => void;
-}
+import type { QuickAction } from "../lib/quickActions";
 
 interface QuickActionsProps {
   actions: QuickAction[];
