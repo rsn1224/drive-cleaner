@@ -81,7 +81,12 @@ export interface CleanResult {
   errors: string[];
 }
 
-export type AppMode = "browse" | "duplicates" | "large_files" | "empty_folders" | "old_files" | "file_types" | "disk_usage" | "temp_cleaner";
+export type AppMode = "browse" | "duplicates" | "large_files" | "empty_folders" | "old_files" | "file_types" | "disk_usage" | "temp_cleaner" | "similar_images";
+
+export interface SimilarImageGroup {
+  paths: string[];
+  distance: number;
+}
 
 export interface ScanProgress {
   phase: string;
@@ -96,3 +101,22 @@ export interface FilePreview {
 
 export type SortKey = "name" | "size";
 export type SortDir = "asc" | "desc";
+
+export interface DriveInfo {
+  name: string;
+  mount_point: string;
+  total: number;
+  free: number;
+  used: number;
+  fs_type: string;
+}
+
+export interface RecycleBinInfo {
+  item_count: number;
+  total_size: number;
+}
+
+export interface BulkMoveResult {
+  moved_count: number;
+  errors: string[];
+}

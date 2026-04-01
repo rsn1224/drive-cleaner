@@ -3,7 +3,17 @@
 // ==========================================
 
 import type { ReactElement } from "react";
-
+import type { useDiskUsage } from "../hooks/useDiskUsage";
+import type { useEmptyFolders } from "../hooks/useEmptyFolders";
+// Hook return types
+import type { useFileBrowser } from "../hooks/useFileBrowser";
+import type { useFileTypes } from "../hooks/useFileTypes";
+import type { useLargeFiles } from "../hooks/useLargeFiles";
+import type { useOldFiles } from "../hooks/useOldFiles";
+import type { useScan } from "../hooks/useScan";
+import type { useSimilarImages } from "../hooks/useSimilarImages";
+import type { useTempCleaner } from "../hooks/useTempCleaner";
+import type { AppMode } from "../types";
 import { BrowseView } from "./BrowseView";
 import { DiskUsageView } from "./DiskUsageView";
 import { DuplicatesView } from "./DuplicatesView";
@@ -11,18 +21,8 @@ import { EmptyFoldersView } from "./EmptyFoldersView";
 import { FileTypesView } from "./FileTypesView";
 import { LargeFilesView } from "./LargeFilesView";
 import { OldFilesView } from "./OldFilesView";
+import { SimilarImagesView } from "./SimilarImagesView";
 import { TempCleanerView } from "./TempCleanerView";
-import type { AppMode } from "../types";
-
-// Hook return types
-import type { useFileBrowser } from "../hooks/useFileBrowser";
-import type { useScan } from "../hooks/useScan";
-import type { useLargeFiles } from "../hooks/useLargeFiles";
-import type { useEmptyFolders } from "../hooks/useEmptyFolders";
-import type { useOldFiles } from "../hooks/useOldFiles";
-import type { useFileTypes } from "../hooks/useFileTypes";
-import type { useDiskUsage } from "../hooks/useDiskUsage";
-import type { useTempCleaner } from "../hooks/useTempCleaner";
 
 interface MainContentProps {
   mode: AppMode;
@@ -34,6 +34,7 @@ interface MainContentProps {
   fileTypes: ReturnType<typeof useFileTypes>;
   diskUsage: ReturnType<typeof useDiskUsage>;
   tempCleaner: ReturnType<typeof useTempCleaner>;
+  similarImages: ReturnType<typeof useSimilarImages>;
   onDelete: (path: string, hash?: string) => void;
 }
 
@@ -47,6 +48,7 @@ export function MainContent({
   fileTypes,
   diskUsage,
   tempCleaner,
+  similarImages,
   onDelete,
 }: MainContentProps): ReactElement | null {
   if (mode === "browse") {
@@ -56,9 +58,20 @@ export function MainContent({
         loading={fileBrowser.loading}
         listHeight={fileBrowser.listHeight}
         listContainerRef={fileBrowser.listContainerRef}
+        selectedPaths={fileBrowser.selectedPaths}
+        renameTarget={fileBrowser.renameTarget}
         onNavigate={fileBrowser.loadDirectory}
         onPreview={fileBrowser.handlePreview}
         onDelete={onDelete}
+        onSecureDelete={fileBrowser.handleSecureDeleteItem}
+        onMove={fileBrowser.handleMoveItem}
+        onRename={fileBrowser.handleRenameStart}
+        onRenameSubmit={fileBrowser.handleRenameSubmit}
+        onRenameClear={fileBrowser.handleRenameClear}
+        onToggleSelect={fileBrowser.toggleSelect}
+        onBulkMove={fileBrowser.handleBulkMove}
+        onClearSelection={fileBrowser.clearSelection}
+        onOrganize={fileBrowser.handleOrganizeByType}
       />
     );
   }
@@ -72,6 +85,10 @@ export function MainContent({
         totalSaveable={scan.totalSaveable}
         onPreview={fileBrowser.handlePreview}
         onDelete={onDelete}
+        onBulkDelete={scan.handleBulkDelete}
+        onBulkDeleteSelected={scan.handleBulkDeleteSelected}
+        onExportJson={scan.handleExportJson}
+        onExportCsv={scan.handleExportCsv}
       />
     );
   }
@@ -144,8 +161,22 @@ export function MainContent({
         scanning={tempCleaner.scanning}
         scanProgress={tempCleaner.scanProgress}
         cleaning={tempCleaner.cleaning}
+        recycleBinInfo={tempCleaner.recycleBinInfo}
         onCleanAll={tempCleaner.handleCleanAll}
         onCleanCategory={tempCleaner.handleCleanCategory}
+        onEmptyRecycleBin={tempCleaner.handleEmptyRecycleBin}
+      />
+    );
+  }
+
+  if (mode === "similar_images") {
+    return (
+      <SimilarImagesView
+        groups={similarImages.groups}
+        scanning={similarImages.scanning}
+        scanProgress={similarImages.scanProgress}
+        onPreview={fileBrowser.handlePreview}
+        onDelete={onDelete}
       />
     );
   }

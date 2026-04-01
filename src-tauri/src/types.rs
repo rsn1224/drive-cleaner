@@ -101,6 +101,28 @@ pub struct ScanProgress {
     pub scanned_files: usize,
 }
 
+#[derive(Serialize, Clone)]
+pub struct DriveInfo {
+    pub name: String,
+    pub mount_point: String,
+    pub total: u64,
+    pub free: u64,
+    pub used: u64,
+    pub fs_type: String,
+}
+
+#[derive(Serialize, Clone)]
+pub struct RecycleBinInfo {
+    pub item_count: u64,
+    pub total_size: u64,
+}
+
+#[derive(Serialize, Clone)]
+pub struct BulkMoveResult {
+    pub moved_count: usize,
+    pub errors: Vec<String>,
+}
+
 #[derive(Serialize)]
 pub struct FilePreview {
     pub kind: String, // "text" | "image" | "binary"

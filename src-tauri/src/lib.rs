@@ -15,6 +15,7 @@ pub fn run() {
         .init();
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .manage(ScanState::default())
         .invoke_handler(tauri::generate_handler![
             commands::get_directory_contents,
@@ -32,6 +33,15 @@ pub fn run() {
             commands::clean_temp_files,
             commands::get_file_preview,
             commands::cancel_scan,
+            commands::get_drive_info,
+            commands::get_recycle_bin_info,
+            commands::empty_recycle_bin,
+            commands::secure_delete_item,
+            commands::find_similar_images,
+            commands::move_item,
+            commands::rename_item,
+            commands::bulk_move,
+            commands::organize_by_type,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
