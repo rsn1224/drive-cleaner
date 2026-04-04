@@ -11,3 +11,7 @@ src-tauri/gen/
 /*.html
 /*.png
 /design/screenshot-*.png
+
+# AI tool configs
+CLAUDE.md
+HANDOFF.md
