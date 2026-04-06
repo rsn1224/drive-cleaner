@@ -39,13 +39,12 @@ describe("QuickActions", () => {
     expect(cards).toHaveLength(7);
   });
 
-  it("applies pointer-events-none when disabled", () => {
+  it("disabled=true のとき各ボタンに disabled 属性が付く", () => {
     render(<QuickActions actions={mockActions} disabled={true} />);
-    
-    const cards = document.querySelectorAll(".hud-bracket");
-    cards.forEach((card) => {
-      expect(card).toHaveClass("pointer-events-none");
-      expect(card).toHaveClass("opacity-50");
+
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".hud-bracket");
+    buttons.forEach((btn) => {
+      expect(btn).toBeDisabled();
     });
   });
 
@@ -68,14 +67,13 @@ describe("QuickActions", () => {
     expect(mockActions[0].onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("does not call onClick when disabled and card is clicked", async () => {
+  it("disabled=true のとき各ボタンが disabled 状態であること", () => {
     render(<QuickActions actions={mockActions} disabled={true} />);
-    
-    const firstCard = document.querySelector(".hud-bracket") as HTMLElement;
-    
-    // Check that the card has disabled styling
-    expect(firstCard).toHaveClass("pointer-events-none");
-    expect(firstCard).toHaveClass("opacity-50");
+
+    const buttons = screen.getAllByRole("button");
+    buttons.forEach((btn) => {
+      expect(btn).toBeDisabled();
+    });
   });
 
   it("displays action labels", () => {

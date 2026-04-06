@@ -1,11 +1,12 @@
 import { listen } from "@tauri-apps/api/event";
-import { message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useState } from "react";
 
 import { extractErrorMessage, invoke } from "../lib/tauri";
+import { useToast } from "../lib/toastContext";
 import type { FileTypeAnalysis, ScanProgress } from "../types";
 
 export function useFileTypes(currentPath: string) {
+  const notify = useToast();
   const [analysis, setAnalysis] = useState<FileTypeAnalysis | null>(null);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
@@ -27,17 +28,14 @@ export function useFileTypes(currentPath: string) {
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, {
-          title: "エラー",
-          kind: "error",
-        });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
     } finally {
       setScanning(false);
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, [currentPath]);
+  }, [currentPath, notify]);
 
   return {
     analysis,

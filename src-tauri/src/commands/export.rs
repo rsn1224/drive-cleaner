@@ -15,14 +15,12 @@ pub fn export_duplicates(
 ) -> Result<(), String> {
     match format.as_str() {
         "json" => {
-            let content = serde_json::to_string_pretty(&groups)
-                .map_err(|e| e.to_string())?;
+            let content = serde_json::to_string_pretty(&groups).map_err(|e| e.to_string())?;
             std::fs::write(&output_path, content).map_err(|e| e.to_string())?;
         }
         "csv" => {
-            let mut wtr = csv::Writer::from_writer(
-                File::create(&output_path).map_err(|e| e.to_string())?,
-            );
+            let mut wtr =
+                csv::Writer::from_writer(File::create(&output_path).map_err(|e| e.to_string())?);
             wtr.write_record(["hash", "size", "path"])
                 .map_err(|e| e.to_string())?;
             for group in &groups {
@@ -33,7 +31,7 @@ pub fn export_duplicates(
             }
             wtr.flush().map_err(|e| e.to_string())?;
         }
-        _ => return Err(format!("Unknown format: {format}")),
+        _ => return Err(format!("不明なフォーマット: {format}")),
     }
     info!("Exported {} groups to {output_path}", groups.len());
     Ok(())

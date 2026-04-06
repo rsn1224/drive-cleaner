@@ -1,15 +1,22 @@
 import { listen } from "@tauri-apps/api/event";
-import { ask, message } from "@tauri-apps/plugin-dialog";
-import { useCallback, useState } from "react";
-
+import { useCallback, useEffect, useState } from "react";
+import { messages } from "../i18n/messages";
+import { useConfirm } from "../lib/confirmContext";
+import { notifyComplete } from "../lib/notify";
 import { extractErrorMessage, invoke } from "../lib/tauri";
-import type { CleanResult, ScanProgress, TempScanResult } from "../types";
+import { useToast } from "../lib/toastContext";
+import { formatSize } from "../lib/utils";
+import type { CleanResult, RecycleBinInfo, ScanProgress, TempScanResult } from "../types";
 
 export function useTempCleaner() {
+  const confirm = useConfirm();
+  const notify = useToast();
+
   const [scanResult, setScanResult] = useState<TempScanResult | null>(null);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
   const [cleaning, setCleaning] = useState(false);
+  const [recycleBinInfo, setRecycleBinInfo] = useState<RecycleBinInfo | null>(null);
 
   const handleScan = useCallback(async (): Promise<void> => {
     setScanning(true);
@@ -23,44 +30,42 @@ export function useTempCleaner() {
     try {
       const result = await invoke<TempScanResult>("scan_temp_files", {});
       setScanResult(result);
+      await notifyComplete("スキャン完了", `${result.total_files} 件の一時ファイルを検出しました`);
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, { title: "エラー", kind: "error" });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
     } finally {
       setScanning(false);
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, []);
+  }, [notify]);
 
   const handleCleanAll = useCallback(async (): Promise<void> => {
     if (!scanResult) return;
     const allPaths = scanResult.categories.flatMap((c) => c.items.map((i) => i.path));
     if (allPaths.length === 0) return;
 
-    const confirmed = await ask(
+    const ok = await confirm(
       `${allPaths.length} 個の一時ファイルを削除します。よろしいですか？`,
-      { title: "クリーン確認", kind: "warning" },
+      "クリーン確認",
     );
-    if (!confirmed) return;
+    if (!ok) return;
 
     setCleaning(true);
     try {
       const result = await invoke<CleanResult>("clean_temp_files", { paths: allPaths });
-      await message(
-        `${result.deleted_count} ファイル削除、${formatFreed(result.freed_size)} 解放`,
-        { title: "完了" },
-      );
-      setScanResult(null); // クリーン後はリセット
+      setScanResult(null);
+      notify(`${result.deleted_count} ファイル削除、${formatSize(result.freed_size)} 解放`, "success");
     } catch (e) {
       const msg = extractErrorMessage(e);
-      await message(`クリーンエラー: ${msg}`, { title: "エラー", kind: "error" });
+      notify(`クリーンエラー: ${msg}`, "error");
     } finally {
       setCleaning(false);
     }
-  }, [scanResult]);
+  }, [scanResult, confirm, notify]);
 
   const handleCleanCategory = useCallback(async (categoryName: string): Promise<void> => {
     if (!scanResult) return;
@@ -68,19 +73,15 @@ export function useTempCleaner() {
     if (!category) return;
 
     const paths = category.items.map((i) => i.path);
-    const confirmed = await ask(
+    const ok = await confirm(
       `${category.name} の ${paths.length} 個のファイルを削除します。`,
-      { title: "クリーン確認", kind: "warning" },
+      "クリーン確認",
     );
-    if (!confirmed) return;
+    if (!ok) return;
 
     setCleaning(true);
     try {
       const result = await invoke<CleanResult>("clean_temp_files", { paths });
-      await message(
-        `${result.deleted_count} ファイル削除、${formatFreed(result.freed_size)} 解放`,
-        { title: "完了" },
-      );
       // 削除したカテゴリを結果から除去
       setScanResult((prev) => {
         if (!prev) return null;
@@ -91,29 +92,57 @@ export function useTempCleaner() {
           total_size: updated.reduce((a, c) => a + c.total_size, 0),
         };
       });
+      notify(`${result.deleted_count} ファイル削除、${formatSize(result.freed_size)} 解放`, "success");
     } catch (e) {
       const msg = extractErrorMessage(e);
-      await message(`クリーンエラー: ${msg}`, { title: "エラー", kind: "error" });
+      notify(`クリーンエラー: ${msg}`, "error");
     } finally {
       setCleaning(false);
     }
-  }, [scanResult]);
+  }, [scanResult, confirm, notify]);
+
+  const handleGetRecycleBinInfo = useCallback(async (): Promise<void> => {
+    try {
+      const info = await invoke<RecycleBinInfo>("get_recycle_bin_info");
+      setRecycleBinInfo(info);
+    } catch (e) {
+      const msg = extractErrorMessage(e);
+      notify(`ゴミ箱情報の取得に失敗しました: ${msg}`, "error");
+    }
+  }, [notify]);
+
+  // マウント時にゴミ箱情報を取得（TempCleanerView 側の useEffect を不要にする）
+  useEffect(() => {
+    void handleGetRecycleBinInfo();
+  }, [handleGetRecycleBinInfo]);
+
+  const handleEmptyRecycleBin = useCallback(async (): Promise<void> => {
+    const ok = await confirm(messages.recycleBinEmptyConfirm, messages.recycleBin);
+    if (!ok) return;
+
+    setCleaning(true);
+    try {
+      const result = await invoke<CleanResult>("empty_recycle_bin");
+      setRecycleBinInfo({ item_count: 0, total_size: 0 });
+      notify(`${result.deleted_count} ファイル削除、${formatSize(result.freed_size)} 解放`, "success");
+    } catch (e) {
+      const msg = extractErrorMessage(e);
+      notify(`ゴミ箱の空にする操作に失敗しました: ${msg}`, "error");
+    } finally {
+      setCleaning(false);
+    }
+  }, [confirm, notify]);
 
   return {
     scanResult,
     scanning,
     scanProgress,
     cleaning,
+    recycleBinInfo,
     handleScan,
     handleCleanAll,
     handleCleanCategory,
+    handleGetRecycleBinInfo,
+    handleEmptyRecycleBin,
   };
-}
-
-// ヘルパー（ファイル内に定義）
-function formatFreed(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1073741824) return `${(bytes / 1048576).toFixed(1)} MB`;
-  return `${(bytes / 1073741824).toFixed(1)} GB`;
 }

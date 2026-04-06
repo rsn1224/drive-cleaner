@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatSize, formatDate, getParentPath } from "./utils";
+import { formatDate, formatSize, getParentPath } from "./utils";
 
 describe("formatSize", () => {
   it("formats bytes", () => {

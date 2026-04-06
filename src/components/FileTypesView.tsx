@@ -5,6 +5,7 @@
 import { BarChart3 } from "lucide-react";
 import type { ReactElement } from "react";
 
+import { messages } from "../i18n/messages";
 import { formatSize } from "../lib/utils";
 import type { FileTypeAnalysis, ScanProgress } from "../types";
 
@@ -38,12 +39,12 @@ export function FileTypesView({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin h-12 w-12 border-2 border-white/10 border-t-[#8b5cf6] mx-auto mb-4"></div>
-          <div className="text-[#8b5cf6] text-lg mb-2 font-mono tracking-widest uppercase">
-            {scanProgress?.phase || "分析中..."}
+          <div className="animate-spin h-12 w-12 border-2 border-white/10 border-t-primary mx-auto mb-4"></div>
+          <div className="text-primary text-lg mb-2 font-mono tracking-widest uppercase">
+            {scanProgress?.phase || messages.scanning}
           </div>
           <div className="text-white/40 text-sm">
-            {scanProgress?.scanned_files || 0} ファイル処理済み
+            {scanProgress?.scanned_files || 0} {messages.filesProcessed}
           </div>
         </div>
       </div>
@@ -55,7 +56,7 @@ export function FileTypesView({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-white/40">
           <BarChart3 size={48} className="mx-auto mb-4 opacity-50" />
-          <div className="text-lg">ファイルが見つかりませんでした</div>
+          <div className="text-lg">{messages.noFilesFound}</div>
         </div>
       </div>
     );
@@ -64,12 +65,12 @@ export function FileTypesView({
   return (
     <div className="flex-1 flex flex-col">
       {/* Summary banner */}
-      <div className="bg-[#8b5cf6]/5 border border-[#8b5cf6]/20 hud-bracket p-4 mb-4 flex justify-between items-center">
-        <div className="text-[#8b5cf6] font-medium">
-          {analysis.total_files} ファイル, {analysis.categories.length} カテゴリ
+      <div className="bg-primary/5 border border-primary/20 hud-bracket p-4 mb-4 flex justify-between items-center">
+        <div className="text-primary font-medium">
+          {analysis.total_files} {messages.files}, {analysis.categories.length} {messages.categories}
         </div>
-        <div className="text-[#8b5cf6]">
-          合計: {formatSize(analysis.total_size)}
+        <div className="text-primary">
+          {messages.total}: {formatSize(analysis.total_size)}
         </div>
       </div>
 
@@ -78,7 +79,7 @@ export function FileTypesView({
         {analysis.categories.map((category) => {
           const color = CATEGORY_COLORS[category.category] || "#6b7280";
           const percent = formatPercent(category.total_size, analysis.total_size);
-          
+
           return (
             <div
               key={category.category}
@@ -97,12 +98,12 @@ export function FileTypesView({
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <span className="text-white/50">
-                    {category.file_count} ファイル
+                    {category.file_count} {messages.files}
                   </span>
                   <span className="text-white/50 font-mono">
                     {formatSize(category.total_size)}
                   </span>
-                  <span className="text-[#8b5cf6] font-mono">
+                  <span className="text-primary font-mono">
                     {percent}
                   </span>
                 </div>

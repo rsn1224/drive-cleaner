@@ -1,11 +1,14 @@
 import { listen } from "@tauri-apps/api/event";
-import { ask, message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useState } from "react";
 
+import { useConfirm } from "../lib/confirmContext";
 import { extractErrorMessage, invoke } from "../lib/tauri";
+import { useToast } from "../lib/toastContext";
 import type { EmptyFolder, ScanProgress } from "../types";
 
 export function useEmptyFolders(currentPath: string) {
+  const confirm = useConfirm();
+  const notify = useToast();
   const [emptyFolders, setEmptyFolders] = useState<EmptyFolder[]>([]);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
@@ -27,40 +30,34 @@ export function useEmptyFolders(currentPath: string) {
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, {
-          title: "エラー",
-          kind: "error",
-        });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
     } finally {
       setScanning(false);
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, [currentPath]);
+  }, [currentPath, notify]);
 
   const handleDeleteAll = useCallback(async (): Promise<void> => {
     if (emptyFolders.length === 0) return;
 
-    const confirmed = await ask(
-      `${emptyFolders.length} 個の空フォルダを削除します。よろしいですか？`,
-      { title: "一括削除確認", kind: "warning" },
+    const ok = await confirm(
+      `${emptyFolders.length} 個の空フォルダをゴミ箱に移動します。よろしいですか？`,
+      "一括削除確認",
     );
-    if (!confirmed) return;
+    if (!ok) return;
 
     try {
       const paths = emptyFolders.map((f) => f.path);
       const deleted = await invoke<number>("delete_empty_folders", { paths });
-      await message(`${deleted} 個の空フォルダを削除しました`, { title: "完了" });
       setEmptyFolders([]);
+      notify(`${deleted} 個の空フォルダを削除しました`, "success");
     } catch (e) {
       const msg = extractErrorMessage(e);
-      await message(`削除エラー: ${msg}`, {
-        title: "エラー",
-        kind: "error",
-      });
+      notify(`削除エラー: ${msg}`, "error");
     }
-  }, [emptyFolders]);
+  }, [emptyFolders, confirm, notify]);
 
   const removeFolder = useCallback((path: string): void => {
     setEmptyFolders((prev) => prev.filter((f) => f.path !== path));

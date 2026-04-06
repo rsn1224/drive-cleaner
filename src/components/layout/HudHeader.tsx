@@ -1,15 +1,17 @@
-import { useCallback, type ReactElement } from "react";
+import { type ReactElement, useCallback } from "react";
+import { messages } from "../../i18n/messages";
 import type { AppMode } from "../../types";
 
 const MODE_LABELS: Record<AppMode, string> = {
-  browse: "FILE_BROWSER",
-  duplicates: "DUPLICATE_SCAN",
-  large_files: "LARGE_FILE_SCAN",
-  empty_folders: "EMPTY_FOLDER_SCAN",
-  old_files: "OLD_FILE_SCAN",
-  file_types: "FILE_TYPE_ANALYSIS",
-  disk_usage: "DISK_USAGE_ANALYSIS",
-  temp_cleaner: "TEMP_CLEANER",
+  browse: messages.modeBrowser,
+  duplicates: messages.modeDuplicates,
+  large_files: messages.modeLargeFiles,
+  empty_folders: messages.modeEmptyFolders,
+  old_files: messages.modeOldFiles,
+  file_types: messages.modeFileTypes,
+  disk_usage: messages.modeDiskUsage,
+  temp_cleaner: messages.modeTempCleaner,
+  similar_images: messages.modeSimilarImages,
 };
 
 interface HudHeaderProps {
@@ -50,15 +52,16 @@ export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
           <button
             type="button"
             onClick={onBack}
-            className="text-primary hover:text-white transition-colors mr-2"
+            className="text-primary hover:text-white transition-colors mr-2 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             data-testid="back-button"
+            aria-label={messages.back}
           >
             <span className="material-symbols-outlined text-lg">arrow_back</span>
           </button>
         )}
         <span className="material-symbols-outlined text-primary glow-cyan text-xl">terminal</span>
         <h1 className="text-sm font-bold tracking-[0.3em] text-primary glow-cyan uppercase">
-          DRIVE_CLEANER
+          {messages.appTitle}
         </h1>
       </div>
       <div className="flex items-center gap-6">
@@ -69,25 +72,26 @@ export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
           <button
             type="button"
             onClick={handleMinimize}
-            className="w-3 h-3 rounded-full bg-primary/30 hover:bg-primary transition-colors"
-            title="最小化"
+            className="w-3 h-3 rounded-full bg-primary/30 hover:bg-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            title={messages.minimize}
+            aria-label={messages.minimize}
           />
           <button
             type="button"
             onClick={handleMaximize}
-            className="w-3 h-3 rounded-full bg-tertiary/30 hover:bg-tertiary transition-colors"
-            title="最大化"
+            className="w-3 h-3 rounded-full bg-tertiary/30 hover:bg-tertiary transition-colors focus-visible:ring-2 focus-visible:ring-tertiary focus-visible:outline-none"
+            title={messages.maximize}
+            aria-label={messages.maximize}
           />
           <button
             type="button"
             onClick={handleClose}
-            className="w-3 h-3 rounded-full bg-error/30 hover:bg-error transition-colors"
-            title="閉じる"
+            className="w-3 h-3 rounded-full bg-error/30 hover:bg-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+            title={messages.close}
+            aria-label={messages.close}
           />
         </div>
       </div>
     </header>
   );
 }
-
-export default HudHeader;

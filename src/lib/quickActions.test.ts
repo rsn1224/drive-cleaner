@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { buildQuickActions } from "./quickActions";
 import type { ScanActions } from "../hooks/useScanActions";
+import { buildQuickActions } from "./quickActions";
 
 describe("buildQuickActions", () => {
   const mockScanActions: ScanActions = {
@@ -11,11 +11,12 @@ describe("buildQuickActions", () => {
     scanDiskUsage: vi.fn(),
     scanTempFiles: vi.fn(),
     scanDuplicates: vi.fn(),
+    scanSimilarImages: vi.fn(),
   };
 
-  it("returns 7 actions", () => {
+  it("returns 8 actions", () => {
     const actions = buildQuickActions(mockScanActions);
-    expect(actions).toHaveLength(7);
+    expect(actions).toHaveLength(8);
   });
 
   it("each action has required properties", () => {
@@ -55,12 +56,15 @@ describe("buildQuickActions", () => {
     
     actions[6].onClick(); // duplicates
     expect(mockScanActions.scanDuplicates).toHaveBeenCalledTimes(1);
+
+    actions[7].onClick(); // similar_images
+    expect(mockScanActions.scanSimilarImages).toHaveBeenCalledTimes(1);
   });
 
   it("has correct action IDs", () => {
     const actions = buildQuickActions(mockScanActions);
     const ids = actions.map((action) => action.id);
-    
+
     expect(ids).toEqual([
       "large_files",
       "empty_folders",
@@ -69,6 +73,7 @@ describe("buildQuickActions", () => {
       "disk_usage",
       "temp_cleaner",
       "duplicates",
+      "similar_images",
     ]);
   });
 });

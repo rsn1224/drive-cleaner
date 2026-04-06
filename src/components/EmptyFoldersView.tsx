@@ -5,6 +5,7 @@
 import { Folder, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 
+import { messages } from "../i18n/messages";
 import type { EmptyFolder, ScanProgress } from "../types";
 
 interface EmptyFoldersViewProps {
@@ -28,7 +29,7 @@ export function EmptyFoldersView({
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-2 border-white/10 border-t-tertiary mx-auto mb-4"></div>
           <div className="text-tertiary text-lg mb-2 font-mono tracking-widest uppercase">
-            {scanProgress?.phase || "スキャン中..."}
+            {scanProgress?.phase || messages.scanning}
           </div>
           <div className="text-white/40 text-sm">
             {scanProgress?.scanned_files || 0} フォルダ確認済み
@@ -43,7 +44,7 @@ export function EmptyFoldersView({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-white/40">
           <Folder size={48} className="mx-auto mb-4 opacity-50" />
-          <div className="text-lg">空フォルダは見つかりませんでした</div>
+          <div className="text-lg">{messages.noEmptyFoldersFound}</div>
         </div>
       </div>
     );
@@ -59,9 +60,10 @@ export function EmptyFoldersView({
         <button
           type="button"
           onClick={onDeleteAll}
-          className="bg-error/80 hover:bg-error text-black font-mono font-bold tracking-wider px-4 py-2 text-sm transition-colors"
+          className="bg-error/80 hover:bg-error text-black font-mono font-bold tracking-wider px-4 py-2 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+          aria-label={messages.deleteAll}
         >
-          すべて削除
+          {messages.deleteAll}
         </button>
       </div>
 
@@ -86,7 +88,8 @@ export function EmptyFoldersView({
             <button
               type="button"
               onClick={() => onDelete(folder.path)}
-              className="opacity-0 group-hover:opacity-100 text-white/30 hover:text-error transition-all"
+              className="opacity-0 group-hover:opacity-100 text-white/30 hover:text-error transition-all focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+              aria-label={messages.delete}
             >
               <Trash2 size={16} />
             </button>

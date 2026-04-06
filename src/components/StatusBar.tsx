@@ -2,6 +2,7 @@
 // Status Bar Component
 // ==========================================
 
+import { messages } from "../i18n/messages";
 import { formatSize } from "../lib/utils";
 import type { AppMode } from "../types";
 
@@ -24,6 +25,7 @@ interface StatusBarProps {
   diskUsageTotalSize: number;
   tempFilesCount: number;
   tempFilesTotalSize: number;
+  similarImagesGroupCount: number;
 }
 
 export function StatusBar({
@@ -45,51 +47,58 @@ export function StatusBar({
   diskUsageTotalSize,
   tempFilesCount,
   tempFilesTotalSize,
+  similarImagesGroupCount,
 }: StatusBarProps) {
   return (
-    <div className="bg-black/95 border-t border-primary/10 backdrop-blur-md px-3 py-1 flex justify-between items-center hud-label text-white/40">
+    <div 
+      className="bg-black/95 border-t border-primary/10 backdrop-blur-md px-3 py-1 flex justify-between items-center hud-label text-white/40"
+      role="status"
+      aria-live="polite"
+    >
       {mode === "browse" ? (
         <>
-          <span>{folderCount} フォルダ, {fileCount} ファイル</span>
-          <span className="text-primary font-mono">合計: {formatSize(totalSize)}</span>
+          <span>{folderCount} {messages.folders}, {fileCount} {messages.files}</span>
+          <span className="text-primary font-mono">{messages.total}: {formatSize(totalSize)}</span>
         </>
       ) : mode === "duplicates" ? (
         <>
           <span>
-            {duplicatesGroupCount} グループ, {duplicatesFileCount} ファイル
+            {duplicatesGroupCount} {messages.duplicateGroups}, {duplicatesFileCount} {messages.files}
           </span>
-          <span className="text-primary font-mono">節約可能: {formatSize(totalSaveable)}</span>
+          <span className="text-primary font-mono">{messages.saveable}: {formatSize(totalSaveable)}</span>
         </>
       ) : mode === "large_files" ? (
         <>
-          <span>{largeFilesCount} ファイル</span>
-          <span className="text-primary font-mono">合計: {formatSize(largeFilesTotalSize)}</span>
+          <span>{largeFilesCount} {messages.files}</span>
+          <span className="text-primary font-mono">{messages.total}: {formatSize(largeFilesTotalSize)}</span>
         </>
       ) : mode === "empty_folders" ? (
         <>
-          <span>{emptyFoldersCount} 空フォルダ</span>
+          <span>{emptyFoldersCount} {messages.emptyFolders}</span>
           <span></span>
         </>
       ) : mode === "old_files" ? (
         <>
-          <span>{oldFilesCount} ファイル</span>
-          <span className="text-primary font-mono">合計: {formatSize(oldFilesTotalSize)}</span>
+          <span>{oldFilesCount} {messages.files}</span>
+          <span className="text-primary font-mono">{messages.total}: {formatSize(oldFilesTotalSize)}</span>
         </>
       ) : mode === "file_types" ? (
         <>
-          <span>{fileTypesTotal} ファイル, {fileTypesCategoryCount} カテゴリ</span>
+          <span>{fileTypesTotal} {messages.files}, {fileTypesCategoryCount} {messages.categories}</span>
           <span></span>
         </>
       ) : mode === "disk_usage" ? (
         <>
-          <span>{diskUsageFileCount} ファイル</span>
-          <span className="text-primary font-mono">合計: {formatSize(diskUsageTotalSize)}</span>
+          <span>{diskUsageFileCount} {messages.files}</span>
+          <span className="text-primary font-mono">{messages.total}: {formatSize(diskUsageTotalSize)}</span>
         </>
       ) : mode === "temp_cleaner" ? (
         <>
-          <span>{tempFilesCount} 一時ファイル</span>
-          <span className="text-primary font-mono">合計: {formatSize(tempFilesTotalSize)}</span>
+          <span>{tempFilesCount} {messages.tempFiles}</span>
+          <span className="text-primary font-mono">{messages.total}: {formatSize(tempFilesTotalSize)}</span>
         </>
+      ) : mode === "similar_images" ? (
+        <span>{similarImagesGroupCount} {messages.similarImagesGroup}</span>
       ) : null}
     </div>
   );

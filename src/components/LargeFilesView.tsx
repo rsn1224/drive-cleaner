@@ -2,9 +2,10 @@
 // Large Files View Component
 // ==========================================
 
-import type { ReactElement } from "react";
 import { Eye, FileIcon, Trash2 } from "lucide-react";
+import type { ReactElement } from "react";
 
+import { messages } from "../i18n/messages";
 import { formatSize } from "../lib/utils";
 import type { LargeFile, ScanProgress } from "../types";
 
@@ -31,10 +32,10 @@ export function LargeFilesView({
         <div className="text-center">
           <div className="inline-block animate-spin h-8 w-8 border-2 border-white/10 border-t-primary mb-4"></div>
           <p className="text-primary mb-2 font-mono tracking-widest uppercase">
-            {scanProgress?.phase || "スキャン中..."}
+            {scanProgress?.phase || messages.scanning}
           </p>
           <p className="text-white/40 text-sm">
-            {scanProgress?.scanned_files || 0} ファイル処理済み
+            {scanProgress?.scanned_files || 0} {messages.filesProcessed}
           </p>
         </div>
       </div>
@@ -46,8 +47,8 @@ export function LargeFilesView({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-white/40">
           <FileIcon size={48} className="mx-auto mb-4 opacity-50" />
-          <p>大容量ファイルは見つかりませんでした</p>
-          <p className="text-sm mt-2">（1 MB 以上）</p>
+          <p>{messages.noLargeFilesFound}</p>
+          <p className="text-sm mt-2">{messages.largeFilesMin}</p>
         </div>
       </div>
     );
@@ -61,10 +62,10 @@ export function LargeFilesView({
       <div className="bg-primary/5 border border-primary/20 hud-bracket px-4 py-3 mb-4">
         <div className="flex justify-between items-center">
           <span className="text-white/90 font-medium">
-            {largeFiles.length} 個の大容量ファイル
+            {largeFiles.length}{messages.largeFilesCount}
           </span>
           <span className="text-primary font-mono">
-            合計: {formatSize(totalSize)}
+            {messages.total}: {formatSize(totalSize)}
           </span>
         </div>
       </div>
@@ -103,7 +104,7 @@ export function LargeFilesView({
                 {/* Size Bar */}
                 <div className="w-16 h-1.5 bg-white/5 overflow-hidden">
                   <div
-                    className="h-full bg-primary shadow-[0_0_12px_rgba(0,240,255,0.6)] transition-all"
+                    className="h-full bg-primary shadow-glow-primary transition-all"
                     style={{ width: `${(file.size / maxSize) * 100}%` }}
                   ></div>
                 </div>
@@ -114,16 +115,18 @@ export function LargeFilesView({
                 <button
                   type="button"
                   onClick={() => onPreview(file.path)}
-                  className="p-1.5 text-white/30 hover:text-primary transition-colors"
-                  title="プレビュー"
+                  className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                  title={messages.preview}
+                  aria-label={messages.preview}
                 >
                   <Eye size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={() => onDelete(file.path)}
-                  className="p-1.5 text-white/30 hover:text-error transition-colors"
-                  title="削除"
+                  className="p-1.5 text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+                  title={messages.delete}
+                  aria-label={messages.delete}
                 >
                   <Trash2 size={14} />
                 </button>

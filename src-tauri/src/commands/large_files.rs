@@ -24,10 +24,10 @@ pub async fn find_large_files(
     // 1. CancellationToken を取得（既存の cancel_scan で中止可能）
     let token = CancellationToken::new();
     {
-        let mut guard = state
-            .cancel_token
-            .lock()
-            .map_err(|e| format!("Lock poisoned: {e}"))?;
+        let mut guard = state.cancel_token.lock().map_err(|e| {
+            tracing::error!("Lock poisoned: {e}");
+            "内部ロックエラーが発生しました".to_string()
+        })?;
         if let Some(old) = guard.as_ref() {
             old.cancel();
         }

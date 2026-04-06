@@ -30,11 +30,14 @@ pub fn get_file_preview(path: String) -> Result<FilePreview, String> {
         if size > MAX_IMAGE_SIZE {
             return Ok(FilePreview {
                 kind: "binary".to_string(),
-                content: format!("画像ファイルが大きすぎます ({:.1} MB / 上限 50MB)", size as f64 / (1024.0 * 1024.0)),
+                content: format!(
+                    "画像ファイルが大きすぎます ({:.1} MB / 上限 50MB)",
+                    size as f64 / (1024.0 * 1024.0)
+                ),
                 size,
             });
         }
-        
+
         let bytes = std::fs::read(&path).map_err(|e| e.to_string())?;
         let b64 = BASE64.encode(&bytes);
         let mime = match ext.as_str() {
@@ -56,8 +59,8 @@ pub fn get_file_preview(path: String) -> Result<FilePreview, String> {
 
     // Text extensions → read first 8KB
     let text_exts = [
-        "txt", "md", "rs", "ts", "tsx", "js", "jsx", "json", "toml", "yaml", "yml", "xml",
-        "html", "css", "csv", "log", "py", "sh", "bat", "ps1", "cfg", "ini", "env",
+        "txt", "md", "rs", "ts", "tsx", "js", "jsx", "json", "toml", "yaml", "yml", "xml", "html",
+        "css", "csv", "log", "py", "sh", "bat", "ps1", "cfg", "ini", "env",
     ];
     if text_exts.contains(&ext.as_str()) {
         let mut file = File::open(&path).map_err(|e| e.to_string())?;

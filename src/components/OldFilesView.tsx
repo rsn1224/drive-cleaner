@@ -5,6 +5,7 @@
 import { Clock, Eye, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 
+import { messages } from "../i18n/messages";
 import { formatDate, formatSize } from "../lib/utils";
 import type { OldFile, ScanProgress } from "../types";
 
@@ -31,7 +32,7 @@ export function OldFilesView({
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-2 border-white/10 border-t-error mx-auto mb-4"></div>
           <div className="text-error text-lg mb-2 font-mono tracking-widest uppercase">
-            {scanProgress?.phase || "スキャン中..."}
+            {scanProgress?.phase || messages.scanning}
           </div>
           <div className="text-white/40 text-sm">
             {scanProgress?.scanned_files || 0} ファイル処理済み
@@ -46,7 +47,7 @@ export function OldFilesView({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-white/40">
           <Clock size={48} className="mx-auto mb-4 opacity-50" />
-          <div className="text-lg">1年以上未更新のファイルは見つかりませんでした</div>
+          <div className="text-lg">{messages.noOldFilesFound}</div>
         </div>
       </div>
     );
@@ -60,7 +61,7 @@ export function OldFilesView({
           {oldFiles.length} 個の古いファイル（1年以上未更新）
         </div>
         <div className="text-error">
-          合計: {formatSize(totalSize)}
+          {messages.total}: {formatSize(totalSize)}
         </div>
       </div>
 
@@ -82,7 +83,7 @@ export function OldFilesView({
                 </div>
                 <div className="flex items-center gap-4 mt-1">
                   <span className="text-error font-mono text-sm">
-                    {file.days_old}日前
+                    {file.days_old}{messages.daysAgo}
                   </span>
                   <span className="text-white/30 text-[11px]">
                     {formatDate(file.modified_at)}
@@ -97,14 +98,18 @@ export function OldFilesView({
               <button
                 type="button"
                 onClick={() => onPreview(file.path)}
-                className="text-white/30 hover:text-primary transition-colors"
+                className="text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                title={messages.preview}
+                aria-label={messages.preview}
               >
                 <Eye size={16} />
               </button>
               <button
                 type="button"
                 onClick={() => onDelete(file.path)}
-                className="text-white/30 hover:text-error transition-colors"
+                className="text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+                title={messages.delete}
+                aria-label={messages.delete}
               >
                 <Trash2 size={16} />
               </button>

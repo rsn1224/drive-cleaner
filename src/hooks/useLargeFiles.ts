@@ -3,16 +3,17 @@
 // ==========================================
 
 import { listen } from "@tauri-apps/api/event";
-import { message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useMemo, useState } from "react";
-
+import { notifyComplete } from "../lib/notify";
 import { extractErrorMessage, invoke } from "../lib/tauri";
+import { useToast } from "../lib/toastContext";
 import type { LargeFile, ScanProgress } from "../types";
 
 const TOP_N = 100;
 const MIN_SIZE = 1_048_576; // 1MB
 
 export function useLargeFiles(currentPath: string) {
+  const notify = useToast();
   const [largeFiles, setLargeFiles] = useState<LargeFile[]>([]);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
@@ -38,20 +39,18 @@ export function useLargeFiles(currentPath: string) {
         minSize: MIN_SIZE,
       });
       setLargeFiles(results);
+      await notifyComplete("スキャン完了", `${results.length} 件の大容量ファイルを検出しました`);
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, {
-          title: "エラー",
-          kind: "error",
-        });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
     } finally {
       setScanning(false);
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, [currentPath]);
+  }, [currentPath, notify]);
 
   const removeFile = useCallback((path: string): void => {
     setLargeFiles((prev) => prev.filter((f) => f.path !== path));

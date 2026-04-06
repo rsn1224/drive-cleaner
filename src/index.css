@@ -91,6 +91,11 @@ body {
 .glow-green { filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.4)); }
 .glow-amber { filter: drop-shadow(0 0 8px rgba(255, 184, 0, 0.4)); }
 
+/* Primary glow shadow (replaces shadow-[0_0_12px_rgba(0,240,255,0.6)]) */
+.shadow-glow-primary {
+  box-shadow: 0 0 12px color-mix(in srgb, var(--color-primary) 60%, transparent);
+}
+
 /* HUD label style */
 .hud-label {
   font-family: "Space Grotesk", sans-serif;

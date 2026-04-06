@@ -6,16 +6,19 @@ import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
 import type { ReactElement } from "react";
 import { useState } from "react";
 
+import { messages } from "../i18n/messages";
 import { formatSize } from "../lib/utils";
-import type { ScanProgress, TempScanResult } from "../types";
+import type { RecycleBinInfo, ScanProgress, TempScanResult } from "../types";
 
 interface TempCleanerViewProps {
   scanResult: TempScanResult | null;
   scanning: boolean;
   scanProgress: ScanProgress | null;
   cleaning: boolean;
+  recycleBinInfo: RecycleBinInfo | null;
   onCleanAll: () => void;
   onCleanCategory: (categoryName: string) => void;
+  onEmptyRecycleBin: () => void;
 }
 
 export function TempCleanerView({
@@ -23,8 +26,10 @@ export function TempCleanerView({
   scanning,
   scanProgress,
   cleaning,
+  recycleBinInfo,
   onCleanAll,
   onCleanCategory,
+  onEmptyRecycleBin,
 }: TempCleanerViewProps): ReactElement {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
@@ -46,11 +51,11 @@ export function TempCleanerView({
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-2 border-white/10 border-tertiary mx-auto mb-4"></div>
           <div className="text-tertiary text-lg mb-2 font-mono tracking-widest uppercase">
-            {scanProgress?.phase || "スキャン中..."}
+            {scanProgress?.phase || messages.scanning}
           </div>
           {scanProgress && scanProgress.scanned_files > 0 && (
             <div className="text-white/40 text-sm">
-              {scanProgress.scanned_files} ファイル処理済み
+              {scanProgress.scanned_files} {messages.filesProcessed}
             </div>
           )}
         </div>
@@ -63,7 +68,7 @@ export function TempCleanerView({
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center text-white/40">
           <Trash2 size={48} className="mx-auto mb-4 opacity-50" />
-          <div className="text-lg">一時ファイルは見つかりませんでした</div>
+          <div className="text-lg">{messages.noTempFilesFound}</div>
         </div>
       </div>
     );
@@ -71,29 +76,58 @@ export function TempCleanerView({
 
   return (
     <div className="flex-1 flex flex-col">
+      {/* Recycle Bin widget */}
+      <div className="bg-black border border-white/10 border-l-2 border-l-tertiary p-4 mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Trash2 size={20} className="text-tertiary shrink-0" />
+          <div>
+            <div className="text-white/90 font-medium text-sm">{messages.recycleBin}</div>
+            {recycleBinInfo === null ? (
+              <div className="text-[11px] text-white/40">{messages.loading}</div>
+            ) : recycleBinInfo.item_count === 0 ? (
+              <div className="text-[11px] text-white/40">{messages.recycleBinEmpty}</div>
+            ) : (
+              <div className="text-[11px] text-white/40 font-mono">
+                {recycleBinInfo.item_count.toLocaleString()} {messages.recycleBinItems} / {formatSize(recycleBinInfo.total_size)}
+              </div>
+            )}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onEmptyRecycleBin}
+          disabled={cleaning || recycleBinInfo === null || recycleBinInfo.item_count === 0}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-mono bg-error/10 border border-error/30 text-error hover:bg-error/20 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+        >
+          <Trash2 size={12} />
+          {messages.recycleBinEmptyAction}
+        </button>
+      </div>
+
       {/* Summary banner */}
       <div className="bg-tertiary/5 border border-tertiary/20 hud-bracket p-4 mb-4 flex justify-between items-center">
         <div className="text-tertiary font-medium">
-          {scanResult.total_files} 一時ファイル
+          {scanResult.total_files} {messages.tempFiles}
         </div>
         <div className="text-tertiary">
-          合計: {formatSize(scanResult.total_size)}
+          {messages.total}: {formatSize(scanResult.total_size)}
         </div>
         <button
           type="button"
           onClick={onCleanAll}
           disabled={cleaning}
-          className="bg-error/80 hover:bg-error disabled:bg-error/50 disabled:text-white/30 text-black font-mono font-bold tracking-wider px-4 py-2 text-sm flex items-center gap-2 transition-colors"
+          className="bg-error/80 hover:bg-error disabled:bg-error/50 disabled:text-white/30 text-black font-mono font-bold tracking-wider px-4 py-2 text-sm flex items-center gap-2 transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+          aria-label={messages.cleanAll}
         >
           {cleaning ? (
             <>
               <div className="animate-spin h-4 w-4 border-2 border-black border-t-transparent" />
-              クリーン中...
+              {messages.cleaning}
             </>
           ) : (
             <>
               <Trash2 size={16} />
-              すべてクリーン
+              {messages.cleanAll}
             </>
           )}
         </button>
@@ -105,9 +139,10 @@ export function TempCleanerView({
           const isExpanded = expandedCategories.has(category.name);
           
           return (
-            <div
+            <section
               key={category.name}
               className="bg-black border border-white/5 border-l-2 border-l-tertiary p-4"
+              aria-label={category.name}
             >
               {/* Category header */}
               <div className="flex items-center justify-between mb-3">
@@ -115,7 +150,9 @@ export function TempCleanerView({
                   <button
                     type="button"
                     onClick={() => toggleCategory(category.name)}
-                    className="text-white/30 hover:text-white/60 transition-colors"
+                    className="text-white/30 hover:text-white/60 transition-colors focus-visible:ring-2 focus-visible:ring-tertiary focus-visible:outline-none"
+                    aria-expanded={isExpanded}
+                    aria-label={isExpanded ? "折りたたむ" : "展開する"}
                   >
                     {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </button>
@@ -132,7 +169,7 @@ export function TempCleanerView({
                 <div className="flex items-center gap-3">
                   <div className="text-right">
                     <div className="text-white/50 text-sm">
-                      {category.file_count} ファイル
+                      {category.file_count} {messages.files}
                     </div>
                     <div className="text-tertiary font-mono text-sm">
                       {formatSize(category.total_size)}
@@ -142,9 +179,9 @@ export function TempCleanerView({
                     type="button"
                     onClick={() => onCleanCategory(category.name)}
                     disabled={cleaning}
-                    className="border border-white/10 hover:border-tertiary disabled:border-white/5 text-white/30 hover:text-tertiary disabled:text-white/10 px-3 py-1 text-sm transition-colors"
+                    className="border border-white/10 hover:border-tertiary disabled:border-white/5 text-white/30 hover:text-tertiary disabled:text-white/10 px-3 py-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-tertiary focus-visible:outline-none"
                   >
-                    {cleaning ? "処理中..." : "クリーン"}
+                    {cleaning ? messages.processing : messages.clean}
                   </button>
                 </div>
               </div>
@@ -153,7 +190,7 @@ export function TempCleanerView({
               {isExpanded && (
                 <div className="border-t border-white/5 pt-3">
                   <div className="text-[10px] text-white/40 mb-2 hud-label">
-                    ファイル一覧 ({category.items.length})
+                    {messages.fileList} ({category.items.length})
                   </div>
                   <div className="space-y-1 max-h-32 overflow-auto">
                     {category.items.map((item) => (
@@ -170,7 +207,7 @@ export function TempCleanerView({
                   </div>
                 </div>
               )}
-            </div>
+            </section>
           );
         })}
       </div>

@@ -18,14 +18,16 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
         const Icon = action.icon;
         
         return (
-          <div
+          <button
             key={action.id}
-            onClick={disabled ? undefined : action.onClick}
+            type="button"
+            disabled={disabled}
+            onClick={action.onClick}
             className={`
-              bg-black border border-white/5 p-4 cursor-pointer
+              w-full text-left bg-black border border-white/5 p-4 cursor-pointer
               hover:border-primary/40 transition-all relative
               hud-bracket
-              ${disabled ? "opacity-50 pointer-events-none" : ""}
+              disabled:opacity-50 disabled:cursor-not-allowed
             `}
             style={{ borderTopColor: action.color, borderTopWidth: "2px" }}
           >
@@ -42,11 +44,9 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         );
       })}
     </div>
   );
 }
-
-export default QuickActions;

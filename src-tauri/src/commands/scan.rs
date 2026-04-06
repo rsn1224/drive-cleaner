@@ -62,10 +62,10 @@ fn emit_progress(app: &AppHandle, phase: &str, count: usize) {
 
 #[tauri::command]
 pub fn cancel_scan(state: State<'_, ScanState>) -> Result<(), String> {
-    let mut token_guard = state
-        .cancel_token
-        .lock()
-        .map_err(|e| format!("Lock poisoned: {e}"))?;
+    let mut token_guard = state.cancel_token.lock().map_err(|e| {
+        tracing::error!("Lock poisoned: {e}");
+        "内部ロックエラーが発生しました".to_string()
+    })?;
 
     if let Some(token) = token_guard.take() {
         token.cancel();
@@ -83,10 +83,10 @@ pub async fn find_duplicates(
     // Issue new cancellation token, cancel old scan if running
     let token = CancellationToken::new();
     {
-        let mut token_guard = state
-            .cancel_token
-            .lock()
-            .map_err(|e| format!("Lock poisoned: {e}"))?;
+        let mut token_guard = state.cancel_token.lock().map_err(|e| {
+            tracing::error!("Lock poisoned: {e}");
+            "内部ロックエラーが発生しました".to_string()
+        })?;
         if let Some(old_token) = token_guard.as_ref() {
             old_token.cancel();
         }
@@ -166,11 +166,7 @@ pub async fn find_duplicates(
 
             let full_results: Vec<(String, String)> = partial_paths
                 .par_iter()
-                .filter_map(|path| {
-                    calc_full_hash(path)
-                        .ok()
-                        .map(|hash| (hash, path.clone()))
-                })
+                .filter_map(|path| calc_full_hash(path).ok().map(|hash| (hash, path.clone())))
                 .collect();
 
             let mut full_hash_map: HashMap<String, Vec<String>> = HashMap::new();

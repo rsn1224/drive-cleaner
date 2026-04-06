@@ -3,16 +3,18 @@
 // ==========================================
 
 import {
-  BarChart3,
-  Clock,
-  FolderOpen,
-  HardDrive,
-  PieChart,
-  Search,
-  Trash,
+    BarChart3,
+    Clock,
+    FolderOpen,
+    HardDrive,
+    Images,
+    PieChart,
+    Search,
+    Trash,
 } from "lucide-react";
 
 import type { ScanActions } from "../hooks/useScanActions";
+import { messages } from "../i18n/messages";
 
 export interface QuickAction {
   id: string;
@@ -28,58 +30,66 @@ export function buildQuickActions(actions: ScanActions): QuickAction[] {
     {
       id: "large_files",
       icon: HardDrive,
-      label: "大容量ファイル",
-      description: "トップ100件を検出",
+      label: messages.qaLargeFiles,
+      description: messages.qaLargeFilesDesc,
       color: "#22c55e",
       onClick: actions.scanLargeFiles,
     },
     {
       id: "empty_folders",
       icon: FolderOpen,
-      label: "空フォルダ",
-      description: "空のフォルダを検出",
+      label: messages.qaEmptyFolders,
+      description: messages.qaEmptyFoldersDesc,
       color: "#f59e0b",
       onClick: actions.scanEmptyFolders,
     },
     {
       id: "old_files",
       icon: Clock,
-      label: "古いファイル",
-      description: "1年以上未更新",
+      label: messages.qaOldFiles,
+      description: messages.qaOldFilesDesc,
       color: "#ef4444",
       onClick: actions.scanOldFiles,
     },
     {
       id: "file_types",
       icon: BarChart3,
-      label: "種別分析",
-      description: "カテゴリ別集計",
+      label: messages.qaFileTypes,
+      description: messages.qaFileTypesDesc,
       color: "#8b5cf6",
       onClick: actions.scanFileTypes,
     },
     {
       id: "disk_usage",
       icon: PieChart,
-      label: "ディスク使用量",
-      description: "フォルダ別サイズ",
+      label: messages.qaDiskUsage,
+      description: messages.qaDiskUsageDesc,
       color: "#06b6d4",
       onClick: actions.scanDiskUsage,
     },
     {
       id: "temp_cleaner",
       icon: Trash,
-      label: "一時クリーン",
-      description: "一時ファイル削除",
+      label: messages.qaTempCleaner,
+      description: messages.qaTempCleanerDesc,
       color: "#f97316",
       onClick: actions.scanTempFiles,
     },
     {
       id: "duplicates",
       icon: Search,
-      label: "重複スキャン",
-      description: "重複ファイル検出",
+      label: messages.qaDuplicates,
+      description: messages.qaDuplicatesDesc,
       color: "#6366f1",
       onClick: actions.scanDuplicates,
+    },
+    {
+      id: "similar_images",
+      icon: Images,
+      label: messages.qaSimilarImages,
+      description: messages.qaSimilarImagesDesc,
+      color: "#ec4899",
+      onClick: actions.scanSimilarImages,
     },
   ];
 }

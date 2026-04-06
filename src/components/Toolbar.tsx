@@ -4,6 +4,7 @@
 
 import { ArrowUp, ChevronRight } from "lucide-react";
 
+import { messages } from "../i18n/messages";
 import type { AppMode, SortDir, SortKey } from "../types";
 
 interface ToolbarProps {
@@ -30,9 +31,10 @@ export function Toolbar({
       <div className="flex items-center gap-2 overflow-hidden min-w-0">
         <button
           type="button"
-          title="上のフォルダへ"
+          title={messages.goUp}
           onClick={onGoUp}
-          className="p-1.5 text-white/30 hover:text-primary bg-white/5 border border-white/10 hover:border-primary/40 transition-colors shrink-0"
+          className="p-1.5 text-white/30 hover:text-primary bg-white/5 border border-white/10 hover:border-primary/40 transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+          aria-label={messages.goUp}
         >
           <ArrowUp size={16} />
         </button>
@@ -48,7 +50,7 @@ export function Toolbar({
               <button
                 type="button"
                 onClick={() => onNavigate(crumb.path)}
-                className={`px-2 py-0.5 text-xs transition-colors ${
+                className={`px-2 py-0.5 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
                   idx === breadcrumbs.length - 1
                     ? "bg-primary/10 text-primary border border-primary/40"
                     : "text-white/40 hover:bg-white/5 hover:text-white/60"
@@ -65,25 +67,27 @@ export function Toolbar({
           <button
             type="button"
             onClick={() => onToggleSort("name")}
-            className={`px-2 py-1 text-[11px] transition-colors ${
+            className={`px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
               sortKey === "name"
                 ? "bg-primary/10 text-primary border border-primary/40"
                 : "text-white/40 hover:bg-white/5"
             }`}
+            aria-label={messages.sortName}
           >
-            名前{" "}
+            {messages.sortName}{" "}
             {sortKey === "name" ? (sortDir === "asc" ? "↑" : "↓") : ""}
           </button>
           <button
             type="button"
             onClick={() => onToggleSort("size")}
-            className={`px-2 py-1 text-[11px] transition-colors ${
+            className={`px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
               sortKey === "size"
                 ? "bg-primary/10 text-primary border border-primary/40"
                 : "text-white/40 hover:bg-white/5"
             }`}
+            aria-label={messages.sortSize}
           >
-            サイズ{" "}
+            {messages.sortSize}{" "}
             {sortKey === "size" ? (sortDir === "asc" ? "↑" : "↓") : ""}
           </button>
         </div>

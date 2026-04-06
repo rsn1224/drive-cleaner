@@ -25,10 +25,10 @@ pub async fn find_old_files(
 ) -> Result<Vec<OldFile>, String> {
     let token = CancellationToken::new();
     {
-        let mut guard = state
-            .cancel_token
-            .lock()
-            .map_err(|e| format!("Lock poisoned: {e}"))?;
+        let mut guard = state.cancel_token.lock().map_err(|e| {
+            tracing::error!("Lock poisoned: {e}");
+            "内部ロックエラーが発生しました".to_string()
+        })?;
         if let Some(old) = guard.as_ref() {
             old.cancel();
         }

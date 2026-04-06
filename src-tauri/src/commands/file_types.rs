@@ -17,7 +17,9 @@ fn categorize_extension(ext: &str) -> &'static str {
         "jpg" | "jpeg" | "png" | "gif" | "bmp" | "webp" | "svg" | "ico" | "tiff" | "raw" => "画像",
         "mp4" | "avi" | "mkv" | "mov" | "wmv" | "flv" | "webm" | "m4v" => "動画",
         "mp3" | "wav" | "flac" | "aac" | "ogg" | "wma" | "m4a" => "音楽",
-        "pdf" | "doc" | "docx" | "xls" | "xlsx" | "ppt" | "pptx" | "txt" | "md" | "rtf" | "csv" => "文書",
+        "pdf" | "doc" | "docx" | "xls" | "xlsx" | "ppt" | "pptx" | "txt" | "md" | "rtf" | "csv" => {
+            "文書"
+        }
         "zip" | "rar" | "7z" | "tar" | "gz" | "bz2" | "xz" | "zst" => "アーカイブ",
         "rs" | "ts" | "tsx" | "js" | "jsx" | "py" | "java" | "c" | "cpp" | "h" | "go" | "rb"
         | "php" | "swift" | "kt" | "cs" | "html" | "css" | "scss" | "json" | "toml" | "yaml"
@@ -34,10 +36,10 @@ pub async fn analyze_file_types(
 ) -> Result<FileTypeAnalysis, String> {
     let token = CancellationToken::new();
     {
-        let mut guard = state
-            .cancel_token
-            .lock()
-            .map_err(|e| format!("Lock poisoned: {e}"))?;
+        let mut guard = state.cancel_token.lock().map_err(|e| {
+            tracing::error!("Cancel token lock poisoned: {e}");
+            "内部ロックエラーが発生しました".to_string()
+        })?;
         if let Some(old) = guard.as_ref() {
             old.cancel();
         }
@@ -71,7 +73,9 @@ pub async fn analyze_file_types(
                     .to_lowercase();
 
                 let category = categorize_extension(&ext);
-                let entry_data = map.entry(category).or_insert_with(|| (HashSet::new(), 0, 0));
+                let entry_data = map
+                    .entry(category)
+                    .or_insert_with(|| (HashSet::new(), 0, 0));
 
                 if !ext.is_empty() {
                     entry_data.0.insert(ext);

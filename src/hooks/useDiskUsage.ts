@@ -1,11 +1,12 @@
 import { listen } from "@tauri-apps/api/event";
-import { message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useState } from "react";
 
 import { extractErrorMessage, invoke } from "../lib/tauri";
+import { useToast } from "../lib/toastContext";
 import type { FolderSize, ScanProgress } from "../types";
 
 export function useDiskUsage(currentPath: string) {
+  const notify = useToast();
   const [folderCache, setFolderCache] = useState<Map<string, FolderSize>>(new Map());
   const [currentFolderPath, setCurrentFolderPath] = useState<string>("");
   const [scanning, setScanning] = useState(false);
@@ -30,17 +31,14 @@ export function useDiskUsage(currentPath: string) {
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, {
-          title: "エラー",
-          kind: "error",
-        });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
       return null;
     } finally {
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, []);
+  }, [notify]);
 
   // 初回スキャン（ルート）
   const handleAnalyzeDiskUsage = useCallback(async (): Promise<void> => {
@@ -48,13 +46,15 @@ export function useDiskUsage(currentPath: string) {
     setScanProgress({ phase: "準備中...", scanned_files: 0 });
     setFolderCache(new Map());
 
-    const result = await fetchFolder(currentPath);
-    if (result) {
-      setCurrentFolderPath(currentPath);
-      setBreadcrumbs([{ name: result.name, path: currentPath }]);
+    try {
+      const result = await fetchFolder(currentPath);
+      if (result) {
+        setCurrentFolderPath(currentPath);
+        setBreadcrumbs([{ name: result.name, path: currentPath }]);
+      }
+    } finally {
+      setScanning(false);
     }
-
-    setScanning(false);
   }, [currentPath, fetchFolder]);
 
   // ドリルダウン（scanning 中は無視して競合防止）
@@ -69,12 +69,15 @@ export function useDiskUsage(currentPath: string) {
     }
 
     setScanning(true);
-    const result = await fetchFolder(path);
-    if (result) {
-      setCurrentFolderPath(path);
-      setBreadcrumbs((prev) => [...prev, { name, path }]);
+    try {
+      const result = await fetchFolder(path);
+      if (result) {
+        setCurrentFolderPath(path);
+        setBreadcrumbs((prev) => [...prev, { name, path }]);
+      }
+    } finally {
+      setScanning(false);
     }
-    setScanning(false);
   }, [scanning, folderCache, fetchFolder]);
 
   // パンくずナビゲーション

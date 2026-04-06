@@ -7,47 +7,11 @@ use tauri::{AppHandle, Emitter, State};
 use tokio_util::sync::CancellationToken;
 use tracing::{info, warn};
 
+use super::temp_paths::{
+    get_browser_cache_paths, get_temp_paths, is_browser_cache_file, is_safe_to_delete,
+};
 use crate::state::ScanState;
 use crate::types::{CleanResult, ScanProgress, TempCategory, TempItem, TempScanResult};
-
-const SAFE_EXTENSIONS: &[&str] = &[
-    "tmp", "log", "bak", "old", "dmp", "etl", "chk", "temp",
-];
-
-fn is_safe_to_delete(ext: &str) -> bool {
-    SAFE_EXTENSIONS.contains(&ext)
-}
-
-fn get_temp_paths() -> Vec<(String, String)> {
-    // (カテゴリ名, パス) のペア
-    let mut paths = Vec::new();
-
-    // 1. %TEMP%
-    let temp = std::env::temp_dir();
-    paths.push(("Windows Temp".to_string(), temp.to_string_lossy().into_owned()));
-
-    // 2. %LOCALAPPDATA%\Temp
-    if let Some(local) = dirs::data_local_dir() {
-        let local_temp = local.join("Temp");
-        if local_temp.exists() && local_temp != temp {
-            paths.push(("Local App Temp".to_string(), local_temp.to_string_lossy().into_owned()));
-        }
-
-        // 3. CrashDumps
-        let crash = local.join("CrashDumps");
-        if crash.exists() {
-            paths.push(("クラッシュダンプ".to_string(), crash.to_string_lossy().into_owned()));
-        }
-    }
-
-    // 4. Windows Prefetch (読めるファイルのみ)
-    let prefetch = std::path::Path::new("C:\\Windows\\Prefetch");
-    if prefetch.exists() {
-        paths.push(("Windows Prefetch".to_string(), prefetch.to_string_lossy().into_owned()));
-    }
-
-    paths
-}
 
 #[tauri::command]
 pub async fn scan_temp_files(
@@ -56,23 +20,33 @@ pub async fn scan_temp_files(
 ) -> Result<TempScanResult, String> {
     let token = CancellationToken::new();
     {
-        let mut guard = state
-            .cancel_token
-            .lock()
-            .map_err(|e| format!("Lock poisoned: {e}"))?;
+        let mut guard = state.cancel_token.lock().map_err(|e| {
+            tracing::error!("Lock poisoned: {e}");
+            "内部ロックエラーが発生しました".to_string()
+        })?;
         if let Some(old) = guard.as_ref() {
             old.cancel();
         }
         *guard = Some(token.clone());
     }
 
-    let temp_paths = get_temp_paths();
+    // システム一時ファイルとブラウザキャッシュを結合してスキャン
+    let system_paths = get_temp_paths();
+    let browser_paths = get_browser_cache_paths();
+
     let mut categories: Vec<TempCategory> = Vec::new();
     let mut total_files: usize = 0;
     let mut total_size: u64 = 0;
     let mut scanned: usize = 0;
 
-    for (name, path) in &temp_paths {
+    // (name, path, browser_cache: bool)
+    let all_paths: Vec<(String, String, bool)> = system_paths
+        .into_iter()
+        .map(|(n, p)| (n, p, false))
+        .chain(browser_paths.into_iter().map(|(n, p)| (n, p, true)))
+        .collect();
+
+    for (name, path, is_browser) in &all_paths {
         if token.is_cancelled() {
             return Err("Scan was cancelled".to_string());
         }
@@ -99,7 +73,8 @@ pub async fn scan_temp_files(
                         .unwrap_or("")
                         .to_lowercase();
 
-                    if is_safe_to_delete(&ext) {
+                    // ブラウザキャッシュは拡張子不問、システム一時は安全な拡張子のみ
+                    if *is_browser || is_safe_to_delete(&ext) {
                         let size = meta.len();
                         items.push(TempItem {
                             path: entry.path().to_string_lossy().into_owned(),
@@ -157,13 +132,13 @@ pub async fn clean_temp_files(paths: Vec<String>) -> Result<CleanResult, String>
     let mut errors: Vec<String> = Vec::new();
 
     for path in &paths {
-        // 安全な拡張子の再検証（クライアント入力を信頼しない）
+        // セキュリティ検証: 安全な拡張子 OR ブラウザキャッシュディレクトリ配下のみ許可
         let ext = std::path::Path::new(path)
             .extension()
             .and_then(|e| e.to_str())
             .unwrap_or("")
             .to_lowercase();
-        if !is_safe_to_delete(&ext) {
+        if !is_safe_to_delete(&ext) && !is_browser_cache_file(path) {
             warn!("Skipping unsafe extension: {path}");
             errors.push(format!("{path}: unsafe extension .{ext}"));
             continue;
@@ -190,49 +165,14 @@ pub async fn clean_temp_files(paths: Vec<String>) -> Result<CleanResult, String>
         }
     }
 
-    info!("Cleaned {deleted_count}/{} files, freed {} bytes", paths.len(), freed_size);
+    info!(
+        "Cleaned {deleted_count}/{} files, freed {} bytes",
+        paths.len(),
+        freed_size
+    );
     Ok(CleanResult {
         deleted_count,
         freed_size,
         errors,
     })
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn safe_extensions_accepted() {
-        assert!(is_safe_to_delete("tmp"));
-        assert!(is_safe_to_delete("log"));
-        assert!(is_safe_to_delete("bak"));
-        assert!(is_safe_to_delete("dmp"));
-        assert!(is_safe_to_delete("etl"));
-        assert!(is_safe_to_delete("old"));
-        assert!(is_safe_to_delete("chk"));
-        assert!(is_safe_to_delete("temp"));
-    }
-
-    #[test]
-    fn unsafe_extensions_rejected() {
-        assert!(!is_safe_to_delete("exe"));
-        assert!(!is_safe_to_delete("dll"));
-        assert!(!is_safe_to_delete("sys"));
-        assert!(!is_safe_to_delete("doc"));
-        assert!(!is_safe_to_delete("jpg"));
-        assert!(!is_safe_to_delete("rs"));
-        assert!(!is_safe_to_delete(""));
-    }
-
-    #[test]
-    fn temp_paths_not_empty() {
-        let paths = get_temp_paths();
-        assert!(!paths.is_empty(), "should find at least one temp path");
-        // Windows should always have %TEMP%
-        assert!(
-            paths.iter().any(|(name, _)| name == "Windows Temp"),
-            "should include Windows Temp"
-        );
-    }
 }

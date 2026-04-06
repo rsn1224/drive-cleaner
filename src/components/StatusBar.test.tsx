@@ -23,6 +23,7 @@ describe("StatusBar", () => {
     diskUsageTotalSize: 0,
     tempFilesCount: 0,
     tempFilesTotalSize: 0,
+    similarImagesGroupCount: 0,
   };
 
   it("displays folder and file count in browse mode", () => {

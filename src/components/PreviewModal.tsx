@@ -2,9 +2,10 @@
 // Preview Modal Component
 // ==========================================
 
-import type { ReactElement } from "react";
 import { X } from "lucide-react";
+import type { ReactElement } from "react";
 
+import { messages } from "../i18n/messages";
 import { formatSize } from "../lib/utils";
 import type { FilePreview } from "../types";
 
@@ -19,18 +20,29 @@ export function PreviewModal({
   previewPath,
   onClose,
 }: PreviewModalProps): ReactElement {
+  const fileName = previewPath.split(/[\\/]/).pop() ?? "Preview";
+  
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+    <div 
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="preview-title"
+    >
       <div className="bg-black border border-primary/20 hud-bracket max-w-4xl max-h-[80vh] w-full flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center px-4 py-3 border-b border-primary/10">
-          <h3 className="text-primary font-medium truncate hud-label tracking-widest">
-            プレビュー: {previewPath.split(/[\\/]/).pop()}
+          <h3 
+            id="preview-title"
+            className="text-primary font-medium truncate hud-label tracking-widest"
+          >
+            {messages.previewTitle}: {fileName}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-white/30 hover:text-error p-1 transition-colors"
+            className="text-white/30 hover:text-error p-1 transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+            aria-label={messages.close}
           >
             <X size={20} />
           </button>
@@ -46,13 +58,13 @@ export function PreviewModal({
             <div className="flex items-center justify-center min-h-[200px]">
               <img
                 src={preview.content}
-                alt="Preview"
+                alt={fileName}
                 className="max-w-full max-h-[60vh] object-contain"
               />
             </div>
           ) : (
             <div className="text-center text-white/40 py-8">
-              <p className="mb-2">このファイル形式はプレビューできません</p>
+              <p className="mb-2">{messages.cannotPreview}</p>
               <p className="text-sm text-white/30">
                 サイズ: {formatSize(preview.size)}
               </p>

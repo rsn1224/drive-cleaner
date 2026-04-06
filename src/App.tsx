@@ -2,17 +2,19 @@
 // Main App Component - Drive Cleaner
 // ==========================================
 
-import type { DragEvent, ReactElement } from "react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import type { ReactElement } from "react";
+import { useMemo, useState } from "react";
 
+import { DriveOverview } from "./components/DriveOverview";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { BottomNav } from "./components/layout/BottomNav";
+import { HudHeader } from "./components/layout/HudHeader";
 import { MainContent } from "./components/MainContent";
 import { PreviewModal } from "./components/PreviewModal";
 import { QuickActions } from "./components/QuickActions";
 import { StatusBar } from "./components/StatusBar";
 import { Toolbar } from "./components/Toolbar";
-import { BottomNav } from "./components/layout/BottomNav";
-import { HudHeader } from "./components/layout/HudHeader";
+import { useAppInteractions } from "./hooks/useAppInteractions";
 import { useDiskUsage } from "./hooks/useDiskUsage";
 import { useEmptyFolders } from "./hooks/useEmptyFolders";
 import { useFileBrowser } from "./hooks/useFileBrowser";
@@ -21,10 +23,12 @@ import { useLargeFiles } from "./hooks/useLargeFiles";
 import { useOldFiles } from "./hooks/useOldFiles";
 import { useScan } from "./hooks/useScan";
 import { useScanActions } from "./hooks/useScanActions";
+import { useSimilarImages } from "./hooks/useSimilarImages";
 import { useTempCleaner } from "./hooks/useTempCleaner";
+import { messages } from "./i18n/messages";
 import { buildQuickActions } from "./lib/quickActions";
 
-function App(): ReactElement {
+export function App(): ReactElement {
   const fileBrowser = useFileBrowser();
   const scan = useScan(fileBrowser.currentPath);
   const largeFiles = useLargeFiles(fileBrowser.currentPath);
@@ -33,6 +37,7 @@ function App(): ReactElement {
   const fileTypes = useFileTypes(fileBrowser.currentPath);
   const diskUsage = useDiskUsage(fileBrowser.currentPath);
   const tempCleaner = useTempCleaner();
+  const similarImages = useSimilarImages(fileBrowser.currentPath);
 
   const scanActions = useScanActions({
     setMode: scan.setMode,
@@ -43,6 +48,7 @@ function App(): ReactElement {
     handleAnalyzeFileTypes: fileTypes.handleAnalyzeFileTypes,
     handleAnalyzeDiskUsage: diskUsage.handleAnalyzeDiskUsage,
     handleScanTempFiles: tempCleaner.handleScan,
+    handleScanSimilarImages: similarImages.handleScan,
   });
 
   const quickActions = useMemo(
@@ -51,6 +57,9 @@ function App(): ReactElement {
   );
 
   const [activeTab, setActiveTab] = useState<"dashboard" | "files" | "settings" | "logs">("dashboard");
+
+  const { isDragging, handleDeleteItem, handleDragOver, handleDragLeave, handleDrop } =
+    useAppInteractions({ fileBrowser, scan, largeFiles, emptyFolders, oldFiles, similarImages });
 
   const folderCount = useMemo(
     () => fileBrowser.nodes.filter((n) => n.is_dir).length,
@@ -65,80 +74,11 @@ function App(): ReactElement {
     [fileBrowser.nodes],
   );
 
-  const handleDeleteItem = useCallback(
-    async (path: string, hash?: string) => {
-      if (scan.mode === "duplicates" && hash) {
-        await fileBrowser.handleDeleteItem(path);
-        scan.removeDuplicate(path, hash);
-      } else if (scan.mode === "large_files") {
-        await fileBrowser.handleDeleteItem(path);
-        largeFiles.removeFile(path);
-      } else if (scan.mode === "empty_folders") {
-        await fileBrowser.handleDeleteItem(path);
-        emptyFolders.removeFolder(path);
-      } else if (scan.mode === "old_files") {
-        await fileBrowser.handleDeleteItem(path);
-        oldFiles.removeFile(path);
-      } else {
-        await fileBrowser.handleDeleteItem(path);
-      }
-    },
-    [fileBrowser, scan, largeFiles, emptyFolders, oldFiles],
-  );
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent): void => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      )
-        return;
-
-      if (e.key === "Backspace") {
-        e.preventDefault();
-        fileBrowser.handleGoUp();
-      }
-      if (e.key === "Escape") {
-        if (fileBrowser.preview) {
-          fileBrowser.setPreview(null);
-        } else if (scan.mode !== "browse") {
-          scan.setMode("browse");
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [
-    fileBrowser.currentPath,
-    fileBrowser.preview,
-    fileBrowser,
-    scan.mode,
-    scan,
-  ]);
-
-  // Drag & drop
-  const [isDragging, setIsDragging] = useState(false);
-
-  const handleDragOver = (e: DragEvent): void => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-  const handleDragLeave = (): void => setIsDragging(false);
-  const handleDrop = (e: DragEvent): void => {
-    e.preventDefault();
-    setIsDragging(false);
-    const items = e.dataTransfer.files;
-    if (items.length > 0) {
-      const path = (items[0] as File & { path?: string }).path;
-      if (path) fileBrowser.loadDirectory(path);
-    }
-  };
-
   return (
     <ErrorBoundary>
       <div
         className="h-screen bg-black flex flex-col relative overflow-hidden"
+        role="application"
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -147,7 +87,7 @@ function App(): ReactElement {
         {isDragging && (
           <div className="fixed inset-0 z-40 bg-primary/5 border-2 border-dashed border-primary flex items-center justify-center flex-col gap-4 text-primary pointer-events-none">
             <span className="material-symbols-outlined text-5xl">folder_open</span>
-            <span className="hud-label">DROP_FOLDER_TO_SCAN</span>
+            <span className="hud-label">{messages.dropToScan}</span>
           </div>
         )}
 
@@ -163,9 +103,9 @@ function App(): ReactElement {
         {/* Main content - pt-14 for header, pb-16 for bottom nav */}
         <main className={`flex-1 overflow-auto ${scan.mode === "browse" ? "pt-14 pb-16" : "pt-14"}`}>
           {scan.mode === "browse" ? (
-            // Tab content
             activeTab === "dashboard" ? (
-              <div className="p-4">
+              <div className="p-4 space-y-4">
+                <DriveOverview />
                 <QuickActions actions={quickActions} disabled={fileBrowser.loading} />
               </div>
             ) : activeTab === "files" ? (
@@ -189,13 +129,15 @@ function App(): ReactElement {
                   fileTypes={fileTypes}
                   diskUsage={diskUsage}
                   tempCleaner={tempCleaner}
-
+                  similarImages={similarImages}
                   onDelete={handleDeleteItem}
                 />
               </div>
             ) : (
               <div className="p-4 text-center text-white/40 hud-label pt-20">
-                {activeTab === "settings" ? "CONFIG_MODULE // COMING_SOON" : "LOG_VIEWER // COMING_SOON"}
+                {activeTab === "settings"
+                  ? `${messages.configModule} // ${messages.comingSoon}`
+                  : `${messages.logViewer} // ${messages.comingSoon}`}
               </div>
             )
           ) : (
@@ -209,12 +151,13 @@ function App(): ReactElement {
               fileTypes={fileTypes}
               diskUsage={diskUsage}
               tempCleaner={tempCleaner}
+              similarImages={similarImages}
               onDelete={handleDeleteItem}
             />
           )}
         </main>
 
-        {/* Status bar - fixed positioning */}
+        {/* Status bar */}
         <div className={scan.mode === "browse" ? "fixed bottom-16 w-full z-40" : "fixed bottom-0 w-full z-40"}>
           <StatusBar
             mode={scan.mode}
@@ -238,6 +181,7 @@ function App(): ReactElement {
             diskUsageTotalSize={diskUsage.currentFolder?.size ?? 0}
             tempFilesCount={tempCleaner.scanResult?.total_files ?? 0}
             tempFilesTotalSize={tempCleaner.scanResult?.total_size ?? 0}
+            similarImagesGroupCount={similarImages.groups.length}
           />
         </div>
 
@@ -261,4 +205,3 @@ function App(): ReactElement {
   );
 }
 
-export default App;

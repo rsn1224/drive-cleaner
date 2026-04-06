@@ -15,6 +15,7 @@ interface ScanHooks {
   handleAnalyzeFileTypes: () => Promise<void>;
   handleAnalyzeDiskUsage: () => Promise<void>;
   handleScanTempFiles: () => Promise<void>;
+  handleScanSimilarImages: () => Promise<void>;
 }
 
 export interface ScanActions {
@@ -25,6 +26,7 @@ export interface ScanActions {
   scanDiskUsage: () => void;
   scanTempFiles: () => void;
   scanDuplicates: () => void;
+  scanSimilarImages: () => void;
 }
 
 export function useScanActions(hooks: ScanHooks): ScanActions {
@@ -63,6 +65,11 @@ export function useScanActions(hooks: ScanHooks): ScanActions {
     hooks.handleScanDuplicates();
   }, [hooks.setMode, hooks.handleScanDuplicates]);
 
+  const scanSimilarImages = useCallback(() => {
+    hooks.setMode("similar_images");
+    hooks.handleScanSimilarImages();
+  }, [hooks.setMode, hooks.handleScanSimilarImages]);
+
   return {
     scanLargeFiles,
     scanEmptyFolders,
@@ -71,5 +78,6 @@ export function useScanActions(hooks: ScanHooks): ScanActions {
     scanDiskUsage,
     scanTempFiles,
     scanDuplicates,
+    scanSimilarImages,
   };
 }

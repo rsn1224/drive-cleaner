@@ -18,7 +18,7 @@ impl fmt::Display for AppError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Io(msg) => write!(f, "{msg}"),
-            Self::LockPoisoned => write!(f, "Internal lock error"),
+            Self::LockPoisoned => write!(f, "内部ロックエラーが発生しました"),
             Self::Cancelled => write!(f, "Scan was cancelled"),
             Self::InvalidInput(msg) => write!(f, "Invalid input: {msg}"),
         }
@@ -37,11 +37,6 @@ impl From<AppError> for String {
     fn from(e: AppError) -> Self {
         e.to_string()
     }
-}
-
-/// Helper to convert a poisoned lock error to AppError.
-pub fn lock_err<T>(_: std::sync::PoisonError<T>) -> AppError {
-    AppError::LockPoisoned
 }
 
 #[cfg(test)]
@@ -70,6 +65,6 @@ mod tests {
     fn into_string() {
         let e = AppError::LockPoisoned;
         let s: String = e.into();
-        assert_eq!(s, "Internal lock error");
+        assert_eq!(s, "内部ロックエラーが発生しました");
     }
 }

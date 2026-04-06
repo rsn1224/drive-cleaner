@@ -41,7 +41,7 @@ export function getParentPath(currentPath: string): string {
   const parent = trimmed.slice(0, idx);
   // Windows drive root: "C:" → "C:\\"
   if (IS_WINDOWS && parent.length === 2 && parent[1] === ":") {
-    return parent + "\\";
+    return `${parent}\\`;
   }
   return parent;
 }

@@ -12,12 +12,13 @@ describe("useScanActions", () => {
     handleAnalyzeFileTypes: vi.fn(),
     handleAnalyzeDiskUsage: vi.fn(),
     handleScanTempFiles: vi.fn(),
+    handleScanSimilarImages: vi.fn(),
   };
 
-  it("returns 7 action functions", () => {
+  it("returns 8 action functions", () => {
     const { result } = renderHook(() => useScanActions(mockHooks));
-    
-    expect(Object.keys(result.current)).toHaveLength(7);
+
+    expect(Object.keys(result.current)).toHaveLength(8);
     expect(typeof result.current.scanLargeFiles).toBe("function");
     expect(typeof result.current.scanEmptyFolders).toBe("function");
     expect(typeof result.current.scanOldFiles).toBe("function");
@@ -25,6 +26,7 @@ describe("useScanActions", () => {
     expect(typeof result.current.scanDiskUsage).toBe("function");
     expect(typeof result.current.scanTempFiles).toBe("function");
     expect(typeof result.current.scanDuplicates).toBe("function");
+    expect(typeof result.current.scanSimilarImages).toBe("function");
   });
 
   it("scanLargeFiles calls setMode and handleScanLargeFiles", () => {

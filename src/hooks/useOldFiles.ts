@@ -1,14 +1,15 @@
 import { listen } from "@tauri-apps/api/event";
-import { message } from "@tauri-apps/plugin-dialog";
 import { useCallback, useMemo, useState } from "react";
 
 import { extractErrorMessage, invoke } from "../lib/tauri";
+import { useToast } from "../lib/toastContext";
 import type { OldFile, ScanProgress } from "../types";
 
 const MIN_DAYS = 365;
 const TOP_N = 200;
 
 export function useOldFiles(currentPath: string) {
+  const notify = useToast();
   const [oldFiles, setOldFiles] = useState<OldFile[]>([]);
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
@@ -37,17 +38,14 @@ export function useOldFiles(currentPath: string) {
     } catch (e) {
       if (e !== "Scan was cancelled") {
         const msg = extractErrorMessage(e);
-        await message(`スキャンエラー: ${msg}`, {
-          title: "エラー",
-          kind: "error",
-        });
+        notify(`スキャンエラー: ${msg}`, "error");
       }
     } finally {
       setScanning(false);
       setScanProgress(null);
       unlistenProgress.then((fn) => fn());
     }
-  }, [currentPath]);
+  }, [currentPath, notify]);
 
   const removeFile = useCallback((path: string): void => {
     setOldFiles((prev) => prev.filter((f) => f.path !== path));
