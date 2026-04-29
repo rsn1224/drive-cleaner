@@ -6,8 +6,13 @@ src-tauri/gen/
 # Stitch temp files (root level only)
 /*.json
 !package.json
-!package-lock.json
 !tsconfig.json
+
+# npm lock file (pnpm を使用)
+package-lock.json
 /*.html
 /*.png
 /design/screenshot-*.png
+
+# Claude Code personal settings
+.claude/settings.local.json
