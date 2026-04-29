@@ -1,24 +1,24 @@
-import "@testing-library/jest-dom/vitest";
-import { vi } from "vitest";
+import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
 // Mock Tauri APIs
-vi.mock("@tauri-apps/api/core", () => ({
+vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),
 }));
 
-vi.mock("@tauri-apps/api/event", () => ({
+vi.mock('@tauri-apps/api/event', () => ({
   listen: vi.fn(() => Promise.resolve(() => {})),
 }));
 
-vi.mock("@tauri-apps/plugin-dialog", () => ({
+vi.mock('@tauri-apps/plugin-dialog', () => ({
   open: vi.fn(),
   save: vi.fn(),
   ask: vi.fn(() => Promise.resolve(true)),
   message: vi.fn(),
 }));
 
-vi.mock("@tauri-apps/plugin-notification", () => ({
+vi.mock('@tauri-apps/plugin-notification', () => ({
   isPermissionGranted: vi.fn(() => Promise.resolve(false)),
-  requestPermission: vi.fn(() => Promise.resolve("granted")),
+  requestPermission: vi.fn(() => Promise.resolve('granted')),
   sendNotification: vi.fn(),
 }));

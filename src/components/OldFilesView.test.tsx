@@ -1,8 +1,8 @@
 // @AC AC-OldFilesView
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { OldFilesView } from "./OldFilesView";
+import { OldFilesView } from './OldFilesView';
 
 const baseProps = {
   oldFiles: [],
@@ -13,19 +13,19 @@ const baseProps = {
   onDelete: vi.fn(),
 };
 
-describe("OldFilesView", () => {
-  it("スキャン中にスピナーを表示する", () => {
+describe('OldFilesView', () => {
+  it('スキャン中にスピナーを表示する', () => {
     render(
       <OldFilesView
         {...baseProps}
         scanning={true}
-        scanProgress={{ phase: "スキャン中...", scanned_files: 0 }}
+        scanProgress={{ phase: 'スキャン中...', scanned_files: 0 }}
       />,
     );
-    expect(document.querySelector(".animate-spin")).toBeTruthy();
+    expect(document.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  it("ファイルなしで空メッセージを表示する", () => {
+  it('ファイルなしで空メッセージを表示する', () => {
     render(<OldFilesView {...baseProps} scanning={false} />);
     expect(screen.getByText(/ファイル|見つかり/)).toBeTruthy();
   });

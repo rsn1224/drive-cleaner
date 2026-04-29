@@ -2,15 +2,15 @@
 // App-level keyboard shortcuts and drag-and-drop
 // ==========================================
 
-import type { DragEvent } from "react";
-import { useCallback, useEffect, useState } from "react";
+import type { DragEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import type { useEmptyFolders } from "./useEmptyFolders";
-import type { useFileBrowser } from "./useFileBrowser";
-import type { useLargeFiles } from "./useLargeFiles";
-import type { useOldFiles } from "./useOldFiles";
-import type { useScan } from "./useScan";
-import type { useSimilarImages } from "./useSimilarImages";
+import type { useEmptyFolders } from './useEmptyFolders';
+import type { useFileBrowser } from './useFileBrowser';
+import type { useLargeFiles } from './useLargeFiles';
+import type { useOldFiles } from './useOldFiles';
+import type { useScan } from './useScan';
+import type { useSimilarImages } from './useSimilarImages';
 
 type FileBrowser = ReturnType<typeof useFileBrowser>;
 type Scan = ReturnType<typeof useScan>;
@@ -48,23 +48,21 @@ export function useAppInteractions({
 
   const handleDeleteItem = useCallback(
     async (path: string, hash?: string) => {
-      if (scan.mode === "duplicates" && hash) {
+      if (scan.mode === 'duplicates' && hash) {
         await fileBrowser.handleDeleteItem(path);
         scan.removeDuplicate(path, hash);
-      } else if (scan.mode === "large_files") {
+      } else if (scan.mode === 'large_files') {
         await fileBrowser.handleDeleteItem(path);
         largeFiles.removeFile(path);
-      } else if (scan.mode === "empty_folders") {
+      } else if (scan.mode === 'empty_folders') {
         await fileBrowser.handleDeleteItem(path);
         emptyFolders.removeFolder(path);
-      } else if (scan.mode === "old_files") {
+      } else if (scan.mode === 'old_files') {
         await fileBrowser.handleDeleteItem(path);
         oldFiles.removeFile(path);
-      } else if (scan.mode === "similar_images") {
+      } else if (scan.mode === 'similar_images') {
         await fileBrowser.handleDeleteItem(path);
-        const groupIndex = similarImages.groups.findIndex((g) =>
-          g.paths.includes(path),
-        );
+        const groupIndex = similarImages.groups.findIndex((g) => g.paths.includes(path));
         if (groupIndex !== -1) similarImages.removeGroup(groupIndex);
       } else {
         await fileBrowser.handleDeleteItem(path);
@@ -75,27 +73,23 @@ export function useAppInteractions({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent): void => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      )
-        return;
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
 
-      if (e.key === "Backspace") {
+      if (e.key === 'Backspace') {
         e.preventDefault();
         fileBrowser.handleGoUp();
       }
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         if (fileBrowser.preview) {
           fileBrowser.setPreview(null);
-        } else if (scan.mode !== "browse") {
-          scan.setMode("browse");
+        } else if (scan.mode !== 'browse') {
+          scan.setMode('browse');
         }
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [fileBrowser.preview, fileBrowser, scan.mode, scan]);
 
   const handleDragOver = (e: DragEvent): void => {

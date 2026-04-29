@@ -2,9 +2,9 @@
 // Status Bar Component
 // ==========================================
 
-import { messages } from "../i18n/messages";
-import { formatSize } from "../lib/utils";
-import type { AppMode } from "../types";
+import { messages } from '../i18n/messages';
+import { formatSize } from '../lib/utils';
+import type { AppMode } from '../types';
 
 interface StatusBarProps {
   mode: AppMode;
@@ -50,55 +50,84 @@ export function StatusBar({
   similarImagesGroupCount,
 }: StatusBarProps) {
   return (
-    <div 
+    <div
       className="bg-black/95 border-t border-primary/10 backdrop-blur-md px-3 py-1 flex justify-between items-center hud-label text-white/40"
       role="status"
       aria-live="polite"
     >
-      {mode === "browse" ? (
-        <>
-          <span>{folderCount} {messages.folders}, {fileCount} {messages.files}</span>
-          <span className="text-primary font-mono">{messages.total}: {formatSize(totalSize)}</span>
-        </>
-      ) : mode === "duplicates" ? (
+      {mode === 'browse' ? (
         <>
           <span>
-            {duplicatesGroupCount} {messages.duplicateGroups}, {duplicatesFileCount} {messages.files}
+            {folderCount} {messages.folders}, {fileCount} {messages.files}
           </span>
-          <span className="text-primary font-mono">{messages.saveable}: {formatSize(totalSaveable)}</span>
+          <span className="text-primary font-mono">
+            {messages.total}: {formatSize(totalSize)}
+          </span>
         </>
-      ) : mode === "large_files" ? (
+      ) : mode === 'duplicates' ? (
         <>
-          <span>{largeFilesCount} {messages.files}</span>
-          <span className="text-primary font-mono">{messages.total}: {formatSize(largeFilesTotalSize)}</span>
+          <span>
+            {duplicatesGroupCount} {messages.duplicateGroups}, {duplicatesFileCount}{' '}
+            {messages.files}
+          </span>
+          <span className="text-primary font-mono">
+            {messages.saveable}: {formatSize(totalSaveable)}
+          </span>
         </>
-      ) : mode === "empty_folders" ? (
+      ) : mode === 'large_files' ? (
         <>
-          <span>{emptyFoldersCount} {messages.emptyFolders}</span>
+          <span>
+            {largeFilesCount} {messages.files}
+          </span>
+          <span className="text-primary font-mono">
+            {messages.total}: {formatSize(largeFilesTotalSize)}
+          </span>
+        </>
+      ) : mode === 'empty_folders' ? (
+        <>
+          <span>
+            {emptyFoldersCount} {messages.emptyFolders}
+          </span>
           <span></span>
         </>
-      ) : mode === "old_files" ? (
+      ) : mode === 'old_files' ? (
         <>
-          <span>{oldFilesCount} {messages.files}</span>
-          <span className="text-primary font-mono">{messages.total}: {formatSize(oldFilesTotalSize)}</span>
+          <span>
+            {oldFilesCount} {messages.files}
+          </span>
+          <span className="text-primary font-mono">
+            {messages.total}: {formatSize(oldFilesTotalSize)}
+          </span>
         </>
-      ) : mode === "file_types" ? (
+      ) : mode === 'file_types' ? (
         <>
-          <span>{fileTypesTotal} {messages.files}, {fileTypesCategoryCount} {messages.categories}</span>
+          <span>
+            {fileTypesTotal} {messages.files}, {fileTypesCategoryCount} {messages.categories}
+          </span>
           <span></span>
         </>
-      ) : mode === "disk_usage" ? (
+      ) : mode === 'disk_usage' ? (
         <>
-          <span>{diskUsageFileCount} {messages.files}</span>
-          <span className="text-primary font-mono">{messages.total}: {formatSize(diskUsageTotalSize)}</span>
+          <span>
+            {diskUsageFileCount} {messages.files}
+          </span>
+          <span className="text-primary font-mono">
+            {messages.total}: {formatSize(diskUsageTotalSize)}
+          </span>
         </>
-      ) : mode === "temp_cleaner" ? (
+      ) : mode === 'temp_cleaner' ? (
         <>
-          <span>{tempFilesCount} {messages.tempFiles}</span>
-          <span className="text-primary font-mono">{messages.total}: {formatSize(tempFilesTotalSize)}</span>
+          <span>
+            {tempFilesCount} {messages.tempFiles}
+          </span>
+          <span className="text-primary font-mono">
+            {messages.total}: {formatSize(tempFilesTotalSize)}
+          </span>
         </>
-      ) : mode === "similar_images" ? (
-        <span>{similarImagesGroupCount} {messages.similarImagesGroup}</span>
+      ) : mode === 'similar_images' ? (
+        <span>
+          {similarImagesGroupCount} {messages.similarImagesGroup}
+        </span>
       ) : null}
     </div>
   );

@@ -4,9 +4,8 @@
 // frameless (decorations: false) windows on Windows.
 // ==========================================
 
-import { AlertTriangle } from "lucide-react";
-import { type ReactElement, useEffect } from "react";
-
+import { AlertTriangle } from 'lucide-react';
+import { type ReactElement, useEffect } from 'react';
 
 interface ConfirmModalProps {
   message: string;
@@ -15,15 +14,20 @@ interface ConfirmModalProps {
   onCancel: () => void;
 }
 
-export function ConfirmModal({ message, title, onConfirm, onCancel }: ConfirmModalProps): ReactElement {
+export function ConfirmModal({
+  message,
+  title,
+  onConfirm,
+  onCancel,
+}: ConfirmModalProps): ReactElement {
   // Escape キーでキャンセル、Enter で確認
   useEffect(() => {
     const handler = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") onCancel();
-      if (e.key === "Enter") onConfirm();
+      if (e.key === 'Escape') onCancel();
+      if (e.key === 'Enter') onConfirm();
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
   }, [onConfirm, onCancel]);
 
   return (
@@ -32,7 +36,9 @@ export function ConfirmModal({ message, title, onConfirm, onCancel }: ConfirmMod
       type="button"
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 w-full"
       onClick={onCancel}
-      onKeyDown={(e) => { if (e.key === "Escape") onCancel(); }}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') onCancel();
+      }}
       aria-label="モーダルを閉じる"
     >
       {/* inner panel: クリックが backdrop まで伝播しないよう block */}

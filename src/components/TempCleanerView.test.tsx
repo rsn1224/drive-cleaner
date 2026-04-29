@@ -1,8 +1,8 @@
 // @AC AC-TempCleanerView
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { TempCleanerView } from "./TempCleanerView";
+import { TempCleanerView } from './TempCleanerView';
 
 const baseProps = {
   scanResult: null,
@@ -15,19 +15,19 @@ const baseProps = {
   onEmptyRecycleBin: vi.fn(),
 };
 
-describe("TempCleanerView", () => {
-  it("スキャン中にスピナーを表示する", () => {
+describe('TempCleanerView', () => {
+  it('スキャン中にスピナーを表示する', () => {
     render(
       <TempCleanerView
         {...baseProps}
         scanning={true}
-        scanProgress={{ phase: "スキャン中...", scanned_files: 0 }}
+        scanProgress={{ phase: 'スキャン中...', scanned_files: 0 }}
       />,
     );
-    expect(document.querySelector(".animate-spin")).toBeTruthy();
+    expect(document.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  it("結果なしで空メッセージを表示する", () => {
+  it('結果なしで空メッセージを表示する', () => {
     render(<TempCleanerView {...baseProps} scanning={false} />);
     expect(screen.getByText(/一時ファイル|見つかり/)).toBeTruthy();
   });

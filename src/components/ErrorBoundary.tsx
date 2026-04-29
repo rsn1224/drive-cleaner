@@ -2,10 +2,10 @@
 // Error Boundary Component
 // ==========================================
 
-import { AlertTriangle } from "lucide-react";
-import { Component, type ReactNode } from "react";
+import { AlertTriangle } from 'lucide-react';
+import { Component, type ReactNode } from 'react';
 
-import { messages } from "../i18n/messages";
+import { messages } from '../i18n/messages';
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -32,9 +32,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <h2 className="text-xl font-bold text-error hud-label tracking-widest">
               {messages.unexpectedError}
             </h2>
-            <p className="text-sm text-white/40 font-mono max-w-md">
-              {this.state.error?.message}
-            </p>
+            <p className="text-sm text-white/40 font-mono max-w-md">{this.state.error?.message}</p>
             <button
               type="button"
               onClick={() => this.setState({ hasError: false, error: null })}

@@ -2,12 +2,12 @@
 // Similar Images Hook
 // ==========================================
 
-import { listen } from "@tauri-apps/api/event";
-import { useCallback, useState } from "react";
-import { notifyComplete } from "../lib/notify";
-import { extractErrorMessage, invoke } from "../lib/tauri";
-import { useToast } from "../lib/toastContext";
-import type { ScanProgress, SimilarImageGroup } from "../types";
+import { listen } from '@tauri-apps/api/event';
+import { useCallback, useState } from 'react';
+import { notifyComplete } from '../lib/notify';
+import { extractErrorMessage, invoke } from '../lib/tauri';
+import { useToast } from '../lib/toastContext';
+import type { ScanProgress, SimilarImageGroup } from '../types';
 
 const DEFAULT_THRESHOLD = 10;
 
@@ -19,24 +19,24 @@ export function useSimilarImages(currentPath: string) {
 
   const handleScan = useCallback(async (): Promise<void> => {
     setScanning(true);
-    setScanProgress({ phase: "準備中...", scanned_files: 0 });
+    setScanProgress({ phase: '準備中...', scanned_files: 0 });
     setGroups([]);
 
-    const unlistenProgress = listen<ScanProgress>("scan_progress", (event) => {
+    const unlistenProgress = listen<ScanProgress>('scan_progress', (event) => {
       setScanProgress(event.payload);
     });
 
     try {
-      const results = await invoke<SimilarImageGroup[]>("find_similar_images", {
+      const results = await invoke<SimilarImageGroup[]>('find_similar_images', {
         targetDir: currentPath,
         threshold: DEFAULT_THRESHOLD,
       });
       setGroups(results);
-      await notifyComplete("スキャン完了", `${results.length} グループの類似画像を検出しました`);
+      await notifyComplete('スキャン完了', `${results.length} グループの類似画像を検出しました`);
     } catch (e) {
-      if (e !== "Scan was cancelled") {
+      if (e !== 'Scan was cancelled') {
         const msg = extractErrorMessage(e);
-        notify(`スキャンエラー: ${msg}`, "error");
+        notify(`スキャンエラー: ${msg}`, 'error');
       }
     } finally {
       setScanning(false);

@@ -2,14 +2,14 @@
 // Duplicates View Component
 // ==========================================
 
-import { FileDown, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { FileDown, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { messages } from "../i18n/messages";
-import { formatSize } from "../lib/utils";
-import type { DuplicateGroup, ScanProgress } from "../types";
-import { DuplicateGroupCard } from "./DuplicateGroupCard";
+import { messages } from '../i18n/messages';
+import { formatSize } from '../lib/utils';
+import type { DuplicateGroup, ScanProgress } from '../types';
+import { DuplicateGroupCard } from './DuplicateGroupCard';
 
 interface DuplicatesViewProps {
   duplicates: DuplicateGroup[];
@@ -65,9 +65,7 @@ export function DuplicatesView({
   const handleSelectShortest = (): void => {
     const toSelect = new Set<string>();
     for (const group of duplicates) {
-      const shortest = group.paths.reduce((a, b) =>
-        a.length <= b.length ? a : b
-      );
+      const shortest = group.paths.reduce((a, b) => (a.length <= b.length ? a : b));
       for (const p of group.paths) {
         if (p !== shortest) toSelect.add(p);
       }
@@ -110,9 +108,7 @@ export function DuplicatesView({
               {duplicates.length} {messages.duplicateGroups} の重複を検出
             </span>
             <div className="text-right">
-              <div className="text-2xl font-semibold text-primary">
-                {formatSize(totalSaveable)}
-              </div>
+              <div className="text-2xl font-semibold text-primary">{formatSize(totalSaveable)}</div>
               <div className="text-xs text-white/40">{messages.saveable}</div>
             </div>
           </div>
@@ -134,7 +130,8 @@ export function DuplicatesView({
                 className="flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-mono bg-error/20 border border-error/50 text-error hover:bg-error/30 transition-colors"
               >
                 <Trash2 size={12} />
-                {messages.bulkDeleteSelected} ({selectedPaths.size}{messages.selectedCount})
+                {messages.bulkDeleteSelected} ({selectedPaths.size}
+                {messages.selectedCount})
               </button>
             )}
             <button
@@ -157,7 +154,9 @@ export function DuplicatesView({
 
           {/* Smart selection buttons */}
           <div className="flex flex-wrap gap-2 mt-2 pt-2 border-t border-white/5">
-            <span className="text-[10px] text-white/30 font-mono self-center">{messages.autoSelect}</span>
+            <span className="text-[10px] text-white/30 font-mono self-center">
+              {messages.autoSelect}
+            </span>
             <button
               type="button"
               onClick={handleSelectAll}
@@ -188,16 +187,14 @@ export function DuplicatesView({
       {/* Scanning helper text */}
       {scanning && hasDuplicates && (
         <p className="text-center text-xs text-white/40 py-3" aria-live="polite">
-          {messages.scanning}... 現在 {duplicates.length} {messages.duplicateGroups}発見（{messages.saveable}:{" "}
-          {formatSize(totalSaveable)})
+          {messages.scanning}... 現在 {duplicates.length} {messages.duplicateGroups}発見（
+          {messages.saveable}: {formatSize(totalSaveable)})
         </p>
       )}
 
       {/* Duplicate groups */}
       {!scanning && duplicates.length === 0 ? (
-        <div className="text-center text-white/40 mt-10">
-          {messages.noDuplicatesFound}
-        </div>
+        <div className="text-center text-white/40 mt-10">{messages.noDuplicatesFound}</div>
       ) : (
         duplicates.map((group) => (
           <DuplicateGroupCard

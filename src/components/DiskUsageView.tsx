@@ -2,15 +2,15 @@
 // Disk Usage View Component
 // ==========================================
 
-import { ResponsiveTreeMap } from "@nivo/treemap";
-import { BarChart2, ChevronRight, Folder, Grid2x2 } from "lucide-react";
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { ResponsiveTreeMap } from '@nivo/treemap';
+import { BarChart2, ChevronRight, Folder, Grid2x2 } from 'lucide-react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { messages } from "../i18n/messages";
-import { tokens } from "../lib/design-tokens";
-import { formatSize } from "../lib/utils";
-import type { FolderSize, ScanProgress } from "../types";
+import { messages } from '../i18n/messages';
+import { tokens } from '../lib/design-tokens';
+import { formatSize } from '../lib/utils';
+import type { FolderSize, ScanProgress } from '../types';
 
 const TREEMAP_COLORS = [
   `${tokens.colors.primary}22`,
@@ -22,20 +22,20 @@ const TREEMAP_COLORS = [
 
 const NIVO_THEME = {
   background: tokens.colors.surface,
-  text: { fill: tokens.colors.primary, fontFamily: "monospace", fontSize: 11 },
+  text: { fill: tokens.colors.primary, fontFamily: 'monospace', fontSize: 11 },
   tooltip: {
     container: {
       background: tokens.colors.surfaceContainer,
       border: `1px solid ${tokens.colors.primary}4d`,
       color: tokens.colors.primary,
-      fontFamily: "monospace",
+      fontFamily: 'monospace',
       fontSize: 11,
     },
   },
 };
 
 function formatPercent(part: number, total: number): string {
-  if (total === 0) return "0%";
+  if (total === 0) return '0%';
   return `${((part / total) * 100).toFixed(1)}%`;
 }
 
@@ -87,7 +87,7 @@ export function DiskUsageView({
   onDrillDown,
   onNavigateUp,
 }: DiskUsageViewProps): ReactElement {
-  const [viewMode, setViewMode] = useState<"bar" | "treemap">("bar");
+  const [viewMode, setViewMode] = useState<'bar' | 'treemap'>('bar');
 
   if (scanning) {
     return (
@@ -148,11 +148,11 @@ export function DiskUsageView({
             <button
               type="button"
               title="リスト表示"
-              onClick={() => setViewMode("bar")}
+              onClick={() => setViewMode('bar')}
               className={`p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-                viewMode === "bar"
-                  ? "bg-primary/20 text-primary"
-                  : "text-white/30 hover:text-white/60"
+                viewMode === 'bar'
+                  ? 'bg-primary/20 text-primary'
+                  : 'text-white/30 hover:text-white/60'
               }`}
             >
               <BarChart2 size={14} />
@@ -160,11 +160,11 @@ export function DiskUsageView({
             <button
               type="button"
               title="ツリーマップ表示"
-              onClick={() => setViewMode("treemap")}
+              onClick={() => setViewMode('treemap')}
               className={`p-1.5 transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-                viewMode === "treemap"
-                  ? "bg-primary/20 text-primary"
-                  : "text-white/30 hover:text-white/60"
+                viewMode === 'treemap'
+                  ? 'bg-primary/20 text-primary'
+                  : 'text-white/30 hover:text-white/60'
               }`}
             >
               <Grid2x2 size={14} />
@@ -173,13 +173,11 @@ export function DiskUsageView({
         </div>
       </div>
 
-      {viewMode === "treemap" ? (
+      {viewMode === 'treemap' ? (
         /* Treemap view */
         <div className="flex-1 min-h-0">
           {currentFolder.children.length === 0 ? (
-            <div className="text-center text-white/40 py-8">
-              {messages.noSubfolders}
-            </div>
+            <div className="text-center text-white/40 py-8">{messages.noSubfolders}</div>
           ) : (
             <ResponsiveTreeMap
               data={toNivoData(currentFolder)}
@@ -194,7 +192,7 @@ export function DiskUsageView({
               parentLabel={(node: { data: { name: string } }) => node.data.name}
               theme={NIVO_THEME}
               onClick={(node: { data: NivoNode }) => {
-                if (node.data.path && !node.data.id.endsWith("/__files__")) {
+                if (node.data.path && !node.data.id.endsWith('/__files__')) {
                   onDrillDown(node.data.path, node.data.name);
                 }
               }}
@@ -205,9 +203,7 @@ export function DiskUsageView({
         /* Bar list view */
         <div className="flex-1 overflow-auto space-y-2">
           {currentFolder.children.length === 0 ? (
-            <div className="text-center text-white/40 py-8">
-              {messages.noSubfolders}
-            </div>
+            <div className="text-center text-white/40 py-8">{messages.noSubfolders}</div>
           ) : (
             currentFolder.children.map((child) => {
               const percent = formatPercent(child.size, currentFolder.size);

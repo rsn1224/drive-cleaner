@@ -9,20 +9,13 @@ import {
   ShieldOff,
   Trash2,
   X,
-} from "lucide-react";
-import {
-  type CSSProperties,
-  type ReactElement,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import { FixedSizeList as List } from "react-window";
+} from 'lucide-react';
+import { type ReactElement, useEffect, useRef, useState } from 'react';
+import { List, type RowComponentProps } from 'react-window';
 
-import { messages } from "../i18n/messages";
-import { formatSize, ROW_HEIGHT } from "../lib/utils";
-import type { FileNode } from "../types";
+import { messages } from '../i18n/messages';
+import { formatSize, ROW_HEIGHT } from '../lib/utils';
+import type { FileNode } from '../types';
 
 interface BrowseViewProps {
   sortedNodes: FileNode[];
@@ -45,6 +38,152 @@ interface BrowseViewProps {
   onOrganize: () => void;
 }
 
+interface BrowseRowData {
+  sortedNodes: FileNode[];
+  selectedPaths: Set<string>;
+  onNavigate: (path: string) => void;
+  onPreview: (path: string) => void;
+  onDelete: (path: string) => void;
+  onSecureDelete?: (path: string) => void;
+  onMove: (path: string) => void;
+  onRename: (path: string, name: string) => void;
+  onToggleSelect: (path: string) => void;
+}
+
+function BrowseRow({
+  index,
+  style,
+  sortedNodes,
+  selectedPaths,
+  onNavigate,
+  onPreview,
+  onDelete,
+  onSecureDelete,
+  onMove,
+  onRename,
+  onToggleSelect,
+}: RowComponentProps<BrowseRowData>): ReactElement | null {
+  const node = sortedNodes[index];
+  if (!node) return null;
+
+  const isSelected = selectedPaths.has(node.path);
+
+  const folderInteraction = node.is_dir
+    ? {
+        role: 'button' as const,
+        tabIndex: 0,
+        onClick: () => onNavigate(node.path),
+        onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+          if (e.key === 'Enter' || e.key === ' ') onNavigate(node.path);
+        },
+      }
+    : {};
+
+  return (
+    <div
+      style={style}
+      className={`group flex items-center justify-between px-3 hover:bg-primary/5 cursor-pointer transition-colors ${
+        isSelected ? 'bg-primary/10' : ''
+      }`}
+      {...folderInteraction}
+    >
+      {/* Checkbox */}
+      <button
+        type="button"
+        aria-label={isSelected ? '選択解除' : '選択'}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleSelect(node.path);
+        }}
+        className="shrink-0 w-4 h-4 mr-2 border border-white/20 flex items-center justify-center transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
+        {isSelected && <div className="w-2 h-2 bg-primary" />}
+      </button>
+
+      <div className="flex items-center gap-3 overflow-hidden flex-1">
+        {node.is_dir ? (
+          <Folder className="text-primary shrink-0" size={20} />
+        ) : (
+          <FileIcon className="text-white/30 shrink-0" size={20} />
+        )}
+        <span className="text-white/90 truncate select-none text-sm">{node.name}</span>
+      </div>
+
+      <div className="flex items-center gap-4">
+        {!node.is_dir && (
+          <span className="text-xs text-white/50 font-mono">{formatSize(node.size)}</span>
+        )}
+        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          {!node.is_dir && (
+            <button
+              type="button"
+              title={messages.preview}
+              onClick={(e) => {
+                e.stopPropagation();
+                onPreview(node.path);
+              }}
+              className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+              aria-label={messages.preview}
+            >
+              <Eye size={16} />
+            </button>
+          )}
+          <button
+            type="button"
+            title={messages.move}
+            onClick={(e) => {
+              e.stopPropagation();
+              onMove(node.path);
+            }}
+            className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label={messages.move}
+          >
+            <MoveRight size={16} />
+          </button>
+          <button
+            type="button"
+            title={messages.rename}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRename(node.path, node.name);
+            }}
+            className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+            aria-label={messages.rename}
+          >
+            <Pencil size={16} />
+          </button>
+          {onSecureDelete && !node.is_dir && (
+            <button
+              type="button"
+              title={messages.secureDelete}
+              onClick={(e) => {
+                e.stopPropagation();
+                onSecureDelete(node.path);
+              }}
+              className="p-1.5 text-white/30 hover:text-warning transition-colors focus-visible:ring-2 focus-visible:ring-warning focus-visible:outline-none"
+              aria-label={messages.secureDelete}
+            >
+              <ShieldOff size={16} />
+            </button>
+          )}
+          <button
+            type="button"
+            title={messages.delete}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(node.path);
+            }}
+            className="p-1.5 text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+            aria-label={messages.delete}
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function BrowseView({
   sortedNodes,
   loading,
@@ -65,144 +204,14 @@ export function BrowseView({
   onClearSelection,
   onOrganize,
 }: BrowseViewProps): ReactElement {
-  const Row = useCallback(
-    ({ index, style }: { index: number; style: CSSProperties }) => {
-      const node = sortedNodes[index];
-      if (!node) return null;
-
-      const isSelected = selectedPaths.has(node.path);
-
-      const folderInteraction = node.is_dir
-        ? {
-            role: "button" as const,
-            tabIndex: 0,
-            onClick: () => onNavigate(node.path),
-            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
-              if (e.key === "Enter" || e.key === " ") onNavigate(node.path);
-            },
-          }
-        : {};
-
-      return (
-        <div
-          style={style}
-          className={`group flex items-center justify-between px-3 hover:bg-primary/5 cursor-pointer transition-colors ${
-            isSelected ? "bg-primary/10" : ""
-          }`}
-          {...folderInteraction}
-        >
-          {/* Checkbox */}
-          <button
-            type="button"
-            aria-label={isSelected ? "選択解除" : "選択"}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleSelect(node.path);
-            }}
-            className="shrink-0 w-4 h-4 mr-2 border border-white/20 flex items-center justify-center transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            {isSelected && (
-              <div className="w-2 h-2 bg-primary" />
-            )}
-          </button>
-
-          <div className="flex items-center gap-3 overflow-hidden flex-1">
-            {node.is_dir ? (
-              <Folder className="text-primary shrink-0" size={20} />
-            ) : (
-              <FileIcon className="text-white/30 shrink-0" size={20} />
-            )}
-            <span className="text-white/90 truncate select-none text-sm">
-              {node.name}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {!node.is_dir && (
-              <span className="text-xs text-white/50 font-mono">
-                {formatSize(node.size)}
-              </span>
-            )}
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-              {!node.is_dir && (
-                <button
-                  type="button"
-                  title={messages.preview}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onPreview(node.path);
-                  }}
-                  className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                  aria-label={messages.preview}
-                >
-                  <Eye size={16} />
-                </button>
-              )}
-              <button
-                type="button"
-                title={messages.move}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onMove(node.path);
-                }}
-                className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                aria-label={messages.move}
-              >
-                <MoveRight size={16} />
-              </button>
-              <button
-                type="button"
-                title={messages.rename}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRename(node.path, node.name);
-                }}
-                className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                aria-label={messages.rename}
-              >
-                <Pencil size={16} />
-              </button>
-              {onSecureDelete && !node.is_dir && (
-                <button
-                  type="button"
-                  title={messages.secureDelete}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onSecureDelete(node.path);
-                  }}
-                  className="p-1.5 text-white/30 hover:text-warning transition-colors focus-visible:ring-2 focus-visible:ring-warning focus-visible:outline-none"
-                  aria-label={messages.secureDelete}
-                >
-                  <ShieldOff size={16} />
-                </button>
-              )}
-              <button
-                type="button"
-                title={messages.delete}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(node.path);
-                }}
-                className="p-1.5 text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
-                aria-label={messages.delete}
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    },
-    [sortedNodes, selectedPaths, onNavigate, onPreview, onDelete, onSecureDelete, onMove, onRename, onToggleSelect],
-  );
-
   const actionBar = (
     <div className="flex items-center justify-between px-3 py-1.5 border-b border-primary/10 bg-black shrink-0">
       <div className="flex items-center gap-2">
         {selectedPaths.size > 0 && (
           <>
             <span className="text-xs text-primary font-mono">
-              {selectedPaths.size}{messages.selectedCount}
+              {selectedPaths.size}
+              {messages.selectedCount}
             </span>
             <button
               type="button"
@@ -267,22 +276,27 @@ export function BrowseView({
       {actionBar}
       <div ref={listContainerRef} className="flex-1 relative overflow-auto p-2">
         <List
-          height={listHeight}
-          itemCount={sortedNodes.length}
-          itemSize={ROW_HEIGHT}
-          width="100%"
-        >
-          {Row}
-        </List>
+          style={{ height: listHeight }}
+          rowCount={sortedNodes.length}
+          rowHeight={ROW_HEIGHT}
+          rowComponent={BrowseRow}
+          rowProps={{
+            sortedNodes,
+            selectedPaths,
+            onNavigate,
+            onPreview,
+            onDelete,
+            onSecureDelete,
+            onMove,
+            onRename,
+            onToggleSelect,
+          }}
+        />
       </div>
 
       {/* Rename modal */}
       {renameTarget && (
-        <RenameModal
-          target={renameTarget}
-          onSubmit={onRenameSubmit}
-          onClose={onRenameClear}
-        />
+        <RenameModal target={renameTarget} onSubmit={onRenameSubmit} onClose={onRenameClear} />
       )}
     </>
   );
@@ -301,13 +315,13 @@ function RenameModal({ target, onSubmit, onClose }: RenameModalProps): ReactElem
   useEffect(() => {
     inputRef.current?.focus();
     // Select filename without extension
-    const dot = target.name.lastIndexOf(".");
+    const dot = target.name.lastIndexOf('.');
     inputRef.current?.setSelectionRange(0, dot > 0 ? dot : target.name.length);
   }, [target.name]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") onSubmit(value);
-    if (e.key === "Escape") onClose();
+    if (e.key === 'Enter') onSubmit(value);
+    if (e.key === 'Escape') onClose();
   };
 
   return (
@@ -327,9 +341,7 @@ function RenameModal({ target, onSubmit, onClose }: RenameModalProps): ReactElem
         aria-label={messages.renameTitle}
         className="relative bg-[#0a0a0a] border border-primary/30 p-4 w-80 z-10"
       >
-        <div className="text-xs text-primary font-mono mb-3 hud-label">
-          {messages.renameTitle}
-        </div>
+        <div className="text-xs text-primary font-mono mb-3 hud-label">{messages.renameTitle}</div>
         <div className="text-xs text-white/40 mb-1">{messages.renameCurrentName}</div>
         <div className="text-xs text-white/70 font-mono mb-3 truncate">{target.name}</div>
         <div className="text-xs text-white/40 mb-1">{messages.renameNewName}</div>

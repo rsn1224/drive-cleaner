@@ -2,12 +2,12 @@
 // Large Files Hook
 // ==========================================
 
-import { listen } from "@tauri-apps/api/event";
-import { useCallback, useMemo, useState } from "react";
-import { notifyComplete } from "../lib/notify";
-import { extractErrorMessage, invoke } from "../lib/tauri";
-import { useToast } from "../lib/toastContext";
-import type { LargeFile, ScanProgress } from "../types";
+import { listen } from '@tauri-apps/api/event';
+import { useCallback, useMemo, useState } from 'react';
+import { notifyComplete } from '../lib/notify';
+import { extractErrorMessage, invoke } from '../lib/tauri';
+import { useToast } from '../lib/toastContext';
+import type { LargeFile, ScanProgress } from '../types';
 
 const TOP_N = 100;
 const MIN_SIZE = 1_048_576; // 1MB
@@ -18,32 +18,29 @@ export function useLargeFiles(currentPath: string) {
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
 
-  const totalSize = useMemo(
-    () => largeFiles.reduce((acc, f) => acc + f.size, 0),
-    [largeFiles],
-  );
+  const totalSize = useMemo(() => largeFiles.reduce((acc, f) => acc + f.size, 0), [largeFiles]);
 
   const handleScanLargeFiles = useCallback(async (): Promise<void> => {
     setScanning(true);
-    setScanProgress({ phase: "準備中...", scanned_files: 0 });
+    setScanProgress({ phase: '準備中...', scanned_files: 0 });
     setLargeFiles([]);
 
-    const unlistenProgress = listen<ScanProgress>("scan_progress", (event) => {
+    const unlistenProgress = listen<ScanProgress>('scan_progress', (event) => {
       setScanProgress(event.payload);
     });
 
     try {
-      const results = await invoke<LargeFile[]>("find_large_files", {
+      const results = await invoke<LargeFile[]>('find_large_files', {
         targetDir: currentPath,
         topN: TOP_N,
         minSize: MIN_SIZE,
       });
       setLargeFiles(results);
-      await notifyComplete("スキャン完了", `${results.length} 件の大容量ファイルを検出しました`);
+      await notifyComplete('スキャン完了', `${results.length} 件の大容量ファイルを検出しました`);
     } catch (e) {
-      if (e !== "Scan was cancelled") {
+      if (e !== 'Scan was cancelled') {
         const msg = extractErrorMessage(e);
-        notify(`スキャンエラー: ${msg}`, "error");
+        notify(`スキャンエラー: ${msg}`, 'error');
       }
     } finally {
       setScanning(false);

@@ -1,9 +1,9 @@
-import { listen } from "@tauri-apps/api/event";
-import { useCallback, useMemo, useState } from "react";
+import { listen } from '@tauri-apps/api/event';
+import { useCallback, useMemo, useState } from 'react';
 
-import { extractErrorMessage, invoke } from "../lib/tauri";
-import { useToast } from "../lib/toastContext";
-import type { OldFile, ScanProgress } from "../types";
+import { extractErrorMessage, invoke } from '../lib/tauri';
+import { useToast } from '../lib/toastContext';
+import type { OldFile, ScanProgress } from '../types';
 
 const MIN_DAYS = 365;
 const TOP_N = 200;
@@ -14,31 +14,28 @@ export function useOldFiles(currentPath: string) {
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState<ScanProgress | null>(null);
 
-  const totalSize = useMemo(
-    () => oldFiles.reduce((acc, f) => acc + f.size, 0),
-    [oldFiles],
-  );
+  const totalSize = useMemo(() => oldFiles.reduce((acc, f) => acc + f.size, 0), [oldFiles]);
 
   const handleScanOldFiles = useCallback(async (): Promise<void> => {
     setScanning(true);
-    setScanProgress({ phase: "準備中...", scanned_files: 0 });
+    setScanProgress({ phase: '準備中...', scanned_files: 0 });
     setOldFiles([]);
 
-    const unlistenProgress = listen<ScanProgress>("scan_progress", (event) => {
+    const unlistenProgress = listen<ScanProgress>('scan_progress', (event) => {
       setScanProgress(event.payload);
     });
 
     try {
-      const results = await invoke<OldFile[]>("find_old_files", {
+      const results = await invoke<OldFile[]>('find_old_files', {
         targetDir: currentPath,
         minDays: MIN_DAYS,
         topN: TOP_N,
       });
       setOldFiles(results);
     } catch (e) {
-      if (e !== "Scan was cancelled") {
+      if (e !== 'Scan was cancelled') {
         const msg = extractErrorMessage(e);
-        notify(`スキャンエラー: ${msg}`, "error");
+        notify(`スキャンエラー: ${msg}`, 'error');
       }
     } finally {
       setScanning(false);

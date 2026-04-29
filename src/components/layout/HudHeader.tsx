@@ -1,6 +1,6 @@
-import { type ReactElement, useCallback } from "react";
-import { messages } from "../../i18n/messages";
-import type { AppMode } from "../../types";
+import { type ReactElement, useCallback } from 'react';
+import { messages } from '../../i18n/messages';
+import type { AppMode } from '../../types';
 
 const MODE_LABELS: Record<AppMode, string> = {
   browse: messages.modeBrowser,
@@ -20,15 +20,15 @@ interface HudHeaderProps {
 }
 
 export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
-  const showBack = mode !== "browse";
+  const showBack = mode !== 'browse';
 
   const handleMinimize = useCallback(async (): Promise<void> => {
-    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    const { getCurrentWindow } = await import('@tauri-apps/api/window');
     await getCurrentWindow().minimize();
   }, []);
 
   const handleMaximize = useCallback(async (): Promise<void> => {
-    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    const { getCurrentWindow } = await import('@tauri-apps/api/window');
     const win = getCurrentWindow();
     if (await win.isMaximized()) {
       await win.unmaximize();
@@ -38,7 +38,7 @@ export function HudHeader({ mode, onBack }: HudHeaderProps): ReactElement {
   }, []);
 
   const handleClose = useCallback(async (): Promise<void> => {
-    const { getCurrentWindow } = await import("@tauri-apps/api/window");
+    const { getCurrentWindow } = await import('@tauri-apps/api/window');
     await getCurrentWindow().close();
   }, []);
 

@@ -2,11 +2,11 @@
 // Empty Folders View Component
 // ==========================================
 
-import { Folder, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
+import { Folder, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
 
-import { messages } from "../i18n/messages";
-import type { EmptyFolder, ScanProgress } from "../types";
+import { messages } from '../i18n/messages';
+import type { EmptyFolder, ScanProgress } from '../types';
 
 interface EmptyFoldersViewProps {
   emptyFolders: EmptyFolder[];
@@ -54,9 +54,7 @@ export function EmptyFoldersView({
     <div className="flex-1 flex flex-col">
       {/* Summary banner */}
       <div className="bg-tertiary/5 border border-tertiary/20 hud-bracket p-4 mb-4 flex justify-between items-center">
-        <div className="text-tertiary font-medium">
-          {emptyFolders.length} 個の空フォルダ
-        </div>
+        <div className="text-tertiary font-medium">{emptyFolders.length} 個の空フォルダ</div>
         <button
           type="button"
           onClick={onDeleteAll}
@@ -77,12 +75,8 @@ export function EmptyFoldersView({
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <Folder size={20} className="text-tertiary flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="text-white/90 font-medium truncate">
-                  {folder.name}
-                </div>
-                <div className="text-[11px] text-white/40 font-mono truncate">
-                  {folder.path}
-                </div>
+                <div className="text-white/90 font-medium truncate">{folder.name}</div>
+                <div className="text-[11px] text-white/40 font-mono truncate">{folder.path}</div>
               </div>
             </div>
             <button

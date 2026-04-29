@@ -2,27 +2,27 @@
 // Main Content Component
 // ==========================================
 
-import type { ReactElement } from "react";
-import type { useDiskUsage } from "../hooks/useDiskUsage";
-import type { useEmptyFolders } from "../hooks/useEmptyFolders";
+import type { ReactElement } from 'react';
+import type { useDiskUsage } from '../hooks/useDiskUsage';
+import type { useEmptyFolders } from '../hooks/useEmptyFolders';
 // Hook return types
-import type { useFileBrowser } from "../hooks/useFileBrowser";
-import type { useFileTypes } from "../hooks/useFileTypes";
-import type { useLargeFiles } from "../hooks/useLargeFiles";
-import type { useOldFiles } from "../hooks/useOldFiles";
-import type { useScan } from "../hooks/useScan";
-import type { useSimilarImages } from "../hooks/useSimilarImages";
-import type { useTempCleaner } from "../hooks/useTempCleaner";
-import type { AppMode } from "../types";
-import { BrowseView } from "./BrowseView";
-import { DiskUsageView } from "./DiskUsageView";
-import { DuplicatesView } from "./DuplicatesView";
-import { EmptyFoldersView } from "./EmptyFoldersView";
-import { FileTypesView } from "./FileTypesView";
-import { LargeFilesView } from "./LargeFilesView";
-import { OldFilesView } from "./OldFilesView";
-import { SimilarImagesView } from "./SimilarImagesView";
-import { TempCleanerView } from "./TempCleanerView";
+import type { useFileBrowser } from '../hooks/useFileBrowser';
+import type { useFileTypes } from '../hooks/useFileTypes';
+import type { useLargeFiles } from '../hooks/useLargeFiles';
+import type { useOldFiles } from '../hooks/useOldFiles';
+import type { useScan } from '../hooks/useScan';
+import type { useSimilarImages } from '../hooks/useSimilarImages';
+import type { useTempCleaner } from '../hooks/useTempCleaner';
+import type { AppMode } from '../types';
+import { BrowseView } from './BrowseView';
+import { DiskUsageView } from './DiskUsageView';
+import { DuplicatesView } from './DuplicatesView';
+import { EmptyFoldersView } from './EmptyFoldersView';
+import { FileTypesView } from './FileTypesView';
+import { LargeFilesView } from './LargeFilesView';
+import { OldFilesView } from './OldFilesView';
+import { SimilarImagesView } from './SimilarImagesView';
+import { TempCleanerView } from './TempCleanerView';
 
 interface MainContentProps {
   mode: AppMode;
@@ -51,7 +51,7 @@ export function MainContent({
   similarImages,
   onDelete,
 }: MainContentProps): ReactElement | null {
-  if (mode === "browse") {
+  if (mode === 'browse') {
     return (
       <BrowseView
         sortedNodes={fileBrowser.sortedNodes}
@@ -76,7 +76,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "duplicates") {
+  if (mode === 'duplicates') {
     return (
       <DuplicatesView
         duplicates={scan.duplicates}
@@ -93,7 +93,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "large_files") {
+  if (mode === 'large_files') {
     return (
       <LargeFilesView
         largeFiles={largeFiles.largeFiles}
@@ -106,7 +106,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "empty_folders") {
+  if (mode === 'empty_folders') {
     return (
       <EmptyFoldersView
         emptyFolders={emptyFolders.emptyFolders}
@@ -118,7 +118,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "old_files") {
+  if (mode === 'old_files') {
     return (
       <OldFilesView
         oldFiles={oldFiles.oldFiles}
@@ -131,7 +131,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "file_types") {
+  if (mode === 'file_types') {
     return (
       <FileTypesView
         analysis={fileTypes.analysis}
@@ -141,7 +141,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "disk_usage") {
+  if (mode === 'disk_usage') {
     return (
       <DiskUsageView
         currentFolder={diskUsage.currentFolder}
@@ -154,7 +154,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "temp_cleaner") {
+  if (mode === 'temp_cleaner') {
     return (
       <TempCleanerView
         scanResult={tempCleaner.scanResult}
@@ -169,7 +169,7 @@ export function MainContent({
     );
   }
 
-  if (mode === "similar_images") {
+  if (mode === 'similar_images') {
     return (
       <SimilarImagesView
         groups={similarImages.groups}

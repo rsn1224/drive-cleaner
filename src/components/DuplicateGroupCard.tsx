@@ -2,12 +2,12 @@
 // Duplicate Group Card - single duplicate file group
 // ==========================================
 
-import { Eye, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
+import { Eye, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
 
-import { messages } from "../i18n/messages";
-import { formatSize } from "../lib/utils";
-import type { DuplicateGroup } from "../types";
+import { messages } from '../i18n/messages';
+import { formatSize } from '../lib/utils';
+import type { DuplicateGroup } from '../types';
 
 interface DuplicateGroupCardProps {
   group: DuplicateGroup;
@@ -31,8 +31,7 @@ export function DuplicateGroupCard({
     >
       <div className="flex justify-between items-center px-3 py-2.5 border-b border-white/5">
         <span className="text-xs text-primary">
-          {messages.wastedSpace}:{" "}
-          {formatSize(group.size * (group.paths.length - 1))}
+          {messages.wastedSpace}: {formatSize(group.size * (group.paths.length - 1))}
         </span>
         <span className="text-xs text-white/40 font-mono">
           {messages.fileSize}: {formatSize(group.size)}
@@ -45,7 +44,7 @@ export function DuplicateGroupCard({
             <div
               key={p}
               className={`group flex justify-between items-center px-3 py-2 border-b border-white/5 last:border-b-0 transition-colors ${
-                isSelected ? "bg-error/5 hover:bg-error/10" : "hover:bg-primary/5"
+                isSelected ? 'bg-error/5 hover:bg-error/10' : 'hover:bg-primary/5'
               }`}
             >
               <div className="flex items-center flex-1 min-w-0 mr-3 gap-2">

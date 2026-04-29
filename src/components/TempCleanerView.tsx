@@ -2,13 +2,13 @@
 // Temp Cleaner View Component
 // ==========================================
 
-import { ChevronDown, ChevronRight, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
-import { useState } from "react";
+import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { messages } from "../i18n/messages";
-import { formatSize } from "../lib/utils";
-import type { RecycleBinInfo, ScanProgress, TempScanResult } from "../types";
+import { messages } from '../i18n/messages';
+import { formatSize } from '../lib/utils';
+import type { RecycleBinInfo, ScanProgress, TempScanResult } from '../types';
 
 interface TempCleanerViewProps {
   scanResult: TempScanResult | null;
@@ -88,7 +88,8 @@ export function TempCleanerView({
               <div className="text-[11px] text-white/40">{messages.recycleBinEmpty}</div>
             ) : (
               <div className="text-[11px] text-white/40 font-mono">
-                {recycleBinInfo.item_count.toLocaleString()} {messages.recycleBinItems} / {formatSize(recycleBinInfo.total_size)}
+                {recycleBinInfo.item_count.toLocaleString()} {messages.recycleBinItems} /{' '}
+                {formatSize(recycleBinInfo.total_size)}
               </div>
             )}
           </div>
@@ -137,7 +138,7 @@ export function TempCleanerView({
       <div className="flex-1 overflow-auto space-y-3">
         {scanResult.categories.map((category) => {
           const isExpanded = expandedCategories.has(category.name);
-          
+
           return (
             <section
               key={category.name}
@@ -152,18 +153,14 @@ export function TempCleanerView({
                     onClick={() => toggleCategory(category.name)}
                     className="text-white/30 hover:text-white/60 transition-colors focus-visible:ring-2 focus-visible:ring-tertiary focus-visible:outline-none"
                     aria-expanded={isExpanded}
-                    aria-label={isExpanded ? "折りたたむ" : "展開する"}
+                    aria-label={isExpanded ? '折りたたむ' : '展開する'}
                   >
                     {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </button>
                   <Trash2 size={20} className="text-tertiary" />
                   <div>
-                    <div className="text-white/90 font-medium">
-                      {category.name}
-                    </div>
-                    <div className="text-[11px] text-white/40 font-mono">
-                      {category.path}
-                    </div>
+                    <div className="text-white/90 font-medium">{category.name}</div>
+                    <div className="text-[11px] text-white/40 font-mono">{category.path}</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -199,9 +196,7 @@ export function TempCleanerView({
                         className="flex justify-between items-center text-[10px] text-white/30 hover:bg-white/5 px-2 py-1"
                       >
                         <span className="truncate flex-1 mr-2">{item.name}</span>
-                        <span className="font-mono text-white/50">
-                          {formatSize(item.size)}
-                        </span>
+                        <span className="font-mono text-white/50">{formatSize(item.size)}</span>
                       </div>
                     ))}
                   </div>

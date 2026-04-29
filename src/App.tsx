@@ -2,31 +2,31 @@
 // Main App Component - Drive Cleaner
 // ==========================================
 
-import type { ReactElement } from "react";
-import { useMemo, useState } from "react";
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
-import { DriveOverview } from "./components/DriveOverview";
-import { ErrorBoundary } from "./components/ErrorBoundary";
-import { BottomNav } from "./components/layout/BottomNav";
-import { HudHeader } from "./components/layout/HudHeader";
-import { MainContent } from "./components/MainContent";
-import { PreviewModal } from "./components/PreviewModal";
-import { QuickActions } from "./components/QuickActions";
-import { StatusBar } from "./components/StatusBar";
-import { Toolbar } from "./components/Toolbar";
-import { useAppInteractions } from "./hooks/useAppInteractions";
-import { useDiskUsage } from "./hooks/useDiskUsage";
-import { useEmptyFolders } from "./hooks/useEmptyFolders";
-import { useFileBrowser } from "./hooks/useFileBrowser";
-import { useFileTypes } from "./hooks/useFileTypes";
-import { useLargeFiles } from "./hooks/useLargeFiles";
-import { useOldFiles } from "./hooks/useOldFiles";
-import { useScan } from "./hooks/useScan";
-import { useScanActions } from "./hooks/useScanActions";
-import { useSimilarImages } from "./hooks/useSimilarImages";
-import { useTempCleaner } from "./hooks/useTempCleaner";
-import { messages } from "./i18n/messages";
-import { buildQuickActions } from "./lib/quickActions";
+import { DriveOverview } from './components/DriveOverview';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { BottomNav } from './components/layout/BottomNav';
+import { HudHeader } from './components/layout/HudHeader';
+import { MainContent } from './components/MainContent';
+import { PreviewModal } from './components/PreviewModal';
+import { QuickActions } from './components/QuickActions';
+import { StatusBar } from './components/StatusBar';
+import { Toolbar } from './components/Toolbar';
+import { useAppInteractions } from './hooks/useAppInteractions';
+import { useDiskUsage } from './hooks/useDiskUsage';
+import { useEmptyFolders } from './hooks/useEmptyFolders';
+import { useFileBrowser } from './hooks/useFileBrowser';
+import { useFileTypes } from './hooks/useFileTypes';
+import { useLargeFiles } from './hooks/useLargeFiles';
+import { useOldFiles } from './hooks/useOldFiles';
+import { useScan } from './hooks/useScan';
+import { useScanActions } from './hooks/useScanActions';
+import { useSimilarImages } from './hooks/useSimilarImages';
+import { useTempCleaner } from './hooks/useTempCleaner';
+import { messages } from './i18n/messages';
+import { buildQuickActions } from './lib/quickActions';
 
 export function App(): ReactElement {
   const fileBrowser = useFileBrowser();
@@ -51,12 +51,11 @@ export function App(): ReactElement {
     handleScanSimilarImages: similarImages.handleScan,
   });
 
-  const quickActions = useMemo(
-    () => buildQuickActions(scanActions),
-    [scanActions],
-  );
+  const quickActions = useMemo(() => buildQuickActions(scanActions), [scanActions]);
 
-  const [activeTab, setActiveTab] = useState<"dashboard" | "files" | "settings" | "logs">("dashboard");
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'files' | 'settings' | 'logs'>(
+    'dashboard',
+  );
 
   const { isDragging, handleDeleteItem, handleDragOver, handleDragLeave, handleDrop } =
     useAppInteractions({ fileBrowser, scan, largeFiles, emptyFolders, oldFiles, similarImages });
@@ -95,20 +94,19 @@ export function App(): ReactElement {
         <div className="scanline-overlay" />
 
         {/* HUD Header */}
-        <HudHeader
-          mode={scan.mode}
-          onBack={() => scan.setMode("browse")}
-        />
+        <HudHeader mode={scan.mode} onBack={() => scan.setMode('browse')} />
 
         {/* Main content - pt-14 for header, pb-16 for bottom nav */}
-        <main className={`flex-1 overflow-auto ${scan.mode === "browse" ? "pt-14 pb-16" : "pt-14"}`}>
-          {scan.mode === "browse" ? (
-            activeTab === "dashboard" ? (
+        <main
+          className={`flex-1 overflow-auto ${scan.mode === 'browse' ? 'pt-14 pb-16' : 'pt-14'}`}
+        >
+          {scan.mode === 'browse' ? (
+            activeTab === 'dashboard' ? (
               <div className="p-4 space-y-4">
                 <DriveOverview />
                 <QuickActions actions={quickActions} disabled={fileBrowser.loading} />
               </div>
-            ) : activeTab === "files" ? (
+            ) : activeTab === 'files' ? (
               <div className="flex flex-col h-full">
                 <Toolbar
                   breadcrumbs={fileBrowser.breadcrumbs}
@@ -135,7 +133,7 @@ export function App(): ReactElement {
               </div>
             ) : (
               <div className="p-4 text-center text-white/40 hud-label pt-20">
-                {activeTab === "settings"
+                {activeTab === 'settings'
                   ? `${messages.configModule} // ${messages.comingSoon}`
                   : `${messages.logViewer} // ${messages.comingSoon}`}
               </div>
@@ -158,17 +156,18 @@ export function App(): ReactElement {
         </main>
 
         {/* Status bar */}
-        <div className={scan.mode === "browse" ? "fixed bottom-16 w-full z-40" : "fixed bottom-0 w-full z-40"}>
+        <div
+          className={
+            scan.mode === 'browse' ? 'fixed bottom-16 w-full z-40' : 'fixed bottom-0 w-full z-40'
+          }
+        >
           <StatusBar
             mode={scan.mode}
             folderCount={folderCount}
             fileCount={fileCount}
             totalSize={totalSize}
             duplicatesGroupCount={scan.duplicates.length}
-            duplicatesFileCount={scan.duplicates.reduce(
-              (acc, g) => acc + g.paths.length,
-              0,
-            )}
+            duplicatesFileCount={scan.duplicates.reduce((acc, g) => acc + g.paths.length, 0)}
             totalSaveable={scan.totalSaveable}
             largeFilesCount={largeFiles.largeFiles.length}
             largeFilesTotalSize={largeFiles.totalSize}
@@ -189,7 +188,7 @@ export function App(): ReactElement {
         <BottomNav
           activeTab={activeTab}
           onTabChange={setActiveTab}
-          hidden={scan.mode !== "browse"}
+          hidden={scan.mode !== 'browse'}
         />
 
         {/* Preview modal */}
@@ -204,4 +203,3 @@ export function App(): ReactElement {
     </ErrorBoundary>
   );
 }
-

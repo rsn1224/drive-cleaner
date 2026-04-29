@@ -2,9 +2,9 @@
 // Quick Actions Component for Dashboard
 // ==========================================
 
-import type { ReactElement } from "react";
+import type { ReactElement } from 'react';
 
-import type { QuickAction } from "../lib/quickActions";
+import type { QuickAction } from '../lib/quickActions';
 
 interface QuickActionsProps {
   actions: QuickAction[];
@@ -16,7 +16,7 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
     <div className="grid grid-cols-2 gap-px bg-primary/5">
       {actions.map((action) => {
         const Icon = action.icon;
-        
+
         return (
           <button
             key={action.id}
@@ -29,7 +29,7 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
               hud-bracket
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
-            style={{ borderTopColor: action.color, borderTopWidth: "2px" }}
+            style={{ borderTopColor: action.color, borderTopWidth: '2px' }}
           >
             <div className="flex items-center gap-4">
               <div className="p-2 bg-white/5">

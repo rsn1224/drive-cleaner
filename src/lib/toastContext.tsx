@@ -5,9 +5,9 @@ import {
   useCallback,
   useContext,
   useState,
-} from "react";
+} from 'react';
 
-type ToastKind = "success" | "error" | "info" | "warning";
+type ToastKind = 'success' | 'error' | 'info' | 'warning';
 
 interface Toast {
   id: number;
@@ -22,7 +22,7 @@ const ToastContext = createContext<NotifyFn | null>(null);
 export function ToastProvider({ children }: { children: ReactNode }): ReactElement {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const notify = useCallback((message: string, kind: ToastKind = "info"): void => {
+  const notify = useCallback((message: string, kind: ToastKind = 'info'): void => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, message, kind }]);
     setTimeout(() => {
@@ -38,13 +38,13 @@ export function ToastProvider({ children }: { children: ReactNode }): ReactEleme
           <div
             key={toast.id}
             className={`px-4 py-2 font-mono text-xs border max-w-xs break-words ${
-              toast.kind === "error"
-                ? "bg-black border-error/60 text-error"
-                : toast.kind === "success"
-                  ? "bg-black border-secondary/60 text-secondary"
-                  : toast.kind === "warning"
-                    ? "bg-black border-warning/60 text-warning"
-                    : "bg-black border-primary/60 text-primary"
+              toast.kind === 'error'
+                ? 'bg-black border-error/60 text-error'
+                : toast.kind === 'success'
+                  ? 'bg-black border-secondary/60 text-secondary'
+                  : toast.kind === 'warning'
+                    ? 'bg-black border-warning/60 text-warning'
+                    : 'bg-black border-primary/60 text-primary'
             }`}
           >
             {toast.message}
@@ -57,6 +57,6 @@ export function ToastProvider({ children }: { children: ReactNode }): ReactEleme
 
 export function useToast(): NotifyFn {
   const ctx = useContext(ToastContext);
-  if (!ctx) throw new Error("useToast must be used inside ToastProvider");
+  if (!ctx) throw new Error('useToast must be used inside ToastProvider');
   return ctx;
 }

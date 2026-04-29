@@ -1,8 +1,8 @@
 // @AC AC-SimilarImagesView
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { SimilarImagesView } from "./SimilarImagesView";
+import { SimilarImagesView } from './SimilarImagesView';
 
 const baseProps = {
   groups: [],
@@ -12,19 +12,19 @@ const baseProps = {
   onDelete: vi.fn(),
 };
 
-describe("SimilarImagesView", () => {
-  it("スキャン中にスピナーを表示する", () => {
+describe('SimilarImagesView', () => {
+  it('スキャン中にスピナーを表示する', () => {
     render(
       <SimilarImagesView
         {...baseProps}
         scanning={true}
-        scanProgress={{ phase: "スキャン中...", scanned_files: 0 }}
+        scanProgress={{ phase: 'スキャン中...', scanned_files: 0 }}
       />,
     );
-    expect(document.querySelector(".animate-spin")).toBeTruthy();
+    expect(document.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  it("グループなしで空メッセージを表示する", () => {
+  it('グループなしで空メッセージを表示する', () => {
     render(<SimilarImagesView {...baseProps} scanning={false} />);
     expect(screen.getByText(/画像|見つかり/)).toBeTruthy();
   });

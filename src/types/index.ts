@@ -81,7 +81,16 @@ export interface CleanResult {
   errors: string[];
 }
 
-export type AppMode = "browse" | "duplicates" | "large_files" | "empty_folders" | "old_files" | "file_types" | "disk_usage" | "temp_cleaner" | "similar_images";
+export type AppMode =
+  | 'browse'
+  | 'duplicates'
+  | 'large_files'
+  | 'empty_folders'
+  | 'old_files'
+  | 'file_types'
+  | 'disk_usage'
+  | 'temp_cleaner'
+  | 'similar_images';
 
 export interface SimilarImageGroup {
   paths: string[];
@@ -94,13 +103,13 @@ export interface ScanProgress {
 }
 
 export interface FilePreview {
-  kind: "text" | "image" | "binary";
+  kind: 'text' | 'image' | 'binary';
   content: string;
   size: number;
 }
 
-export type SortKey = "name" | "size";
-export type SortDir = "asc" | "desc";
+export type SortKey = 'name' | 'size';
+export type SortDir = 'asc' | 'desc';
 
 export interface DriveInfo {
   name: string;

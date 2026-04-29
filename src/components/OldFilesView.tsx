@@ -2,12 +2,12 @@
 // Old Files View Component
 // ==========================================
 
-import { Clock, Eye, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
+import { Clock, Eye, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
 
-import { messages } from "../i18n/messages";
-import { formatDate, formatSize } from "../lib/utils";
-import type { OldFile, ScanProgress } from "../types";
+import { messages } from '../i18n/messages';
+import { formatDate, formatSize } from '../lib/utils';
+import type { OldFile, ScanProgress } from '../types';
 
 interface OldFilesViewProps {
   oldFiles: OldFile[];
@@ -75,22 +75,15 @@ export function OldFilesView({
             <div className="flex items-center gap-3 flex-1 min-w-0">
               <Clock size={20} className="text-error flex-shrink-0" />
               <div className="flex-1 min-w-0">
-                <div className="text-white/90 font-medium truncate">
-                  {file.name}
-                </div>
-                <div className="text-[11px] text-white/40 font-mono truncate">
-                  {file.path}
-                </div>
+                <div className="text-white/90 font-medium truncate">{file.name}</div>
+                <div className="text-[11px] text-white/40 font-mono truncate">{file.path}</div>
                 <div className="flex items-center gap-4 mt-1">
                   <span className="text-error font-mono text-sm">
-                    {file.days_old}{messages.daysAgo}
+                    {file.days_old}
+                    {messages.daysAgo}
                   </span>
-                  <span className="text-white/30 text-[11px]">
-                    {formatDate(file.modified_at)}
-                  </span>
-                  <span className="text-white/50 font-mono text-sm">
-                    {formatSize(file.size)}
-                  </span>
+                  <span className="text-white/30 text-[11px]">{formatDate(file.modified_at)}</span>
+                  <span className="text-white/50 font-mono text-sm">{formatSize(file.size)}</span>
                 </div>
               </div>
             </div>

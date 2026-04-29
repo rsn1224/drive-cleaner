@@ -1,10 +1,10 @@
-import { listen } from "@tauri-apps/api/event";
-import { useCallback, useState } from "react";
+import { listen } from '@tauri-apps/api/event';
+import { useCallback, useState } from 'react';
 
-import { useConfirm } from "../lib/confirmContext";
-import { extractErrorMessage, invoke } from "../lib/tauri";
-import { useToast } from "../lib/toastContext";
-import type { EmptyFolder, ScanProgress } from "../types";
+import { useConfirm } from '../lib/confirmContext';
+import { extractErrorMessage, invoke } from '../lib/tauri';
+import { useToast } from '../lib/toastContext';
+import type { EmptyFolder, ScanProgress } from '../types';
 
 export function useEmptyFolders(currentPath: string) {
   const confirm = useConfirm();
@@ -15,22 +15,22 @@ export function useEmptyFolders(currentPath: string) {
 
   const handleScanEmptyFolders = useCallback(async (): Promise<void> => {
     setScanning(true);
-    setScanProgress({ phase: "準備中...", scanned_files: 0 });
+    setScanProgress({ phase: '準備中...', scanned_files: 0 });
     setEmptyFolders([]);
 
-    const unlistenProgress = listen<ScanProgress>("scan_progress", (event) => {
+    const unlistenProgress = listen<ScanProgress>('scan_progress', (event) => {
       setScanProgress(event.payload);
     });
 
     try {
-      const results = await invoke<EmptyFolder[]>("find_empty_folders", {
+      const results = await invoke<EmptyFolder[]>('find_empty_folders', {
         targetDir: currentPath,
       });
       setEmptyFolders(results);
     } catch (e) {
-      if (e !== "Scan was cancelled") {
+      if (e !== 'Scan was cancelled') {
         const msg = extractErrorMessage(e);
-        notify(`スキャンエラー: ${msg}`, "error");
+        notify(`スキャンエラー: ${msg}`, 'error');
       }
     } finally {
       setScanning(false);
@@ -44,18 +44,18 @@ export function useEmptyFolders(currentPath: string) {
 
     const ok = await confirm(
       `${emptyFolders.length} 個の空フォルダをゴミ箱に移動します。よろしいですか？`,
-      "一括削除確認",
+      '一括削除確認',
     );
     if (!ok) return;
 
     try {
       const paths = emptyFolders.map((f) => f.path);
-      const deleted = await invoke<number>("delete_empty_folders", { paths });
+      const deleted = await invoke<number>('delete_empty_folders', { paths });
       setEmptyFolders([]);
-      notify(`${deleted} 個の空フォルダを削除しました`, "success");
+      notify(`${deleted} 個の空フォルダを削除しました`, 'success');
     } catch (e) {
       const msg = extractErrorMessage(e);
-      notify(`削除エラー: ${msg}`, "error");
+      notify(`削除エラー: ${msg}`, 'error');
     }
   }, [emptyFolders, confirm, notify]);
 

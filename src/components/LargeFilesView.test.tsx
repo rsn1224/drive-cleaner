@@ -1,8 +1,8 @@
 // @AC AC-LargeFilesView
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { LargeFilesView } from "./LargeFilesView";
+import { LargeFilesView } from './LargeFilesView';
 
 const baseProps = {
   largeFiles: [],
@@ -13,19 +13,19 @@ const baseProps = {
   onDelete: vi.fn(),
 };
 
-describe("LargeFilesView", () => {
-  it("スキャン中にスピナーを表示する", () => {
+describe('LargeFilesView', () => {
+  it('スキャン中にスピナーを表示する', () => {
     render(
       <LargeFilesView
         {...baseProps}
         scanning={true}
-        scanProgress={{ phase: "スキャン中...", scanned_files: 0 }}
+        scanProgress={{ phase: 'スキャン中...', scanned_files: 0 }}
       />,
     );
-    expect(document.querySelector(".animate-spin")).toBeTruthy();
+    expect(document.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  it("ファイルなしで空メッセージを表示する", () => {
+  it('ファイルなしで空メッセージを表示する', () => {
     render(<LargeFilesView {...baseProps} scanning={false} />);
     expect(screen.getByText(/ファイル|見つかり/)).toBeTruthy();
   });

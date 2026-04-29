@@ -1,13 +1,13 @@
 // @AC AC-DuplicateGroupCard
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 
-import { DuplicateGroupCard } from "./DuplicateGroupCard";
+import { DuplicateGroupCard } from './DuplicateGroupCard';
 
 const group = {
-  hash: "abc123",
+  hash: 'abc123',
   size: 1024,
-  paths: ["/keep/file.txt", "/dup/file.txt", "/dup2/file.txt"],
+  paths: ['/keep/file.txt', '/dup/file.txt', '/dup2/file.txt'],
 };
 
 const baseProps = {
@@ -18,34 +18,34 @@ const baseProps = {
   onDelete: vi.fn(),
 };
 
-describe("DuplicateGroupCard", () => {
-  it("全パスを表示する", () => {
+describe('DuplicateGroupCard', () => {
+  it('全パスを表示する', () => {
     render(<DuplicateGroupCard {...baseProps} />);
     for (const p of group.paths) {
       expect(screen.getByText(p)).toBeTruthy();
     }
   });
 
-  it("最初のパスに KEEP バッジを表示する", () => {
+  it('最初のパスに KEEP バッジを表示する', () => {
     render(<DuplicateGroupCard {...baseProps} />);
-    expect(screen.getByText("KEEP")).toBeTruthy();
+    expect(screen.getByText('KEEP')).toBeTruthy();
   });
 
-  it("選択済みパスに削除バッジを表示する", () => {
+  it('選択済みパスに削除バッジを表示する', () => {
     render(
       <DuplicateGroupCard
         {...baseProps}
-        selectedPaths={new Set([group.paths[1]])}
+        selectedPaths={new Set<string>(group.paths.slice(1, 2))}
       />,
     );
     expect(screen.getByText(/削除/)).toBeTruthy();
   });
 
-  it("チェックボックス変更で onTogglePath を呼ぶ", async () => {
+  it('チェックボックス変更で onTogglePath を呼ぶ', async () => {
     const onTogglePath = vi.fn();
     render(<DuplicateGroupCard {...baseProps} onTogglePath={onTogglePath} />);
-    const checkboxes = screen.getAllByRole("checkbox");
-    checkboxes[0].click();
+    const checkboxes = screen.getAllByRole('checkbox');
+    checkboxes[0]?.click();
     expect(onTogglePath).toHaveBeenCalledWith(group.paths[0]);
   });
 });

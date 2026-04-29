@@ -2,10 +2,10 @@
 // Toolbar Component
 // ==========================================
 
-import { ArrowUp, ChevronRight } from "lucide-react";
+import { ArrowUp, ChevronRight } from 'lucide-react';
 
-import { messages } from "../i18n/messages";
-import type { AppMode, SortDir, SortKey } from "../types";
+import { messages } from '../i18n/messages';
+import type { AppMode, SortDir, SortKey } from '../types';
 
 interface ToolbarProps {
   breadcrumbs: { label: string; path: string }[];
@@ -41,19 +41,14 @@ export function Toolbar({
         <div className="flex items-center gap-1 overflow-hidden min-w-0">
           {breadcrumbs.map((crumb, idx) => (
             <div key={crumb.path} className="flex items-center shrink-0">
-              {idx > 0 && (
-                <ChevronRight
-                  size={12}
-                  className="text-white/20 mx-0.5"
-                />
-              )}
+              {idx > 0 && <ChevronRight size={12} className="text-white/20 mx-0.5" />}
               <button
                 type="button"
                 onClick={() => onNavigate(crumb.path)}
                 className={`px-2 py-0.5 text-xs transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
                   idx === breadcrumbs.length - 1
-                    ? "bg-primary/10 text-primary border border-primary/40"
-                    : "text-white/40 hover:bg-white/5 hover:text-white/60"
+                    ? 'bg-primary/10 text-primary border border-primary/40'
+                    : 'text-white/40 hover:bg-white/5 hover:text-white/60'
                 }`}
               >
                 {crumb.label}
@@ -62,33 +57,31 @@ export function Toolbar({
           ))}
         </div>
       </div>
-      {mode === "browse" && (
+      {mode === 'browse' && (
         <div className="flex gap-1 shrink-0 ml-2">
           <button
             type="button"
-            onClick={() => onToggleSort("name")}
+            onClick={() => onToggleSort('name')}
             className={`px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-              sortKey === "name"
-                ? "bg-primary/10 text-primary border border-primary/40"
-                : "text-white/40 hover:bg-white/5"
+              sortKey === 'name'
+                ? 'bg-primary/10 text-primary border border-primary/40'
+                : 'text-white/40 hover:bg-white/5'
             }`}
             aria-label={messages.sortName}
           >
-            {messages.sortName}{" "}
-            {sortKey === "name" ? (sortDir === "asc" ? "↑" : "↓") : ""}
+            {messages.sortName} {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
           </button>
           <button
             type="button"
-            onClick={() => onToggleSort("size")}
+            onClick={() => onToggleSort('size')}
             className={`px-2 py-1 text-[11px] transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-              sortKey === "size"
-                ? "bg-primary/10 text-primary border border-primary/40"
-                : "text-white/40 hover:bg-white/5"
+              sortKey === 'size'
+                ? 'bg-primary/10 text-primary border border-primary/40'
+                : 'text-white/40 hover:bg-white/5'
             }`}
             aria-label={messages.sortSize}
           >
-            {messages.sortSize}{" "}
-            {sortKey === "size" ? (sortDir === "asc" ? "↑" : "↓") : ""}
+            {messages.sortSize} {sortKey === 'size' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
           </button>
         </div>
       )}

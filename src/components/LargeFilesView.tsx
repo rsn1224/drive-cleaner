@@ -2,12 +2,12 @@
 // Large Files View Component
 // ==========================================
 
-import { Eye, FileIcon, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
+import { Eye, FileIcon, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
 
-import { messages } from "../i18n/messages";
-import { formatSize } from "../lib/utils";
-import type { LargeFile, ScanProgress } from "../types";
+import { messages } from '../i18n/messages';
+import { formatSize } from '../lib/utils';
+import type { LargeFile, ScanProgress } from '../types';
 
 interface LargeFilesViewProps {
   largeFiles: LargeFile[];
@@ -62,7 +62,8 @@ export function LargeFilesView({
       <div className="bg-primary/5 border border-primary/20 hud-bracket px-4 py-3 mb-4">
         <div className="flex justify-between items-center">
           <span className="text-white/90 font-medium">
-            {largeFiles.length}{messages.largeFilesCount}
+            {largeFiles.length}
+            {messages.largeFilesCount}
           </span>
           <span className="text-primary font-mono">
             {messages.total}: {formatSize(totalSize)}
@@ -79,28 +80,20 @@ export function LargeFilesView({
           >
             <div className="flex items-center gap-3">
               {/* Rank */}
-              <span className="text-white/30 text-sm font-mono w-8">
-                #{index + 1}
-              </span>
+              <span className="text-white/30 text-sm font-mono w-8">#{index + 1}</span>
 
               {/* File Icon */}
               <FileIcon size={16} className="text-white/30 flex-shrink-0" />
 
               {/* File Info */}
               <div className="flex-1 min-w-0">
-                <div className="text-white/90 text-sm font-medium truncate">
-                  {file.name}
-                </div>
-                <div className="text-[11px] text-white/40 font-mono truncate">
-                  {file.path}
-                </div>
+                <div className="text-white/90 text-sm font-medium truncate">{file.name}</div>
+                <div className="text-[11px] text-white/40 font-mono truncate">{file.path}</div>
               </div>
 
               {/* Size */}
               <div className="flex items-center gap-2 flex-shrink-0">
-                <span className="text-primary font-mono text-sm">
-                  {formatSize(file.size)}
-                </span>
+                <span className="text-primary font-mono text-sm">{formatSize(file.size)}</span>
                 {/* Size Bar */}
                 <div className="w-16 h-1.5 bg-white/5 overflow-hidden">
                   <div

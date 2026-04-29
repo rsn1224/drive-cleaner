@@ -1,8 +1,8 @@
 // @AC AC-FileTypesView
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it } from 'vitest';
 
-import { FileTypesView } from "./FileTypesView";
+import { FileTypesView } from './FileTypesView';
 
 const baseProps = {
   analysis: null,
@@ -10,19 +10,19 @@ const baseProps = {
   scanProgress: null,
 };
 
-describe("FileTypesView", () => {
-  it("スキャン中にスピナーを表示する", () => {
+describe('FileTypesView', () => {
+  it('スキャン中にスピナーを表示する', () => {
     render(
       <FileTypesView
         {...baseProps}
         scanning={true}
-        scanProgress={{ phase: "スキャン中...", scanned_files: 0 }}
+        scanProgress={{ phase: 'スキャン中...', scanned_files: 0 }}
       />,
     );
-    expect(document.querySelector(".animate-spin")).toBeTruthy();
+    expect(document.querySelector('.animate-spin')).toBeTruthy();
   });
 
-  it("データなしで空メッセージを表示する", () => {
+  it('データなしで空メッセージを表示する', () => {
     render(<FileTypesView {...baseProps} scanning={false} />);
     expect(screen.getByText(/ファイル|フォルダ|選択/)).toBeTruthy();
   });

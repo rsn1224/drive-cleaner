@@ -4,8 +4,16 @@
 // which hides behind frameless windows on Windows.
 // ==========================================
 
-import { createContext, type ReactElement, type ReactNode, useCallback, useContext, useRef, useState } from "react";
-import { ConfirmModal } from "../components/ConfirmModal";
+import {
+  createContext,
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 type ConfirmFn = (message: string, title?: string) => Promise<boolean>;
 
@@ -22,7 +30,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }): ReactEle
   // Use ref to avoid stale closure in confirm()
   const pendingRef = useRef<PendingConfirm | null>(null);
 
-  const confirm = useCallback((message: string, title = "確認"): Promise<boolean> => {
+  const confirm = useCallback((message: string, title = '確認'): Promise<boolean> => {
     return new Promise((resolve) => {
       const entry: PendingConfirm = { message, title, resolve };
       pendingRef.current = entry;
@@ -59,6 +67,6 @@ export function ConfirmProvider({ children }: { children: ReactNode }): ReactEle
 
 export function useConfirm(): ConfirmFn {
   const ctx = useContext(ConfirmContext);
-  if (!ctx) throw new Error("useConfirm must be used inside ConfirmProvider");
+  if (!ctx) throw new Error('useConfirm must be used inside ConfirmProvider');
   return ctx;
 }

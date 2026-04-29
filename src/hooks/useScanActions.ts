@@ -2,9 +2,9 @@
 // Scan Actions Hook
 // ==========================================
 
-import { useCallback } from "react";
+import { useCallback } from 'react';
 
-import type { AppMode } from "../types";
+import type { AppMode } from '../types';
 
 interface ScanHooks {
   setMode: (mode: AppMode) => void;
@@ -31,42 +31,42 @@ export interface ScanActions {
 
 export function useScanActions(hooks: ScanHooks): ScanActions {
   const scanLargeFiles = useCallback(() => {
-    hooks.setMode("large_files");
+    hooks.setMode('large_files');
     hooks.handleScanLargeFiles();
   }, [hooks.setMode, hooks.handleScanLargeFiles]);
 
   const scanEmptyFolders = useCallback(() => {
-    hooks.setMode("empty_folders");
+    hooks.setMode('empty_folders');
     hooks.handleScanEmptyFolders();
   }, [hooks.setMode, hooks.handleScanEmptyFolders]);
 
   const scanOldFiles = useCallback(() => {
-    hooks.setMode("old_files");
+    hooks.setMode('old_files');
     hooks.handleScanOldFiles();
   }, [hooks.setMode, hooks.handleScanOldFiles]);
 
   const scanFileTypes = useCallback(() => {
-    hooks.setMode("file_types");
+    hooks.setMode('file_types');
     hooks.handleAnalyzeFileTypes();
   }, [hooks.setMode, hooks.handleAnalyzeFileTypes]);
 
   const scanDiskUsage = useCallback(() => {
-    hooks.setMode("disk_usage");
+    hooks.setMode('disk_usage');
     hooks.handleAnalyzeDiskUsage();
   }, [hooks.setMode, hooks.handleAnalyzeDiskUsage]);
 
   const scanTempFiles = useCallback(() => {
-    hooks.setMode("temp_cleaner");
+    hooks.setMode('temp_cleaner');
     hooks.handleScanTempFiles();
   }, [hooks.setMode, hooks.handleScanTempFiles]);
 
   const scanDuplicates = useCallback(() => {
-    hooks.setMode("duplicates");
+    hooks.setMode('duplicates');
     hooks.handleScanDuplicates();
   }, [hooks.setMode, hooks.handleScanDuplicates]);
 
   const scanSimilarImages = useCallback(() => {
-    hooks.setMode("similar_images");
+    hooks.setMode('similar_images');
     hooks.handleScanSimilarImages();
   }, [hooks.setMode, hooks.handleScanSimilarImages]);
 

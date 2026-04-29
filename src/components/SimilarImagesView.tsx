@@ -2,11 +2,11 @@
 // Similar Images View Component
 // ==========================================
 
-import { Eye, Images, Trash2 } from "lucide-react";
-import type { ReactElement } from "react";
+import { Eye, Images, Trash2 } from 'lucide-react';
+import type { ReactElement } from 'react';
 
-import { messages } from "../i18n/messages";
-import type { ScanProgress, SimilarImageGroup } from "../types";
+import { messages } from '../i18n/messages';
+import type { ScanProgress, SimilarImageGroup } from '../types';
 
 interface SimilarImagesViewProps {
   groups: SimilarImageGroup[];
@@ -64,7 +64,7 @@ export function SimilarImagesView({
       {/* Groups */}
       {groups.map((group) => (
         <fieldset
-          key={group.paths.join("|")}
+          key={group.paths.join('|')}
           className="min-w-0 bg-black border border-secondary border-l-2 overflow-hidden mx-3"
           aria-label={messages.similarImagesGroup}
         >
@@ -73,9 +73,7 @@ export function SimilarImagesView({
             <span className="text-[13px] text-secondary">
               {messages.hammingDistance}: {group.distance}/64
             </span>
-            <span className="text-xs text-white/40 font-mono">
-              {group.paths.length} ファイル
-            </span>
+            <span className="text-xs text-white/40 font-mono">{group.paths.length} ファイル</span>
           </div>
 
           {/* Files in group */}
@@ -91,9 +89,7 @@ export function SimilarImagesView({
                       {messages.keep}
                     </span>
                   )}
-                  <span className="text-[11px] text-white/40 font-mono truncate">
-                    {p}
-                  </span>
+                  <span className="text-[11px] text-white/40 font-mono truncate">{p}</span>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                   <button
