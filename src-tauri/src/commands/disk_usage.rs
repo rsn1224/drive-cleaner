@@ -26,11 +26,11 @@ fn calc_folder_size(path: &Path, token: &CancellationToken) -> (u64, usize) {
         if token.is_cancelled() {
             return (size, count);
         }
-        if entry.file_type().is_file() {
-            if let Ok(meta) = entry.metadata() {
-                size += meta.len();
-                count += 1;
-            }
+        if entry.file_type().is_file()
+            && let Ok(meta) = entry.metadata()
+        {
+            size += meta.len();
+            count += 1;
         }
     }
     (size, count)

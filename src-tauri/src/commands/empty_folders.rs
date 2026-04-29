@@ -44,16 +44,16 @@ pub async fn find_empty_folders(
         if entry.file_type().is_dir() {
             let path = entry.path();
             // read_dir で中身を確認 — エントリが0件なら空
-            if let Ok(mut entries) = std::fs::read_dir(&path) {
-                if entries.next().is_none() {
-                    // target_dir 自体は除外
-                    let path_str = path.to_string_lossy().into_owned();
-                    if path_str != target_dir {
-                        results.push(EmptyFolder {
-                            name: entry.file_name().to_string_lossy().into_owned(),
-                            path: path_str,
-                        });
-                    }
+            if let Ok(mut entries) = std::fs::read_dir(&path)
+                && entries.next().is_none()
+            {
+                // target_dir 自体は除外
+                let path_str = path.to_string_lossy().into_owned();
+                if path_str != target_dir {
+                    results.push(EmptyFolder {
+                        name: entry.file_name().to_string_lossy().into_owned(),
+                        path: path_str,
+                    });
                 }
             }
 

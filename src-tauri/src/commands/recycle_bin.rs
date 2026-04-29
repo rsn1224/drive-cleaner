@@ -44,11 +44,11 @@ fn collect_recycle_bin_info() -> RecycleBinInfo {
             for item in items.flatten() {
                 let name = item.file_name().to_string_lossy().to_string();
                 // $R* = 実際のファイルデータ。$I* はメタデータなのでカウント外
-                if name.starts_with("$R") {
-                    if let Ok(meta) = item.metadata() {
-                        item_count += 1;
-                        total_size += meta.len();
-                    }
+                if name.starts_with("$R")
+                    && let Ok(meta) = item.metadata()
+                {
+                    item_count += 1;
+                    total_size += meta.len();
                 }
             }
         }

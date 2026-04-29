@@ -75,8 +75,8 @@ fn validate_secure_delete_path(path: &str) -> Result<(), String> {
     }
 
     // 正規化したパスで比較
-    let canonical = std::fs::canonicalize(path)
-        .map_err(|e| format!("パスの解決に失敗しました: {e}"))?;
+    let canonical =
+        std::fs::canonicalize(path).map_err(|e| format!("パスの解決に失敗しました: {e}"))?;
     let canonical_lower = canonical.to_string_lossy().to_lowercase();
 
     // Windows システムディレクトリを保護
@@ -111,11 +111,11 @@ fn secure_delete_path(path: &str) -> Result<(), String> {
 const OVERWRITE_CHUNK: usize = 65536; // 64 KB per chunk - avoids full-file RAM allocation
 
 fn overwrite_and_delete(path: &str) -> Result<(), String> {
-    use rand::RngCore;
+    use rand::Rng;
     use std::io::{Seek, SeekFrom, Write};
 
     let size = std::fs::metadata(path).map_err(|e| e.to_string())?.len();
-    let mut rng = rand::thread_rng();
+    let mut rng = rand::rng();
     let mut buf = [0u8; OVERWRITE_CHUNK];
 
     let mut f = std::fs::OpenOptions::new()
@@ -293,7 +293,10 @@ pub async fn bulk_move(paths: Vec<String>, dest_dir: String) -> Result<BulkMoveR
                 Err(e) => errors.push(format!("{name}: {e}")),
             }
         }
-        Ok(BulkMoveResult { moved_count, errors })
+        Ok(BulkMoveResult {
+            moved_count,
+            errors,
+        })
     })
     .await
     .map_err(|e| e.to_string())?
@@ -303,14 +306,15 @@ fn categorize_extension(ext: &str) -> &'static str {
     match ext {
         "jpg" | "jpeg" | "png" | "gif" | "webp" | "svg" | "bmp" | "ico" | "tiff" | "tif"
         | "heic" | "heif" | "raw" | "cr2" | "nef" | "arw" => "Images",
-        "pdf" | "doc" | "docx" | "xls" | "xlsx" | "ppt" | "pptx" | "txt" | "md" | "csv"
-        | "odt" | "ods" | "odp" | "rtf" | "pages" | "numbers" | "key" => "Documents",
-        "mp4" | "mkv" | "mov" | "avi" | "wmv" | "flv" | "webm" | "m4v" | "ts" | "mpg"
-        | "mpeg" | "3gp" | "vob" => "Videos",
+        "pdf" | "doc" | "docx" | "xls" | "xlsx" | "ppt" | "pptx" | "txt" | "md" | "csv" | "odt"
+        | "ods" | "odp" | "rtf" | "pages" | "numbers" | "key" => "Documents",
+        "mp4" | "mkv" | "mov" | "avi" | "wmv" | "flv" | "webm" | "m4v" | "ts" | "mpg" | "mpeg"
+        | "3gp" | "vob" => "Videos",
         "mp3" | "flac" | "wav" | "aac" | "ogg" | "m4a" | "wma" | "opus" | "aiff" | "alac"
         | "ape" => "Music",
-        "zip" | "tar" | "gz" | "bz2" | "7z" | "rar" | "xz" | "lzma" | "cab" | "iso"
-        | "dmg" => "Archives",
+        "zip" | "tar" | "gz" | "bz2" | "7z" | "rar" | "xz" | "lzma" | "cab" | "iso" | "dmg" => {
+            "Archives"
+        }
         _ => "Others",
     }
 }
@@ -353,7 +357,10 @@ pub async fn organize_by_type(target_dir: String) -> Result<BulkMoveResult, Stri
                 Err(e) => errors.push(format!("{name}: {e}")),
             }
         }
-        Ok(BulkMoveResult { moved_count, errors })
+        Ok(BulkMoveResult {
+            moved_count,
+            errors,
+        })
     })
     .await
     .map_err(|e| e.to_string())?

@@ -50,21 +50,20 @@ pub async fn find_old_files(
         }
 
         if entry.file_type().is_file() {
-            if let Ok(meta) = entry.metadata() {
-                if let Ok(modified) = meta.modified() {
-                    if let Ok(elapsed) = now.duration_since(modified) {
-                        let days_old = elapsed.as_secs() / SECS_PER_DAY;
-                        if days_old >= min_days {
-                            let datetime: DateTime<Local> = modified.into();
-                            results.push(OldFile {
-                                path: entry.path().to_string_lossy().into_owned(),
-                                name: entry.file_name().to_string_lossy().into_owned(),
-                                size: meta.len(),
-                                modified_at: datetime.format("%Y-%m-%dT%H:%M:%S").to_string(),
-                                days_old,
-                            });
-                        }
-                    }
+            if let Ok(meta) = entry.metadata()
+                && let Ok(modified) = meta.modified()
+                && let Ok(elapsed) = now.duration_since(modified)
+            {
+                let days_old = elapsed.as_secs() / SECS_PER_DAY;
+                if days_old >= min_days {
+                    let datetime: DateTime<Local> = modified.into();
+                    results.push(OldFile {
+                        path: entry.path().to_string_lossy().into_owned(),
+                        name: entry.file_name().to_string_lossy().into_owned(),
+                        size: meta.len(),
+                        modified_at: datetime.format("%Y-%m-%dT%H:%M:%S").to_string(),
+                        days_old,
+                    });
                 }
             }
 

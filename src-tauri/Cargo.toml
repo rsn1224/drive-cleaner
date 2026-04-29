@@ -31,7 +31,7 @@ chrono = "0.4"
 dirs = "5.0"
 sysinfo = "0.33"
 trash = "3"
-rand = "0.8"
+rand = "0.10"
 image = { version = "0.25", default-features = false, features = ["jpeg", "png", "gif", "bmp", "webp"] }
 tauri-plugin-notification = "2"
 

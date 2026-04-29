@@ -107,19 +107,19 @@ pub async fn find_duplicates(
     {
         check_cancelled(&token)?;
 
-        if entry.file_type().is_file() {
-            if let Ok(metadata) = entry.metadata() {
-                let size = metadata.len();
-                if size > 0 {
-                    size_map
-                        .entry(size)
-                        .or_default()
-                        .push(entry.path().to_string_lossy().into_owned());
-                    scanned_count += 1;
+        if entry.file_type().is_file()
+            && let Ok(metadata) = entry.metadata()
+        {
+            let size = metadata.len();
+            if size > 0 {
+                size_map
+                    .entry(size)
+                    .or_default()
+                    .push(entry.path().to_string_lossy().into_owned());
+                scanned_count += 1;
 
-                    if scanned_count.is_multiple_of(1000) {
-                        emit_progress(&app, "ファイルサイズ比較中...", scanned_count);
-                    }
+                if scanned_count.is_multiple_of(1000) {
+                    emit_progress(&app, "ファイルサイズ比較中...", scanned_count);
                 }
             }
         }
