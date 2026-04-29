@@ -19,18 +19,15 @@
 
 ```bash
 # フロントエンド
-npm run dev                               # 開発サーバー起動
-npm run typecheck                         # tsc --noEmit
-npx biome check --write src/             # lint + format (自動修正)
-npx biome check src/                     # lint のみ確認
+pnpm dev                                  # 開発サーバー起動
+pnpm typecheck                            # tsc --noEmit
+pnpm check                               # biome check --write src/（lint + format 自動修正）
+pnpm build                               # プロダクションビルド
 
 # Rust バックエンド
 cd src-tauri && cargo clippy -- -D warnings
 cd src-tauri && cargo fmt
 cd src-tauri && cargo test
-
-# プロダクション
-npm run build
 ```
 
 ## アーキテクチャ
@@ -68,8 +65,6 @@ src-tauri/src/              # Rust バックエンド
 
 ## Tauri v2 固有の注意点
 
-→ 詳細: `~/.claude/rules/tauri-v2-gotchas.md`（全プロジェクト共通）
-
 - `invoke()` エラーは `Error` インスタンスではなく plain object
 - 新コマンド追加後は `lib.rs` の `invoke_handler![]` への登録を忘れずに
 - Rust 引数 `snake_case` → JS 側 `camelCase` に変換される
@@ -87,7 +82,7 @@ src-tauri/src/              # Rust バックエンド
 
 ## 完了条件
 
-- [ ] `npm run typecheck` エラーなし
+- [ ] `pnpm typecheck` エラーなし
 - [ ] `npx biome check src/` エラーなし（noExplicitAny: error を含む）
 - [ ] `cargo clippy -- -D warnings` 警告なし
 - [ ] `cargo test` 全グリーン
