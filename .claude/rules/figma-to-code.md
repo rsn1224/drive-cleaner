@@ -1,3 +1,8 @@
+---
+description: Figma → コード変換ルール（drive-cleaner/ 固有、HUD スタイル）
+globs: "src/**/*.{ts,tsx,css}"
+---
+
 # Figma → コード変換ルール（drive-cleaner/ プロジェクト固有）
 
 > `figma-implement-design` スキルを使う際は、このファイルのルールを**全て適用**すること。
