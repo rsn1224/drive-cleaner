@@ -164,6 +164,8 @@ export const messages = {
   // Move / Rename / Organize
   move: '移動',
   rename: 'リネーム',
+  moreActions: 'その他の操作',
+  open: '開く',
   organizeByType: 'タイプ別に整理',
   moveItem: 'ファイルを移動',
   moveConfirm: '移動先フォルダを選択してください',

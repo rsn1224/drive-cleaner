@@ -56,7 +56,6 @@ export function MainContent({
       <BrowseView
         sortedNodes={fileBrowser.sortedNodes}
         loading={fileBrowser.loading}
-        listHeight={fileBrowser.listHeight}
         listContainerRef={fileBrowser.listContainerRef}
         selectedPaths={fileBrowser.selectedPaths}
         renameTarget={fileBrowser.renameTarget}

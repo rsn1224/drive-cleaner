@@ -68,12 +68,12 @@ export function DuplicateGroupCard({
                 )}
                 <span className="text-[11px] text-white/40 font-mono truncate">{p}</span>
               </div>
-              <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              <div className="flex gap-1 reveal-on-hover shrink-0">
                 <button
                   type="button"
                   title={messages.preview}
                   onClick={() => onPreview(p)}
-                  className="p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                  className="touch-target p-1.5 text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   aria-label={messages.preview}
                 >
                   <Eye size={14} />
@@ -82,7 +82,7 @@ export function DuplicateGroupCard({
                   type="button"
                   title={messages.delete}
                   onClick={() => onDelete(p, group.hash)}
-                  className="p-1.5 text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+                  className="touch-target p-1.5 text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
                   aria-label={messages.delete}
                 >
                   <Trash2 size={14} />

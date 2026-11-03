@@ -87,11 +87,11 @@ export function OldFilesView({
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-2 reveal-on-hover">
               <button
                 type="button"
                 onClick={() => onPreview(file.path)}
-                className="text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                className="touch-target text-white/30 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                 title={messages.preview}
                 aria-label={messages.preview}
               >
@@ -100,7 +100,7 @@ export function OldFilesView({
               <button
                 type="button"
                 onClick={() => onDelete(file.path)}
-                className="text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+                className="touch-target text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
                 title={messages.delete}
                 aria-label={messages.delete}
               >
