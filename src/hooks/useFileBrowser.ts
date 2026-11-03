@@ -32,22 +32,6 @@ export function useFileBrowser() {
 
   // Refs
   const listContainerRef = useRef<HTMLDivElement | null>(null);
-  const [listHeight, setListHeight] = useState(400);
-
-  // ResizeObserver for list height
-  useEffect(() => {
-    const container = listContainerRef.current;
-    if (!container) return;
-
-    const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setListHeight(entry.contentRect.height);
-      }
-    });
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
-
   // Window title
   useEffect(() => {
     document.title = `Drive Cleaner — ${currentPath}`;
@@ -320,7 +304,6 @@ export function useFileBrowser() {
     sortedNodes,
     breadcrumbs,
     listContainerRef,
-    listHeight,
     preview,
     previewPath,
     selectedPaths,

@@ -24,6 +24,10 @@ body {
   background-size: 100% 4px;
   font-family: "Space Grotesk", sans-serif;
   color: #E0E0E0;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
 }
 
 /* Corner bracket decorations */
@@ -103,4 +107,60 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
+}
+
+/* ===== Touch / Mobile ===== */
+/* components レイヤーに置き、Tailwind ユーティリティ（px-3, sm:hidden 等）で上書きできるようにする */
+@layer components {
+  /*
+   * 行アクション（プレビュー・削除など）の表示制御。
+   * マウス操作の端末ではホバー時のみ表示し、タッチ端末（hover 不可）では常に表示する。
+   * 以前は opacity-0 + group-hover で隠していたため、スマホでは操作できなかった。
+   */
+  @media (hover: hover) and (pointer: fine) {
+    .reveal-on-hover {
+      opacity: 0;
+      transition: opacity 150ms ease;
+    }
+    .group:hover .reveal-on-hover,
+    .reveal-on-hover:focus-within {
+      opacity: 1;
+    }
+  }
+
+  /* タッチ端末では小さなアイコンボタンのタップ領域を 40px 以上に広げる */
+  @media (pointer: coarse) {
+    .touch-target {
+      min-width: 40px;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  /* ノッチ・ホームインジケータ（セーフエリア）対応 */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* 固定ヘッダー(3.5rem) / ステータスバー(1.5rem) / ボトムナビ(4rem) 分のオフセット */
+  .main-offset-browse {
+    padding-top: calc(3.5rem + env(safe-area-inset-top));
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
+  .main-offset-scan {
+    padding-top: calc(3.5rem + env(safe-area-inset-top));
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+  .bottom-nav-offset {
+    bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
 }

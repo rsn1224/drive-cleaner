@@ -33,7 +33,7 @@ export function Toolbar({
           type="button"
           title={messages.goUp}
           onClick={onGoUp}
-          className="p-1.5 text-white/30 hover:text-primary bg-white/5 border border-white/10 hover:border-primary/40 transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+          className="touch-target p-1.5 text-white/30 hover:text-primary bg-white/5 border border-white/10 hover:border-primary/40 transition-colors shrink-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
           aria-label={messages.goUp}
         >
           <ArrowUp size={16} />

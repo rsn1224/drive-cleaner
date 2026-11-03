@@ -48,7 +48,7 @@ export function DriveOverview(): ReactElement {
       <p className="hud-label text-white/40 text-[10px] mb-2 tracking-widest">
         {messages.driveOverviewTitle}
       </p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2 min-[480px]:grid-cols-2 lg:grid-cols-3">
         {drives.map((drive) => {
           const pct = drive.total > 0 ? Math.round((drive.used / drive.total) * 100) : 0;
           const textColor = pct >= 90 ? 'text-error' : pct >= 70 ? 'text-warning' : 'text-primary';

@@ -13,7 +13,7 @@ interface QuickActionsProps {
 
 export function QuickActions({ actions, disabled }: QuickActionsProps): ReactElement {
   return (
-    <div className="grid grid-cols-2 gap-px bg-primary/5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-px bg-primary/5">
       {actions.map((action) => {
         const Icon = action.icon;
 
@@ -24,8 +24,8 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
             disabled={disabled}
             onClick={action.onClick}
             className={`
-              w-full text-left bg-black border border-white/5 p-4 cursor-pointer
-              hover:border-primary/40 transition-all relative
+              w-full text-left bg-black border border-white/5 px-4 py-3 sm:p-4 cursor-pointer
+              hover:border-primary/40 active:bg-primary/10 transition-all relative
               hud-bracket
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
@@ -35,7 +35,7 @@ export function QuickActions({ actions, disabled }: QuickActionsProps): ReactEle
               <div className="p-2 bg-white/5">
                 <Icon size={20} style={{ color: action.color }} className="glow-cyan" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="font-mono font-bold text-sm tracking-widest text-white/90 uppercase">
                   {action.label}
                 </div>

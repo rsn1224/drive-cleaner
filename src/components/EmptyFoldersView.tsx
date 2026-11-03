@@ -82,7 +82,7 @@ export function EmptyFoldersView({
             <button
               type="button"
               onClick={() => onDelete(folder.path)}
-              className="opacity-0 group-hover:opacity-100 text-white/30 hover:text-error transition-all focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
+              className="reveal-on-hover touch-target text-white/30 hover:text-error transition-colors focus-visible:ring-2 focus-visible:ring-error focus-visible:outline-none"
               aria-label={messages.delete}
             >
               <Trash2 size={16} />
